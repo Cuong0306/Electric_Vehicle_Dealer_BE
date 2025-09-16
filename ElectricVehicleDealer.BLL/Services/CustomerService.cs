@@ -31,7 +31,7 @@ namespace ElectricVehicleDealer.BLL.Services
                 
                 if (item != null)
                 {
-                    return await _repository.RemoveAsync(item);
+                    return await _repository.DeleteAsync(id);
                 }
             }
             catch (Exception ex) { }
