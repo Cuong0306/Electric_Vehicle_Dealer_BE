@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ElectricVehicleDealer.BLL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9b040d09fc25277957c17911378981f9c6dc846e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ba93039aea3b3c16298fe9d8e04a03c434d7e38b")]
 [assembly: System.Reflection.AssemblyProductAttribute("ElectricVehicleDealer.BLL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ElectricVehicleDealer.BLL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
