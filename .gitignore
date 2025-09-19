@@ -1,4 +1,4 @@
-﻿<<<<<<< HEAD
+﻿
 # =========================
 # Visual Studio
 # =========================
@@ -33,7 +33,7 @@ packages/
 project.lock.json
 *.nuget.props
 *.nuget.t*
-=======
+
 ﻿# Build
 bin/
 obj/
