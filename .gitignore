@@ -1,5 +1,58 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+﻿<<<<<<< HEAD
+# =========================
+# Visual Studio
+# =========================
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
 
-/.vs
+# =========================
+# Build artifacts
+# =========================
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+
+
+# =========================
+# Rider / JetBrains IDEs
+# =========================
+.idea/
+*.iml
+out/
+
+# =========================
+# NuGet
+# =========================
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+*.nuget.props
+*.nuget.t*
+=======
+﻿# Build
+bin/
+obj/
+Debug/
+Release/
+
+# Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Compiled files
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+# Others
+*.vs/
+>>>>>>> 1da5b7105c06eec331c0c8a027c32b9ccc9aaaec
