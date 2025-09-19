@@ -1,5 +1,4 @@
-﻿
-# =========================
+﻿# =========================
 # Visual Studio
 # =========================
 .vs/
@@ -16,7 +15,6 @@
 **/Debug/
 **/Release/
 
-
 # =========================
 # Rider / JetBrains IDEs
 # =========================
@@ -32,27 +30,13 @@ out/
 packages/
 project.lock.json
 *.nuget.props
-*.nuget.t*
+*.nuget.targets
 
-﻿# Build
-bin/
-obj/
-Debug/
-Release/
-
-# Visual Studio
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-
+# =========================
 # Compiled files
+# =========================
 *.dll
 *.exe
 *.pdb
 *.cache
 *.log
-
-# Others
-*.vs/
-
