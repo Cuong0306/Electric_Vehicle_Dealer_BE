@@ -1,11 +1,10 @@
 ﻿using ElectricVehicleDealer.DAL.Entities;
-using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.DAL.Repositories
+namespace ElectricVehicleDealer.DAL.Repositories.Implementations
 {
     public class CustomerRepository : GenericRepository<Customer>
     {

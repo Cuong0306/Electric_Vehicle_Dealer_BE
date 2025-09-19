@@ -1,5 +1,89 @@
 [
   {
+    "ContainingType": "ElectricVehicleDealer.API.Controllers.AgreementsController",
+    "Method": "GetAll",
+    "RelativePath": "api/Agreements",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ElectricVehicleDealer.API.Controllers.AgreementsController",
+    "Method": "Create",
+    "RelativePath": "api/Agreements",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "ElectricVehicleDealer.DTO.Requests.CreateAgreementRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "customerId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ElectricVehicleDealer.API.Controllers.AgreementsController",
+    "Method": "GetById",
+    "RelativePath": "api/Agreements/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ElectricVehicleDealer.API.Controllers.AgreementsController",
+    "Method": "Delete",
+    "RelativePath": "api/Agreements/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ElectricVehicleDealer.API.Controllers.AgreementsController",
+    "Method": "Update",
+    "RelativePath": "api/Agreements/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "ElectricVehicleDealer.DTO.Requests.UpdateAgreementRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "ElectricVehicleDealer.API.Controllers.CustomerController",
     "Method": "GetAll",
     "RelativePath": "api/Customer",

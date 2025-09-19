@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.API\\ElectricVehicleDealer.API.csproj": {}
+    "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.API\\ElectricVehicleDealer.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.API\\ElectricVehicleDealer.API.csproj": {
+    "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.API\\ElectricVehicleDealer.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.API\\ElectricVehicleDealer.API.csproj",
+        "projectUniqueName": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.API\\ElectricVehicleDealer.API.csproj",
         "projectName": "ElectricVehicleDealer.API",
-        "projectPath": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.API\\ElectricVehicleDealer.API.csproj",
-        "packagesPath": "C:\\Users\\phamn\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.API\\obj\\",
+        "projectPath": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.API\\ElectricVehicleDealer.API.csproj",
+        "packagesPath": "C:\\Users\\acer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\phamn\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\acer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,14 +26,16 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "C:\\Users\\acer\\.nuget\\packages": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.BLL\\ElectricVehicleDealer.BLL.csproj": {
-                "projectPath": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.BLL\\ElectricVehicleDealer.BLL.csproj"
+              "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.BLL\\ElectricVehicleDealer.BLL.csproj": {
+                "projectPath": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.BLL\\ElectricVehicleDealer.BLL.csproj"
               }
             }
           }
@@ -78,24 +80,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.BLL\\ElectricVehicleDealer.BLL.csproj": {
+    "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.BLL\\ElectricVehicleDealer.BLL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.BLL\\ElectricVehicleDealer.BLL.csproj",
+        "projectUniqueName": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.BLL\\ElectricVehicleDealer.BLL.csproj",
         "projectName": "ElectricVehicleDealer.BLL",
-        "projectPath": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.BLL\\ElectricVehicleDealer.BLL.csproj",
-        "packagesPath": "C:\\Users\\phamn\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.BLL\\obj\\",
+        "projectPath": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.BLL\\ElectricVehicleDealer.BLL.csproj",
+        "packagesPath": "C:\\Users\\acer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.BLL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\phamn\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\acer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -104,14 +106,16 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "C:\\Users\\acer\\.nuget\\packages": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DAL\\ElectricVehicleDealer.DAL.csproj": {
-                "projectPath": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DAL\\ElectricVehicleDealer.DAL.csproj"
+              "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DAL\\ElectricVehicleDealer.DAL.csproj": {
+                "projectPath": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DAL\\ElectricVehicleDealer.DAL.csproj"
               }
             }
           }
@@ -147,24 +151,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DAL\\ElectricVehicleDealer.DAL.csproj": {
+    "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DAL\\ElectricVehicleDealer.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DAL\\ElectricVehicleDealer.DAL.csproj",
+        "projectUniqueName": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DAL\\ElectricVehicleDealer.DAL.csproj",
         "projectName": "ElectricVehicleDealer.DAL",
-        "projectPath": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DAL\\ElectricVehicleDealer.DAL.csproj",
-        "packagesPath": "C:\\Users\\phamn\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DAL\\obj\\",
+        "projectPath": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DAL\\ElectricVehicleDealer.DAL.csproj",
+        "packagesPath": "C:\\Users\\acer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DAL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\phamn\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\acer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -173,14 +177,16 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "C:\\Users\\acer\\.nuget\\packages": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DTO\\ElectricVehicleDealer.DTO.csproj": {
-                "projectPath": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DTO\\ElectricVehicleDealer.DTO.csproj"
+              "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DTO\\ElectricVehicleDealer.DTO.csproj": {
+                "projectPath": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DTO\\ElectricVehicleDealer.DTO.csproj"
               }
             }
           }
@@ -262,24 +268,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DTO\\ElectricVehicleDealer.DTO.csproj": {
+    "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DTO\\ElectricVehicleDealer.DTO.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DTO\\ElectricVehicleDealer.DTO.csproj",
+        "projectUniqueName": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DTO\\ElectricVehicleDealer.DTO.csproj",
         "projectName": "ElectricVehicleDealer.DTO",
-        "projectPath": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DTO\\ElectricVehicleDealer.DTO.csproj",
-        "packagesPath": "C:\\Users\\phamn\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\phamn\\Source\\Repos\\Electric_Vehicle_Dealer_BE\\ElectricVehicleDealer.DTO\\obj\\",
+        "projectPath": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DTO\\ElectricVehicleDealer.DTO.csproj",
+        "packagesPath": "C:\\Users\\acer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\acer\\Desktop\\123\\Cn8\\SWP391-1\\ElectricVehicleDealerManagementSystem\\ElectricVehicleDealer.DTO\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\phamn\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\acer\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -288,6 +294,8 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "C:\\Users\\acer\\.nuget\\packages": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -327,7 +335,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

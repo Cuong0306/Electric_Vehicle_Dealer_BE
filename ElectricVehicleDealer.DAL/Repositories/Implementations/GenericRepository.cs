@@ -1,5 +1,4 @@
-﻿using ElectricVehicleDealer.DAL.Entities;
-using ElectricVehicleDealer.DAL.Repositories.Interfaces;
+﻿using ElectricVehicleDealer.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
         protected readonly AppDbContext _context;
         private readonly DbSet<T> _dbSet;
 
-        // 👇 Constructor này rất quan trọng
+       
         public GenericRepository(AppDbContext context)
         {
             _context = context;

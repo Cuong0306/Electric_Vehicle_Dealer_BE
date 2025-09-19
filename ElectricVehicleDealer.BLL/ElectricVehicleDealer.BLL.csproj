@@ -7,15 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Services\Implementations\**" />
-    <Compile Remove="Services\Interfaces\**" />
-    <EmbeddedResource Remove="Services\Implementations\**" />
-    <EmbeddedResource Remove="Services\Interfaces\**" />
-    <None Remove="Services\Implementations\**" />
-    <None Remove="Services\Interfaces\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ElectricVehicleDealer.DAL\ElectricVehicleDealer.DAL.csproj" />
   </ItemGroup>
 

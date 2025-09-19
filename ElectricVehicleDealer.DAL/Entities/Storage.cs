@@ -14,8 +14,9 @@ public partial class Storage
     public int? QuantityAvailable { get; set; }
 
     public DateTime? LastUpdated { get; set; }
-
+    //DD/MM/YYYY HH:mm
     public virtual Store Store { get; set; } = null!;
 
     public virtual Vehicle Vehicle { get; set; } = null!;
+    
 }

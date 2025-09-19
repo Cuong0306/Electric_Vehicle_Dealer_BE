@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using ElectricVehicleDealer.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ElectricVehicleDealer.DAL.Entities;
+namespace ElectricVehicleDealer.DAL;
 
 public partial class AppDbContext : DbContext
 {

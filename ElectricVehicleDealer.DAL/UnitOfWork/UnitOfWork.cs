@@ -12,12 +12,19 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        //private readonly DbContext _context;
+        private readonly AppDbContext _context;
         private Hashtable _repositories;
         private bool _disposed;
-        public UnitOfWork(/*DbContext context*/)
+
+        public IAgreementsRepository Agreements { get; }
+
+        public UnitOfWork(
+            AppDbContext context,
+            IAgreementsRepository agreementsRepository)
         {
-            //_context = context;
+            _context = context;
+            Agreements = agreementsRepository;
+
         }
         public void Dispose()
         {
@@ -28,7 +35,7 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
         {
             if (!_disposed && disposing)
             {
-               // _context.Dispose();
+               _context.Dispose();
             }
             _disposed = true;
         }
@@ -40,17 +47,17 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
             if (!_repositories.ContainsKey(type))
             {
                 var repositoryType = typeof(GenericRepository<>);
-                //var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(TEntity)), _context);
-               // _repositories.Add(type, repositoryInstance);
+                var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(TEntity)), _context);
+                _repositories.Add(type, repositoryInstance);
             }
 
             return (IGenericRepository<TEntity>)_repositories[type]!;
         }
 
-        public Task<int> SaveAsync()
+        public async Task<int> SaveAsync()
         {
-            throw new NotImplementedException();
-            //return await _context.SaveChangesAsync();
+           
+            return await _context.SaveChangesAsync();
         }
     }
 }
