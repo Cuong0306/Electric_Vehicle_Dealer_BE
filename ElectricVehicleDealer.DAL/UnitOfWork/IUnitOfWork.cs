@@ -10,6 +10,7 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
     public interface IUnitOfWork : IDisposable
     {
         IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class;
+        IAgreementsRepository Agreements { get; }
         Task<int> SaveAsync();
     }
 }
