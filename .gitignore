@@ -10,10 +10,11 @@
 # =========================
 # Build artifacts
 # =========================
-bin/
-obj/
-Debug/
-Release/
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+
 
 # =========================
 # Rider / JetBrains IDEs
