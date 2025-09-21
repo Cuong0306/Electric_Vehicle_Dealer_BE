@@ -16,9 +16,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // ??ng ký Repository & Service
 builder.Services.AddScoped<ICustomerService, CustomerService>();
-
+builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 // N?u có repository riêng
 builder.Services.AddScoped<CustomerRepository>();
+builder.Services.AddScoped<BrandRepository>();
+builder.Services.AddScoped<OrderRepository>();
+builder.Services.AddScoped<PaymentRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
