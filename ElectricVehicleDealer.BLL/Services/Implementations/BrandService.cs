@@ -19,6 +19,12 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
         {
             _unitOfWork = unitOfWork;
         }
+
+        public Task<int> CreateAsync(CreateBrandDto brandDto)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<BrandResponse> CreateBrandAsync(CreateBrandRequest dto)
         {
             var newBrand = new Brand
@@ -40,6 +46,11 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             };
         }
 
+        public Task<bool> DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> DeleteBrandAsync(int id)
         {
             var brand = await _unitOfWork.Repository<Brand>().GetByIdAsync(id);
@@ -50,6 +61,10 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             return true;
         }
 
+        public Task<List<Brand>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<IEnumerable<BrandResponse>> GetAllBrandsAsync()
         {
@@ -81,6 +96,16 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 Website = brand.Website,
                 FounderYear = brand.FounderYear
             };
+        }
+
+        public Task<Brand> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdateAsync(Brand brand)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<BrandResponse> UpdateBrandAsync(int id, UpdateBrandRequest dto)
