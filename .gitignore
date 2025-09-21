@@ -1,5 +1,36 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Bb]uilds/
+[Bb]in/
+[Oo]bj/
 
-/.vs
+# Visual Studio specific
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build artifacts
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Others
+*.dbmdl
+*.bak
+*.ldf
+*.mdf
+*.ide
