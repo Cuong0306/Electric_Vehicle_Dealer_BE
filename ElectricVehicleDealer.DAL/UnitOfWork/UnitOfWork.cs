@@ -25,7 +25,7 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
         {
             _context = context;
             Agreements = agreementsRepository;
-
+            _repositories = new Hashtable();
         }
         public void Dispose()
         {

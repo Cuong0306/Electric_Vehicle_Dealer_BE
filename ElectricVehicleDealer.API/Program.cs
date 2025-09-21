@@ -24,9 +24,11 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // ??ng ký Repository & Service
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IAgreementsService, AgreementsService>();
-
+builder.Services.AddScoped<IBrandService, BrandService>();
 // N?u có repository riêng
 builder.Services.AddScoped<CustomerRepository>();
+builder.Services.AddScoped<BrandRepository>();
+
 
 builder.Services.AddScoped<IAgreementsRepository, AgreementsRepository>();
 var app = builder.Build();
