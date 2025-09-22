@@ -1,0 +1,1 @@
+-e "bin/\nobj/"  rm -r --cached **/bin
