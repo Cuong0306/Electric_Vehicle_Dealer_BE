@@ -39,6 +39,18 @@ builder.Services.AddScoped<PaymentRepository>();
 builder.Services.AddScoped<PromotionRepository>();
 builder.Services.AddScoped<IAgreementsRepository, AgreementsRepository>();
 
+// Frontend Connection
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173") 
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
 //Converter DateTime
 builder.Services.AddControllers()
@@ -75,6 +87,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 
