@@ -6,6 +6,7 @@ using ElectricVehicleDealer.DAL.Repositories;
 using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DAL.Repositories.Interfaces;
 using ElectricVehicleDealer.DAL.UnitOfWork;
+using ElectricVehicleDealer.DTO.Config;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -37,6 +38,16 @@ builder.Services.AddScoped<OrderRepository>();
 builder.Services.AddScoped<PaymentRepository>();
 builder.Services.AddScoped<PromotionRepository>();
 builder.Services.AddScoped<IAgreementsRepository, AgreementsRepository>();
+
+
+//Converter DateTime
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+    });
+
+
 //JWT setting
 var key = builder.Configuration["Jwt:Key"];
 
