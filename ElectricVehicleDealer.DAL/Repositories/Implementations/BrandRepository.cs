@@ -37,16 +37,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
 
         public async Task<List<Brand>> GetAll()
         {
-            var brands = _context.Brands
-                .ToList();
-            if (brands == null)
-            {
-                throw new Exception("No Brands found");
-            }
-            else
-            {
-                return await _context.Brands.ToListAsync();
-            }
+            return await _context.Brands.ToListAsync();
         }
 
         public async Task<Brand> GetByIdAsync(int id)
