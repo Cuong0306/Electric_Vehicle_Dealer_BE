@@ -29,13 +29,14 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
-builder.Services.AddScoped<IAgreementsRepository, AgreementsRepository>();
+builder.Services.AddScoped<IAgreementsService, AgreementsService>();
 // N?u có repository riêng
 builder.Services.AddScoped<CustomerRepository>();
 builder.Services.AddScoped<BrandRepository>();
 builder.Services.AddScoped<OrderRepository>();
 builder.Services.AddScoped<PaymentRepository>();
 builder.Services.AddScoped<PromotionRepository>();
+builder.Services.AddScoped<IAgreementsRepository, AgreementsRepository>();
 //JWT setting
 var key = builder.Configuration["Jwt:Key"];
 
