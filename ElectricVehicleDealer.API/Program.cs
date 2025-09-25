@@ -31,6 +31,7 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IAgreementsService, AgreementsService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
 // N?u có repository riêng
 builder.Services.AddScoped<CustomerRepository>();
 builder.Services.AddScoped<BrandRepository>();
@@ -38,7 +39,7 @@ builder.Services.AddScoped<OrderRepository>();
 builder.Services.AddScoped<PaymentRepository>();
 builder.Services.AddScoped<PromotionRepository>();
 builder.Services.AddScoped<IAgreementsRepository, AgreementsRepository>();
-
+builder.Services.AddScoped<StoreRepository>();
 // Frontend Connection
 
 builder.Services.AddCors(options =>
