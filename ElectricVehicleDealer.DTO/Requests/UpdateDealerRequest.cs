@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace ElectricVehicleDealer.DTO.Requests
 {
-    public class CreateDealerRequest
+    public class UpdateDealerRequest
     {
         public string FullName { get; set; }
         public string? Phone { get; set; }
