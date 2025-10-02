@@ -34,6 +34,10 @@ builder.Services.AddScoped<IStaffService, StaffService>();
 
 // ??ng k Repository & Service
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IDealerService, DealerService>();
+builder.Services.AddScoped<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IStorageService, StorageService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
