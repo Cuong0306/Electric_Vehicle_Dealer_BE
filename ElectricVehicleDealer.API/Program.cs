@@ -23,7 +23,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-// ??ng ký Repository & Service
+
+builder.Services.AddScoped<IDealerService, DealerService>();
+builder.Services.AddScoped<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IStorageService, StorageService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<ITestAppointmentService, TestAppointmentService>();
+builder.Services.AddScoped<IQuoteService, QuoteService>();
+builder.Services.AddScoped<IStaffService, StaffService>();
+
+// ??ng k Repository & Service
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
@@ -32,7 +41,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IAgreementsService, AgreementsService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
-// N?u có repository riêng
+// N?u c repository ring
 builder.Services.AddScoped<CustomerRepository>();
 builder.Services.AddScoped<BrandRepository>();
 builder.Services.AddScoped<OrderRepository>();

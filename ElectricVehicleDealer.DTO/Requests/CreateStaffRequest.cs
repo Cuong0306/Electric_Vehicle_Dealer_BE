@@ -1,14 +1,13 @@
 using System;
 
-namespace ElectricVehicleDealer.DTO.Responses
+namespace ElectricVehicleDealer.DTO.Requests
 {
-    public class DealerResponse
+    public class CreateStaffRequest
     {
-        public int DealerId { get; set; }
         public string FullName { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }
-        public string? Address { get; set; }
+        public string? Password { get; set; }
         public int? StoreId { get; set; }
     }
 }

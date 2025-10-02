@@ -1,10 +1,9 @@
 using System;
 
-namespace ElectricVehicleDealer.DTO.Responses
+namespace ElectricVehicleDealer.DTO.Requests
 {
-    public class DealerResponse
+    public class UpdateDealerRequest
     {
-        public int DealerId { get; set; }
         public string FullName { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }
