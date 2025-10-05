@@ -14,6 +14,5 @@ namespace ElectricVehicleDealer.DTO.Requests
 
         public string? Email { get; set; }
 
-        public int? PromotionId { get; set; }
     }
 }

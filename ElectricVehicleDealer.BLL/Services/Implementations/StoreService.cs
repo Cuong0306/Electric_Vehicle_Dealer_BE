@@ -25,7 +25,6 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 StoreName = dto.StoreName,
                 Address = dto.Address,
                 Email = dto.Email,
-                PromotionId = dto.PromotionId
             };
             await _unitOfWork.Repository<Store>().AddAsync(newStore);
             await _unitOfWork.SaveAsync();
