@@ -39,6 +39,13 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 BatteryCapacity = dto.BatteryCapacity,
                 RangePerCharge = dto.RangePerCharge,
                 WarrantyPeriod = dto.WarrantyPeriod,
+                DailyDrivingLimit = dto.DailyDrivingLimit,
+                TrunkCapacity = dto.TrunkCapacity,
+                VehicleType = dto.VehicleType,
+                Horsepower = dto.Horsepower,
+                Airbags = dto.Airbags,
+                Transmission = dto.Transmission,
+                SeatingCapacity = dto.SeatingCapacity,
                 CreateDate = dto.CreateDate,
             };
             await _unitOfWork.Repository<Vehicle>().AddAsync(entity);
@@ -84,6 +91,13 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             BatteryCapacity = x.BatteryCapacity,
             RangePerCharge = x.RangePerCharge,
             WarrantyPeriod = x.WarrantyPeriod,
+            DailyDrivingLimit = x.DailyDrivingLimit,
+            TrunkCapacity = x.TrunkCapacity,
+            VehicleType = x.VehicleType,
+            Horsepower = x.Horsepower,
+            Airbags = x.Airbags,
+            Transmission = x.Transmission,
+            SeatingCapacity = x.SeatingCapacity,
             CreateDate = x.CreateDate,
         };
     }
