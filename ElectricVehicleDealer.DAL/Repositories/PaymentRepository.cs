@@ -15,7 +15,8 @@ namespace ElectricVehicleDealer.DAL.Repositories
             private readonly AppDbContext _context;
             public PaymentRepository(AppDbContext context) : base(context)
             {
-            }
+            _context = context;
+        }
             public async Task<List<Payment>> GetAllAsync()
             {
                 return await _context.Payments.ToListAsync();
