@@ -15,13 +15,9 @@ namespace ElectricVehicleDealer.BLL.Services
         public OrderService(OrderRepository repository) { _repository = repository; }
         public async Task<int> CreateAsync(CreateOrderDto order)
         {
-            try
-            {
-                return await _repository.CreateAsync(order);
-            }
-            catch (Exception ex) { }
-            return 0;
+            return await _repository.CreateAsync(order); 
         }
+
 
         public async Task<bool> DeleteAsync(int id)
         {

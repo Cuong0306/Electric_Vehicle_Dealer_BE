@@ -2,6 +2,7 @@
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,12 +34,23 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CreateOrderDto order)
+        public async Task<ActionResult> Create([FromBody] CreateOrderDto dto)
         {
-            var result = await _service.CreateAsync(order);
-            if (result > 0) return Ok("Created successfully");
-            return BadRequest("Failed to create customer");
+            try
+            {
+                var rows = await _service.CreateAsync(dto);
+                return rows > 0 ? Ok("Created successfully") : BadRequest("No rows affected");
+            }
+            catch (DbUpdateException dbx)
+            {
+                return BadRequest(dbx.InnerException?.Message ?? dbx.Message);
+            }
+            catch (Exception ex)
+            {
+                return Problem(detail: ex.Message);
+            }
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, Order order)

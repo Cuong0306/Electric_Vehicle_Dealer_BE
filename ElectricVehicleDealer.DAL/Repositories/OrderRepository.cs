@@ -15,6 +15,7 @@ namespace ElectricVehicleDealer.DAL.Repositories
         private readonly AppDbContext _context;
         public OrderRepository(AppDbContext context) : base(context)
         {
+            _context = context;
         }
         public async Task<List<Order>> GetAllAsync()
         {
@@ -34,6 +35,7 @@ namespace ElectricVehicleDealer.DAL.Repositories
                 DealerId = dto.DealerId,
                 Quantity = dto.Quantity,
                 TotalPrice = dto.TotalPrice,
+                Status = dto.Status,
                 OrderDate = DateTime.Now
             };
 
