@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ElectricVehicleDealer.DAL.Enum;
+using System;
 using System.Collections.Generic;
 
 namespace ElectricVehicleDealer.DAL.Entities;
@@ -17,7 +18,7 @@ public partial class Order
 
     public decimal? TotalPrice { get; set; }
 
-    public string? Status { get; set; }
+    public OrderEnum Status { get; set; }
 
     public virtual Customer Customer { get; set; } = null!;
 

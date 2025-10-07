@@ -35,7 +35,7 @@ namespace ElectricVehicleDealer.DAL.Repositories
                     OrderId = dto.OrderId,
                     Method = dto.Method,
                     Amount = dto.Amount,
-                    Status = dto.Status,
+                    //Status = dto.Status,
                     PaymentDate = DateTime.Now
                 };
 

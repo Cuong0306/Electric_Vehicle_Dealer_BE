@@ -34,7 +34,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 VehicleId = dto.VehicleId,
                 DealerId = dto.DealerId,
                 AppointmentDate = dto.AppointmentDate,
-                Status = dto.Status,
+                //Status = dto.Status,
             };
             await _unitOfWork.Repository<TestAppointment>().AddAsync(entity);
             await _unitOfWork.SaveAsync();
@@ -48,7 +48,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             entity.VehicleId = dto.VehicleId;
             entity.DealerId = dto.DealerId;
             entity.AppointmentDate = dto.AppointmentDate;
-            entity.Status = dto.Status;
+            //entity.Status = dto.Status;
             _unitOfWork.Repository<TestAppointment>().Update(entity);
             await _unitOfWork.SaveAsync();
             return MapToResponse(entity);
@@ -69,7 +69,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             VehicleId = x.VehicleId,
             DealerId = x.DealerId,
             AppointmentDate = x.AppointmentDate,
-            Status = x.Status,
+            //Status = x.Status,
         };
     }
 }

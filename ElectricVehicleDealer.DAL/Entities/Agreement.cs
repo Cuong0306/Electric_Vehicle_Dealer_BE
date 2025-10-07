@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ElectricVehicleDealer.DAL.Enum;
+using System;
 using System.Collections.Generic;
 
 namespace ElectricVehicleDealer.DAL.Entities;
@@ -13,7 +14,7 @@ public partial class Agreement
 
     public string? TermsAndConditions { get; set; }
 
-    public string? Status { get; set; }
+    public AgreementEnum Status { get; set; } = AgreementEnum.Pending;
 
     public virtual Customer Customer { get; set; } = null!;
 }
