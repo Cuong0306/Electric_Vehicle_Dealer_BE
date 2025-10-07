@@ -8,6 +8,8 @@ namespace ElectricVehicleDealer.DTO.Requests
 {
     public class CreateAgreementRequest
     {
+
         public string? TermsAndConditions { get; set; }
+        public string? Status { get; set; }
     }
 }

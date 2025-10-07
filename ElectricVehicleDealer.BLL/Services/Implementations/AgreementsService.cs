@@ -33,6 +33,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             {
                 CustomerId = customerId,
                 TermsAndConditions = dto.TermsAndConditions,
+                Status = dto.Status,
             };
             await _unitOfWork.Agreements.CreateAsync(newAgreement);
             await _unitOfWork.SaveAsync();
