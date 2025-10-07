@@ -16,6 +16,6 @@ public partial class Staff
     public string? Password { get; set; }
 
     public int? StoreId { get; set; }
-
+    public string? Position { get; set; }
     public virtual Store? Store { get; set; }
 }

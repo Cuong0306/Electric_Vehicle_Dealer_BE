@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ElectricVehicleDealer.DAL.Enum;
+using System;
 using System.Collections.Generic;
 
 namespace ElectricVehicleDealer.DAL.Entities;
@@ -15,7 +16,7 @@ public partial class TestAppointment
 
     public DateTime AppointmentDate { get; set; }
 
-    public string? Status { get; set; }
+    public TestAppointmentEnum Status { get; set; } = TestAppointmentEnum.Draft;
 
     public virtual Customer Customer { get; set; } = null!;
 

@@ -35,7 +35,7 @@ namespace ElectricVehicleDealer.DAL.Repositories
                 DealerId = dto.DealerId,
                 Quantity = dto.Quantity,
                 TotalPrice = dto.TotalPrice,
-                Status = dto.Status,
+                //Status = dto.Status,
                 OrderDate = DateTime.Now
             };
 

@@ -33,7 +33,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             {
                 CustomerId = customerId,
                 TermsAndConditions = dto.TermsAndConditions,
-                Status = dto.Status,
+                //Status = dto.Status,
             };
             await _unitOfWork.Agreements.CreateAsync(newAgreement);
             await _unitOfWork.SaveAsync();
@@ -43,7 +43,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 CustomerId = newAgreement.CustomerId,
                 CustomerName = newAgreement.Customer.FullName,
                 TermsAndConditions = newAgreement.TermsAndConditions,
-                Status = newAgreement.Status,
+                //Status = newAgreement.Status,
                 AgreementDate = DateTime.UtcNow
             };
         }
@@ -72,7 +72,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 CustomerId = agreement.CustomerId,
                 CustomerName = agreement.Customer.FullName,
                 TermsAndConditions = agreement.TermsAndConditions,
-                Status = agreement.Status,
+                //Status = agreement.Status,
                 AgreementDate = agreement.AgreementDate
             };
         }
@@ -93,7 +93,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 CustomerId = agreement.CustomerId,
                 CustomerName = agreement.Customer.FullName,
                 TermsAndConditions = agreement.TermsAndConditions,
-                Status = agreement.Status,
+                //Status = agreement.Status,
                 AgreementDate = agreement.AgreementDate
             }).ToList();
         }
@@ -106,7 +106,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
 
             
             if (!string.IsNullOrEmpty(dto.Status))
-                agreement.Status = dto.Status;
+                //agreement.Status = dto.Status;
 
             if (!string.IsNullOrEmpty(dto.TermsAndConditions))
                 agreement.TermsAndConditions = dto.TermsAndConditions;
