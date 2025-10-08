@@ -66,6 +66,15 @@ builder.Services.AddCors(options =>
         });
 });
 
+//enum converter
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
+
+
 //Converter DateTime
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
