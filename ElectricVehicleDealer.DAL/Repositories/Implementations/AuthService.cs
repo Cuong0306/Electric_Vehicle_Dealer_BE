@@ -48,8 +48,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                     subjectId: staff.StaffId.ToString(),
                     name: staff.FullName,
                     email: staff.Email,
-                    role: "Staff",
-                    storeId: staff.StoreId?.ToString()
+                    role: "Staff"
                 );
             }
 
@@ -72,8 +71,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                     subjectId: dealer.DealerId.ToString(),
                     name: dealer.FullName,
                     email: dealer.Email,
-                    role: "Dealer",
-                    storeId: dealer.StoreId?.ToString()
+                    role: "Dealer"
                 );
             }
 
@@ -81,7 +79,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             return null;
         }
 
-        private string GenerateJwtToken(string subjectId, string name, string? email, string role, string? storeId)
+        private string GenerateJwtToken(string subjectId, string name, string? email, string role)
         {
             var claims = new List<Claim>
             {
@@ -90,7 +88,6 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 new Claim(ClaimTypes.Email, email ?? string.Empty),
                 new Claim(ClaimTypes.Role, role),             // <-- phân quyền
                 new Claim("UserType", role),                  // <-- thêm 1 claim phụ nếu cần
-                new Claim("StoreId", storeId ?? string.Empty)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));

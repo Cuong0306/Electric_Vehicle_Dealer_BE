@@ -1,5 +1,6 @@
 using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.UnitOfWork;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
@@ -34,7 +35,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 Phone = dto.Phone,
                 Email = dto.Email,
                 Password = dto.Password,
-                StoreId = dto.StoreId,
+                Role = dto.Role ?? RoleStaffEnum.EVM_Staff
             };
             await _unitOfWork.Repository<Staff>().AddAsync(entity);
             await _unitOfWork.SaveAsync();
@@ -48,7 +49,6 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             entity.Phone = dto.Phone;
             entity.Email = dto.Email;
             entity.Password = dto.Password;
-            entity.StoreId = dto.StoreId;
             _unitOfWork.Repository<Staff>().Update(entity);
             await _unitOfWork.SaveAsync();
             return MapToResponse(entity);
@@ -69,7 +69,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             Phone = x.Phone,
             Email = x.Email,
             Password = x.Password,
-            StoreId = x.StoreId,
+            Role = x.Role
         };
     }
 }
