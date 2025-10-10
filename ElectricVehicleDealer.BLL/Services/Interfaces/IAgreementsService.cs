@@ -13,7 +13,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<List<AgreementResponse>> GetAllAgreementsAsync();
         Task<AgreementResponse> GetAgreementByIdAsync(int id);
         Task<AgreementResponse> GetAgreementByNameAsync(string name);
-        Task<AgreementResponse> AddAgreementAsync(CreateAgreementRequest dto, int customerId);
+        Task<AgreementResponse> AddAgreementAsync(CreateAgreementRequest dto);
         Task<bool> DeleteAgreementAsync(int id);
         Task<bool> UpdateAgreementAsync(UpdateAgreementRequest dto, int id);
     }

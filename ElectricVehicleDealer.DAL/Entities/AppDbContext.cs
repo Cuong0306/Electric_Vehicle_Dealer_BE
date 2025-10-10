@@ -324,11 +324,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .HasColumnName("phone");
-            entity.Property(e => e.StoreId).HasColumnName("store_id");
+            
 
-            entity.HasOne(d => d.Store).WithMany(p => p.Staff)
-                .HasForeignKey(d => d.StoreId)
-                .HasConstraintName("staff_store_id_fkey");
+            
         });
 
         modelBuilder.Entity<Storage>(entity =>

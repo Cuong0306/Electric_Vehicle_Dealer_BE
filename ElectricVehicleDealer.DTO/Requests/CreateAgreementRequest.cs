@@ -15,6 +15,8 @@ namespace ElectricVehicleDealer.DTO.Requests
 
         public int OrderId { get; set; }
 
+        public int CustomerId { get; set; }
+
         public DateTime? AgreementDate { get; set; }
 
         public string? FileUrl { get; set; }

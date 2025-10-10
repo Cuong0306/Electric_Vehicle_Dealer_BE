@@ -22,6 +22,9 @@ public partial class Vehicle
     [Column("model_name")]
     public string ModelName { get; set; } = null!;
 
+    [Column("image_urls")]
+    public string[] ImageUrls { get; set; } = Array.Empty<string>();
+
     [MaxLength(50)]
     [Column("version")]
     public string? Version { get; set; }

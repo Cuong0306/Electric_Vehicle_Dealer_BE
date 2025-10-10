@@ -186,6 +186,10 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("phone");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("integer")
+                        .HasColumnName("role");
+
                     b.Property<int?>("StoreId")
                         .HasColumnType("integer")
                         .HasColumnName("store_id");
@@ -449,6 +453,7 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnName("full_name");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("password");
@@ -459,11 +464,16 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnName("phone");
 
                     b.Property<string>("Position")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("position");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer")
+                        .HasColumnName("role");
 
                     b.Property<int?>("StoreId")
-                        .HasColumnType("integer")
-                        .HasColumnName("store_id");
+                        .HasColumnType("integer");
 
                     b.HasKey("StaffId")
                         .HasName("staff_pkey");
@@ -634,6 +644,11 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("horsepower");
 
+                    b.Property<string[]>("ImageUrls")
+                        .IsRequired()
+                        .HasColumnType("text[]")
+                        .HasColumnName("image_urls");
+
                     b.Property<string>("ModelName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -803,12 +818,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
 
             modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.Staff", b =>
                 {
-                    b.HasOne("ElectricVehicleDealer.DAL.Entities.Store", "Store")
+                    b.HasOne("ElectricVehicleDealer.DAL.Entities.Store", null)
                         .WithMany("Staff")
-                        .HasForeignKey("StoreId")
-                        .HasConstraintName("staff_store_id_fkey");
-
-                    b.Navigation("Store");
+                        .HasForeignKey("StoreId");
                 });
 
             modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.Storage", b =>

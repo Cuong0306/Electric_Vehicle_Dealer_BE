@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using ElectricVehicleDealer.DAL.Enum;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -36,6 +37,9 @@ namespace ElectricVehicleDealer.DAL.Entities
 
         [Column("store_id")]
         public int? StoreId { get; set; }
+
+        [Column("role")]
+        public RoleDealerEnum Role { get; set; } = RoleDealerEnum.Dealer_staff;
 
         // 🔗 Navigations
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

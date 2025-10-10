@@ -68,14 +68,14 @@ namespace ElectricVehicleDealer.API.Controllers
 
         // POST: api/agreements
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateAgreementRequest dto, int customerId)
+        public async Task<IActionResult> Create([FromBody] CreateAgreementRequest dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var agreement = await _agreementsService.AddAgreementAsync(dto, customerId);
+                var agreement = await _agreementsService.AddAgreementAsync(dto);
                 return Ok(new
                 {
                     Message = "Agreement created successfully",

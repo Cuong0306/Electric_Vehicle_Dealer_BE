@@ -26,17 +26,18 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             _unitOfWork = unitOfWork;
             _repository = repository;
         }
-        public async Task<AgreementResponse> AddAgreementAsync(CreateAgreementRequest dto, int customerId)
+        public async Task<AgreementResponse> AddAgreementAsync(CreateAgreementRequest dto)
         {
-            var customer = await _repository.GetByIdAsync(customerId);
-
+            var customer = await _repository.GetByIdAsync(dto.CustomerId);
+               if(customer == null) throw new Exception("Customer" +
+                   " not found");
             var newAgreement = new Agreement
             {
-                CustomerId = customerId,
+                CustomerId = dto.CustomerId,
                 TermsAndConditions = dto.TermsAndConditions,
                 Status = dto.Status ?? AgreementEnum.Pending,
                 FileUrl = dto.FileUrl,
-                AgreementDate = DateTime.UtcNow
+                AgreementDate = dto.AgreementDate
             };
             await _unitOfWork.Agreements.CreateAsync(newAgreement);
             await _unitOfWork.SaveAsync();

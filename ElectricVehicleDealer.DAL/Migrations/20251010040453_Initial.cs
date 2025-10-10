@@ -88,6 +88,7 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     brand_id = table.Column<int>(type: "integer", nullable: false),
                     model_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    image_urls = table.Column<string[]>(type: "text[]", nullable: false),
                     version = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     year = table.Column<int>(type: "integer", nullable: true),
                     color = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -144,9 +145,11 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     full_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     phone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    password = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     address = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    store_id = table.Column<int>(type: "integer", nullable: true)
+                    store_id = table.Column<int>(type: "integer", nullable: true),
+                    role = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -167,16 +170,17 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     full_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     phone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    password = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    store_id = table.Column<int>(type: "integer", nullable: true),
-                    Position = table.Column<string>(type: "text", nullable: true)
+                    password = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    role = table.Column<int>(type: "integer", nullable: false),
+                    position = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    StoreId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("staff_pkey", x => x.staff_id);
                     table.ForeignKey(
-                        name: "staff_store_id_fkey",
-                        column: x => x.store_id,
+                        name: "FK_staff_store_StoreId",
+                        column: x => x.StoreId,
                         principalTable: "store",
                         principalColumn: "store_id");
                 });
@@ -434,9 +438,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                 column: "vehicle_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_staff_store_id",
+                name: "IX_staff_StoreId",
                 table: "staff",
-                column: "store_id");
+                column: "StoreId");
 
             migrationBuilder.CreateIndex(
                 name: "staff_email_key",

@@ -1,21 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using ElectricVehicleDealer.DAL.Enum;
 
-namespace ElectricVehicleDealer.DAL.Entities;
-
-public partial class Staff
+namespace ElectricVehicleDealer.DAL.Entities
 {
-    public int StaffId { get; set; }
+    [Table("staff")]
+    public partial class Staff
+    {
+        [Key]
+        [Column("staff_id")]
+        public int StaffId { get; set; }
 
-    public string FullName { get; set; } = null!;
+        [Required]
+        [MaxLength(100)]
+        [Column("full_name")]
+        public string FullName { get; set; } = null!;
 
-    public string? Phone { get; set; }
+        [MaxLength(20)]
+        [Column("phone")]
+        public string? Phone { get; set; }
 
-    public string? Email { get; set; }
+        [MaxLength(100)]
+        [Column("email")]
+        public string? Email { get; set; }
 
-    public string? Password { get; set; }
+        // ✅ non-nullable để phục vụ đăng nhập
+        [Required]
+        [MaxLength(200)]
+        [Column("password")]
+        public string Password { get; set; } = null!;
 
-    public int? StoreId { get; set; }
-    public string? Position { get; set; }
-    public virtual Store? Store { get; set; }
+        // Lưu enum dưới dạng int (mặc định EF). Nếu muốn string, cấu hình converter ở OnModelCreating.
+        [Column("role")]
+        public RoleStaffEnum Role { get; set; } = RoleStaffEnum.EVM_Staff;
+
+
+        [MaxLength(100)]
+        [Column("position")]
+        public string? Position { get; set; }
+
+    }
 }
