@@ -1,3 +1,4 @@
+using ElectricVehicleDealer.DAL.Enum;
 using System;
 
 namespace ElectricVehicleDealer.DTO.Requests
@@ -5,6 +6,9 @@ namespace ElectricVehicleDealer.DTO.Requests
     public class CreateDealerRequest
     {
         public string FullName { get; set; }
+
+        public RoleDealerEnum? Role
+        { get; set; }
 
         public string Password{ get; set; }
         public string? Phone { get; set; }
