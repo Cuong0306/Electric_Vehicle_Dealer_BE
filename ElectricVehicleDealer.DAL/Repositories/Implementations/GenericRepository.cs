@@ -20,7 +20,8 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             _context = context;
             _dbSet = context.Set<T>();
         }
-
+        public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken ct = default)
+          => _dbSet.AnyAsync(predicate, ct);
         public async Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
