@@ -27,11 +27,9 @@ public partial class Customer
     [Column("create_date")]
     public DateTime? CreateDate { get; set; }
 
-    [Column("License_Up")]
-    public string? LicenseUp { get; set; }
+    [Column("license_up")] public string? LicenseUp { get; set; }
+    [Column("license_down")] public string? LicenseDown { get; set; }
 
-    [Column("License_Down")]
-    public string? LicenseDown { get; set; }
 
     public virtual ICollection<Agreement> Agreements { get; set; } = new List<Agreement>();
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();

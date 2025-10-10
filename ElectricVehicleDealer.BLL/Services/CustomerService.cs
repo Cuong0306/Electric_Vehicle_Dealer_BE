@@ -19,8 +19,10 @@ namespace ElectricVehicleDealer.BLL.Services
             {
                 return await _repository.CreateAsync(customer);
             }
-            catch (Exception ex) { }
-            return 0;
+            catch (Exception ex) {
+                Console.WriteLine(ex);
+                throw; 
+            }
         }
 
         public async Task<bool> DeleteAsync(int id)

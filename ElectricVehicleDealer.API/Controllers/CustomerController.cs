@@ -33,7 +33,7 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CreateCustomerDto customer)
+        public async Task<ActionResult> Create([FromBody] CreateCustomerDto customer)
         {
             var result = await _service.CreateAsync(customer);
             if (result > 0) return Ok("Created successfully");

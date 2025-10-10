@@ -27,6 +27,8 @@ namespace ElectricVehicleDealer.DAL.Repositories
 
         public async Task<int> CreateAsync(CreateCustomerDto dto)
         {
+            if (dto is null) throw new ArgumentNullException(nameof(dto), "CreateCustomerDto is null");
+            if (string.IsNullOrWhiteSpace(dto.FullName)) throw new ArgumentException("FullName is required");
             var entity = new Customer
             {
                 FullName = dto.FullName,
