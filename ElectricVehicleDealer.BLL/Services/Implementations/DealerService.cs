@@ -1,4 +1,4 @@
-using ElectricVehicleDealer.BLL.Services.Interfaces;
+﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.UnitOfWork;
 using ElectricVehicleDealer.DTO.Requests;
@@ -28,17 +28,31 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
 
         public async Task<DealerResponse> CreateAsync(CreateDealerRequest dto)
         {
-            var entity = new Dealer()
+            if (string.IsNullOrWhiteSpace(dto.Password))
+                throw new ArgumentException("Password is required");
+
+            if (!string.IsNullOrWhiteSpace(dto.Email))
             {
-                FullName = dto.FullName,
+                var exists = await _unitOfWork.Repository<Dealer>().AnyAsync(d => d.Email == dto.Email);
+                if (exists) throw new InvalidOperationException("Email already exists");
+            }
+
+            var hash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+
+            var entity = new Dealer
+            {
+                FullName = dto.FullName.Trim(),
                 Phone = dto.Phone,
                 Email = dto.Email,
                 Address = dto.Address,
                 StoreId = dto.StoreId,
+                Password = hash
             };
+
             await _unitOfWork.Repository<Dealer>().AddAsync(entity);
             await _unitOfWork.SaveAsync();
-            return MapToResponse(entity);
+
+            return MapToResponse(entity); 
         }
 
         public async Task<DealerResponse> UpdateAsync(int id, UpdateDealerRequest dto)
