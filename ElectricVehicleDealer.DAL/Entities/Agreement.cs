@@ -1,20 +1,32 @@
-﻿using ElectricVehicleDealer.DAL.Enum;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using ElectricVehicleDealer.DAL.Enum;
 
-namespace ElectricVehicleDealer.DAL.Entities;
-
-public partial class Agreement
+namespace ElectricVehicleDealer.DAL.Entities
 {
-    public int AgreementId { get; set; }
+    [Table("agreements")] // 👈 tên bảng trong DB
+    public partial class Agreement
+    {
+        [Column("agreement_id")]
+        public int AgreementId { get; set; }
 
-    public int CustomerId { get; set; }
+        [Column("customer_id")]
+        public int CustomerId { get; set; }
 
-    public DateTime? AgreementDate { get; set; }
+        [Column("agreement_date")]
+        public DateTime? AgreementDate { get; set; }
 
-    public string? TermsAndConditions { get; set; }
+        [Column("terms_and_conditions")]
+        public string? TermsAndConditions { get; set; }
 
-    public AgreementEnum Status { get; set; } = AgreementEnum.Pending;
+        [Column("status")]
+        public AgreementEnum Status { get; set; } = AgreementEnum.Pending;
 
-    public virtual Customer Customer { get; set; } = null!;
+        [Column("file_url")]
+        public string? FileUrl { get; set; }   // 👈 sửa lại chính tả từ “FieUrl” thành “FileUrl”
+
+        // 🔗 navigation
+        [ForeignKey(nameof(CustomerId))]
+        public virtual Customer Customer { get; set; } = null!;
+    }
 }

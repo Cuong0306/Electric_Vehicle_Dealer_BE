@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ElectricVehicleDealer.DAL.Enum;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace ElectricVehicleDealer.DTO.Responses
 
         public string? TermsAndConditions { get; set; }
 
-        public string? Status { get; set; }
+        public AgreementEnum? Status { get; set; }
         public string? CustomerName { get; set; }
     }
 }

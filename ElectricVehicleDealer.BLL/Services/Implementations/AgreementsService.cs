@@ -2,6 +2,7 @@
 using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL;
 using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.Repositories;
 using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DAL.Repositories.Interfaces;
@@ -33,7 +34,9 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             {
                 CustomerId = customerId,
                 TermsAndConditions = dto.TermsAndConditions,
-                //Status = dto.Status,
+                Status = dto.Status ?? AgreementEnum.Pending,
+                FileUrl = dto.FileUrl,
+                AgreementDate = DateTime.UtcNow
             };
             await _unitOfWork.Agreements.CreateAsync(newAgreement);
             await _unitOfWork.SaveAsync();
@@ -43,8 +46,8 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 CustomerId = newAgreement.CustomerId,
                 CustomerName = newAgreement.Customer.FullName,
                 TermsAndConditions = newAgreement.TermsAndConditions,
-                //Status = newAgreement.Status,
-                AgreementDate = DateTime.UtcNow
+                Status = newAgreement.Status,
+                AgreementDate = newAgreement.AgreementDate
             };
         }
 
