@@ -1,3 +1,4 @@
+﻿using CloudinaryDotNet;
 using ElectricVehicleDealer.BLL.Services;
 using ElectricVehicleDealer.BLL.Services.Implementations;
 using ElectricVehicleDealer.BLL.Services.Interfaces;
@@ -11,28 +12,33 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// --- Controllers (GỘP một lần) ---
+builder.Services.AddControllers()
+    .AddJsonOptions(o =>
+    {
+        // enum -> string (Pending, Active, ...)
+        o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        // converter DateTime của bạn
+        o.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+        // Nếu có model tham chiếu vòng:
+        // o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// --- DbContext ---
+builder.Services.AddDbContext<AppDbContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// --- UnitOfWork/Repositories/Services ---
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddScoped<IDealerService, DealerService>();
-builder.Services.AddScoped<IVehicleService, VehicleService>();
-builder.Services.AddScoped<IStorageService, StorageService>();
-builder.Services.AddScoped<IFeedbackService, FeedbackService>();
-builder.Services.AddScoped<ITestAppointmentService, TestAppointmentService>();
-builder.Services.AddScoped<IQuoteService, QuoteService>();
-builder.Services.AddScoped<IStaffService, StaffService>();
-
-// ??ng k Repository & Service
+// Services (mỗi service đăng ký 1 lần)
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IDealerService, DealerService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
@@ -45,7 +51,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IAgreementsService, AgreementsService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
-// N?u c repository ring
+
+// Repositories (nếu dùng interface thì đăng ký qua interface)
 builder.Services.AddScoped<CustomerRepository>();
 builder.Services.AddScoped<BrandRepository>();
 builder.Services.AddScoped<OrderRepository>();
@@ -53,43 +60,31 @@ builder.Services.AddScoped<PaymentRepository>();
 builder.Services.AddScoped<PromotionRepository>();
 builder.Services.AddScoped<IAgreementsRepository, AgreementsRepository>();
 builder.Services.AddScoped<StoreRepository>();
-// Frontend Connection
 
+// --- Cloudinary ---
+var cloud = builder.Configuration.GetSection("Cloudinary");
+builder.Services.AddSingleton(new Cloudinary(new Account(
+    cloud["CloudName"], cloud["ApiKey"], cloud["ApiSecret"]
+)));
+// QUAN TRỌNG: đăng ký service interface để controller resolve được
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+
+// --- CORS ---
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:5173") 
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowFrontend", p =>
+        p.WithOrigins("http://localhost:5173")
+         .AllowAnyHeader()
+         .AllowAnyMethod());
 });
 
-//enum converter
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(
-            new System.Text.Json.Serialization.JsonStringEnumConverter());
-    });
-
-
-//Converter DateTime
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
-    });
-
-
-//JWT setting
-var key = builder.Configuration["Jwt:Key"];
-
+// --- Auth/JWT ---
+var key = builder.Configuration["Jwt:Key"]
+          ?? throw new InvalidOperationException("Missing Jwt:Key in configuration");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    .AddJwtBearer(o =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        o.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
@@ -100,23 +95,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
         };
     });
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();      // giúp thấy lỗi thật khi mở /swagger/v1/swagger.json
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ElectricVehicleDealer.API v1");
+    });
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowFrontend");
-
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
