@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ElectricVehicleDealer.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251007012946_addEnum")]
-    partial class addEnum
+    [Migration("20251010030114_AddFieldPassword")]
+    partial class AddFieldPassword
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,6 +43,10 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer")
                         .HasColumnName("customer_id");
+
+                    b.Property<string>("FileUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("file_url");
 
                     b.Property<int>("Status")
                         .HasMaxLength(50)
@@ -129,11 +133,11 @@ namespace ElectricVehicleDealer.DAL.Migrations
 
                     b.Property<string>("LicenseDown")
                         .HasColumnType("text")
-                        .HasColumnName("License_Down");
+                        .HasColumnName("license_down");
 
                     b.Property<string>("LicenseUp")
                         .HasColumnType("text")
-                        .HasColumnName("License_Up");
+                        .HasColumnName("license_up");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
@@ -173,6 +177,12 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("full_name");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("password");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
@@ -257,6 +267,10 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.Property<int>("DealerId")
                         .HasColumnType("integer")
                         .HasColumnName("dealer_id");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<DateTime?>("OrderDate")
                         .ValueGeneratedOnAdd()

@@ -41,6 +41,10 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("customer_id");
 
+                    b.Property<string>("FileUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("file_url");
+
                     b.Property<int>("Status")
                         .HasMaxLength(50)
                         .HasColumnType("integer")
@@ -126,11 +130,11 @@ namespace ElectricVehicleDealer.DAL.Migrations
 
                     b.Property<string>("LicenseDown")
                         .HasColumnType("text")
-                        .HasColumnName("License_Down");
+                        .HasColumnName("license_down");
 
                     b.Property<string>("LicenseUp")
                         .HasColumnType("text")
-                        .HasColumnName("License_Up");
+                        .HasColumnName("license_up");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
@@ -170,6 +174,12 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("full_name");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("password");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
@@ -254,6 +264,10 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.Property<int>("DealerId")
                         .HasColumnType("integer")
                         .HasColumnName("dealer_id");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<DateTime?>("OrderDate")
                         .ValueGeneratedOnAdd()

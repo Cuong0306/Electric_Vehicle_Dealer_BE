@@ -14,6 +14,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression);
         Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> expression);
         Task AddAsync(T entity);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken ct = default);
         Task AddRangeAsync(IEnumerable<T> entities);
         void Update(T entity);
         void Remove(T entity);

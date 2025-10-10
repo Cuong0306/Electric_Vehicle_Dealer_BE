@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ElectricVehicleDealer.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251005060849_AddVehicleExtraFields_v3")]
-    partial class AddVehicleExtraFields_v3
+    [Migration("20251010025721_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,9 +44,13 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("customer_id");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("FileUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("file_url");
+
+                    b.Property<int>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("integer")
                         .HasColumnName("status");
 
                     b.Property<string>("TermsAndConditions")
@@ -126,6 +130,14 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("full_name");
+
+                    b.Property<string>("LicenseDown")
+                        .HasColumnType("text")
+                        .HasColumnName("license_down");
+
+                    b.Property<string>("LicenseUp")
+                        .HasColumnType("text")
+                        .HasColumnName("license_up");
 
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
@@ -250,6 +262,10 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("dealer_id");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
                     b.Property<DateTime?>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
@@ -260,9 +276,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("quantity");
 
-                    b.Property<string>("Status")
+                    b.Property<int>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("integer")
                         .HasColumnName("status");
 
                     b.Property<decimal?>("TotalPrice")
@@ -313,9 +329,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnName("payment_date")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<string>("Status")
+                    b.Property<int>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("integer")
                         .HasColumnName("status");
 
                     b.HasKey("PaymentId")
@@ -388,9 +404,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnName("quote_date")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<string>("Status")
+                    b.Property<int>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("integer")
                         .HasColumnName("status");
 
                     b.Property<int>("VehicleId")
@@ -438,6 +454,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("phone");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("text");
 
                     b.Property<int?>("StoreId")
                         .HasColumnType("integer")
@@ -550,9 +569,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("dealer_id");
 
-                    b.Property<string>("Status")
+                    b.Property<int>("Status")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("integer")
                         .HasColumnName("status");
 
                     b.Property<int>("VehicleId")
@@ -581,7 +600,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VehicleId"));
 
                     b.Property<int?>("Airbags")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("airbags");
 
                     b.Property<string>("BatteryCapacity")
                         .HasMaxLength(50)
@@ -604,10 +624,12 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("DailyDrivingLimit")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("daily_driving_limit");
 
                     b.Property<int?>("Horsepower")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("horsepower");
 
                     b.Property<string>("ModelName")
                         .IsRequired()
@@ -626,16 +648,20 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnName("range_per_charge");
 
                     b.Property<int?>("SeatingCapacity")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("seating_capacity");
 
                     b.Property<string>("Transmission")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("transmission");
 
                     b.Property<int?>("TrunkCapacity")
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasColumnName("trunk_capacity");
 
                     b.Property<string>("VehicleType")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("vehicle_type");
 
                     b.Property<string>("Version")
                         .HasMaxLength(50)

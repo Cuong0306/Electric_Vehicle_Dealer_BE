@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ElectricVehicleDealer.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class AddVehicleExtraFields_v3 : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,7 +38,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     phone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     address = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    create_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP")
+                    create_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    license_up = table.Column<string>(type: "text", nullable: true),
+                    license_down = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -121,7 +123,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     customer_id = table.Column<int>(type: "integer", nullable: false),
                     agreement_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
                     terms_and_conditions = table.Column<string>(type: "text", nullable: true),
-                    status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                    status = table.Column<int>(type: "integer", maxLength: 50, nullable: false),
+                    file_url = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -165,7 +168,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     phone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     password = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    store_id = table.Column<int>(type: "integer", nullable: true)
+                    store_id = table.Column<int>(type: "integer", nullable: true),
+                    Position = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -214,7 +218,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     order_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
                     quantity = table.Column<int>(type: "integer", nullable: true),
                     total_price = table.Column<decimal>(type: "numeric(15,2)", precision: 15, scale: 2, nullable: true),
-                    status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                    status = table.Column<int>(type: "integer", maxLength: 50, nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -241,7 +246,7 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     vehicle_id = table.Column<int>(type: "integer", nullable: false),
                     dealer_id = table.Column<int>(type: "integer", nullable: false),
                     quote_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                    status = table.Column<int>(type: "integer", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -273,7 +278,7 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     vehicle_id = table.Column<int>(type: "integer", nullable: false),
                     dealer_id = table.Column<int>(type: "integer", nullable: false),
                     appointment_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                    status = table.Column<int>(type: "integer", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -339,7 +344,7 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     payment_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
                     method = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     amount = table.Column<decimal>(type: "numeric(15,2)", precision: 15, scale: 2, nullable: true),
-                    status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true)
+                    status = table.Column<int>(type: "integer", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
