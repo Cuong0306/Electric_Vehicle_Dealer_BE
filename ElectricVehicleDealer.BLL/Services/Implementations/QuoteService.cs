@@ -1,5 +1,6 @@
 using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.UnitOfWork;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
@@ -34,7 +35,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 VehicleId = dto.VehicleId,
                 DealerId = dto.DealerId,
                 QuoteDate = dto.QuoteDate,
-                //Status = dto.Status,
+                Status = dto.Status ?? QuoteEnum.Draft,
             };
             await _unitOfWork.Repository<Quote>().AddAsync(entity);
             await _unitOfWork.SaveAsync();
@@ -69,7 +70,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             VehicleId = x.VehicleId,
             DealerId = x.DealerId,
             QuoteDate = x.QuoteDate,
-            //Status = x.Status,
+            Status = x.Status,
         };
     }
 }
