@@ -1,3 +1,4 @@
+using ElectricVehicleDealer.DAL.Enum;
 using System;
 
 namespace ElectricVehicleDealer.DTO.Requests
@@ -8,6 +9,6 @@ namespace ElectricVehicleDealer.DTO.Requests
         public int VehicleId { get; set; }
         public int DealerId { get; set; }
         public DateTime AppointmentDate { get; set; }
-        public Enum? Status { get; set; }
+        public TestAppointmentEnum? Status { get; set; }
     }
 }

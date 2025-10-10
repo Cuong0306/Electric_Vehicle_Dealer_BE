@@ -1,30 +1,46 @@
-﻿using ElectricVehicleDealer.DAL.Enum;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using ElectricVehicleDealer.DAL.Enum;
 
-namespace ElectricVehicleDealer.DAL.Entities;
-
-public partial class Order
+namespace ElectricVehicleDealer.DAL.Entities
 {
-    public int OrderId { get; set; }
+    [Table("orders")] // 👈 Tên bảng trong DB
+    public partial class Order
+    {
+        [Column("order_id")]
+        public int OrderId { get; set; }
 
-    public int CustomerId { get; set; }
+        [Column("customer_id")]
+        public int CustomerId { get; set; }
 
-    public int DealerId { get; set; }
+        [Column("dealer_id")]
+        public int DealerId { get; set; }
 
-    public DateTime? OrderDate { get; set; }
+        [Column("order_date")]
+        public DateTime? OrderDate { get; set; }
 
-    public int? Quantity { get; set; }
+        [Column("quantity")]
+        public int? Quantity { get; set; }
 
-    public decimal? TotalPrice { get; set; }
+        [Column("total_price")]
+        public decimal? TotalPrice { get; set; }
 
-    public OrderEnum Status { get; set; }
+        [Column("status")]
+        public OrderEnum Status { get; set; }
 
-    public virtual Customer Customer { get; set; } = null!;
+        [Column("note")]
+        public string? Note { get; set; }
 
-    public virtual Dealer Dealer { get; set; } = null!;
+        // 🔗 Navigation properties
+        [ForeignKey(nameof(CustomerId))]
+        public virtual Customer Customer { get; set; } = null!;
 
-    public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+        [ForeignKey(nameof(DealerId))]
+        public virtual Dealer Dealer { get; set; } = null!;
 
-    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+
+        public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+    }
 }

@@ -1,5 +1,6 @@
 using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.UnitOfWork;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
@@ -34,7 +35,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 VehicleId = dto.VehicleId,
                 DealerId = dto.DealerId,
                 AppointmentDate = dto.AppointmentDate,
-                //Status = dto.Status,
+                Status = dto.Status ?? TestAppointmentEnum.Draft,
             };
             await _unitOfWork.Repository<TestAppointment>().AddAsync(entity);
             await _unitOfWork.SaveAsync();
@@ -69,7 +70,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             VehicleId = x.VehicleId,
             DealerId = x.DealerId,
             AppointmentDate = x.AppointmentDate,
-            //Status = x.Status,
+            Status = x.Status,
         };
     }
 }

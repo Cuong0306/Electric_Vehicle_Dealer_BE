@@ -1,4 +1,5 @@
 ﻿using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +36,8 @@ namespace ElectricVehicleDealer.DAL.Repositories
                 DealerId = dto.DealerId,
                 Quantity = dto.Quantity,
                 TotalPrice = dto.TotalPrice,
-                //Status = dto.Status,
+                Status = dto.Status ?? OrderEnum.Pending,
+                Note = dto.Note,
                 OrderDate = DateTime.Now
             };
 
