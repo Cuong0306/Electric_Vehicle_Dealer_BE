@@ -6,7 +6,6 @@ using ElectricVehicleDealer.DTO.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ElectricVehicleDealer.BLL.Services.Implementations
@@ -14,10 +13,12 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
     public class PromotionService : IPromotionService
     {
         private readonly IUnitOfWork _unitOfWork;
+
         public PromotionService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
+
         public async Task<PromotionResponse> CreatePromotionAsync(CreatePromotionRequest dto)
         {
             var newPromotion = new Promotion
@@ -28,8 +29,10 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 StartDate = dto.StartDate,
                 EndDate = dto.EndDate
             };
+
             await _unitOfWork.Repository<Promotion>().AddAsync(newPromotion);
             await _unitOfWork.SaveAsync();
+
             return new PromotionResponse
             {
                 PromotionId = newPromotion.PromotionId,
@@ -45,7 +48,8 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
         {
             var promotion = await _unitOfWork.Repository<Promotion>().GetByIdAsync(id);
             if (promotion == null)
-                throw new Exception("Promotion not found");
+                return false; // Không ném exception nữa
+
             _unitOfWork.Repository<Promotion>().Remove(promotion);
             await _unitOfWork.SaveAsync();
             return true;
@@ -54,8 +58,11 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
         public async Task<IEnumerable<PromotionResponse>> GetAllPromotionsAsync()
         {
             var promotions = await _unitOfWork.Repository<Promotion>().GetAllAsync();
+
+            // Không ném Exception nếu không có dữ liệu
             if (promotions == null || !promotions.Any())
-                throw new Exception("No promotions found");
+                return new List<PromotionResponse>(); // trả về list rỗng => 200 OK, body: []
+
             return promotions.Select(p => new PromotionResponse
             {
                 PromotionId = p.PromotionId,
@@ -67,11 +74,12 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             }).ToList();
         }
 
-        public async Task<PromotionResponse> GetPromotionByIdAsync(int id)
+        public async Task<PromotionResponse?> GetPromotionByIdAsync(int id)
         {
             var promotion = await _unitOfWork.Repository<Promotion>().GetByIdAsync(id);
             if (promotion == null)
-                throw new Exception("Promotion not found");
+                return null; // Không throw Exception => controller trả 404
+
             return new PromotionResponse
             {
                 PromotionId = promotion.PromotionId,
@@ -83,18 +91,18 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             };
         }
 
-        public async Task<PromotionResponse> UpdatePromotionAsync(int id, UpdatePromotionRequest dto)
+        public async Task<PromotionResponse?> UpdatePromotionAsync(int id, UpdatePromotionRequest dto)
         {
-           var promotion = await _unitOfWork.Repository<Promotion>().GetByIdAsync(id);
+            var promotion = await _unitOfWork.Repository<Promotion>().GetByIdAsync(id);
             if (promotion == null)
-                throw new Exception("Promotion not found");
+                return null;
 
             if (!string.IsNullOrEmpty(dto.Title))
                 promotion.Title = dto.Title;
-            
+
             if (!string.IsNullOrEmpty(dto.Description))
                 promotion.Description = dto.Description;
-            
+
             if (dto.DiscountPercent.HasValue)
                 promotion.DiscountPercent = dto.DiscountPercent.Value;
 
@@ -106,6 +114,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
 
             _unitOfWork.Repository<Promotion>().Update(promotion);
             await _unitOfWork.SaveAsync();
+
             return new PromotionResponse
             {
                 PromotionId = promotion.PromotionId,
