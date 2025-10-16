@@ -46,6 +46,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 Airbags = dto.Airbags,
                 Transmission = dto.Transmission,
                 SeatingCapacity = dto.SeatingCapacity,
+                ImageUrls = dto.ImageUrls,
                 CreateDate = dto.CreateDate,
             };
             await _unitOfWork.Repository<Vehicle>().AddAsync(entity);
@@ -98,6 +99,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             Airbags = x.Airbags,
             Transmission = x.Transmission,
             SeatingCapacity = x.SeatingCapacity,
+            ImageUrls = x.ImageUrls,
             CreateDate = x.CreateDate,
         };
     }

@@ -11,6 +11,7 @@ namespace ElectricVehicleDealer.DTO.Responses
         public int? Year { get; set; }
         public string? Color { get; set; }
         public decimal? Price { get; set; }
+        public string[] ImageUrls { get; set; } = Array.Empty<string>();
         public string? BatteryCapacity { get; set; }
         public string? RangePerCharge { get; set; }
         public string? WarrantyPeriod { get; set; }
