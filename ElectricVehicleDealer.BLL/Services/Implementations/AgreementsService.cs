@@ -76,7 +76,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 CustomerId = agreement.CustomerId,
                 CustomerName = agreement.Customer.FullName,
                 TermsAndConditions = agreement.TermsAndConditions,
-                //Status = agreement.Status,
+                Status = agreement.Status,
                 AgreementDate = agreement.AgreementDate
             };
         }
@@ -97,7 +97,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 CustomerId = agreement.CustomerId,
                 CustomerName = agreement.Customer.FullName,
                 TermsAndConditions = agreement.TermsAndConditions,
-                //Status = agreement.Status,
+                Status = agreement.Status,
                 AgreementDate = agreement.AgreementDate
             }).ToList();
         }
