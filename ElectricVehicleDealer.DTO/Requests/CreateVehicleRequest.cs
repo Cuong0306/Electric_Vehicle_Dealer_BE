@@ -13,7 +13,7 @@ namespace ElectricVehicleDealer.DTO.Requests
         public string? BatteryCapacity { get; set; }
         public string? RangePerCharge { get; set; }
         public string? WarrantyPeriod { get; set; }
-
+        public string[] ImageUrls { get; set; } = Array.Empty<string>();
         public int? SeatingCapacity { get; set; }           // 4 seats
         public string? Transmission { get; set; }          // Automatic
         public int? Airbags { get; set; }                  // 1 airbag
