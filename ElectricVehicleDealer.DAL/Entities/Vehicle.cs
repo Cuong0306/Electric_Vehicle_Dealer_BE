@@ -74,6 +74,71 @@ public partial class Vehicle
     [Column("daily_driving_limit")]
     public int? DailyDrivingLimit { get; set; }         // 300 km/day
 
+    // --- Nội thất ---
+    [MaxLength(100)]
+    [Column("screen")]
+    public string? Screen { get; set; }                 // màn hình (kích thước, OS, CarPlay/AA...)
+
+    [MaxLength(100)]
+    [Column("seat_material")]
+    public string? SeatMaterial { get; set; }           // chất liệu ghế (da/nỉ/synthetic...)
+
+    [MaxLength(100)]
+    [Column("interior_material")]
+    public string? InteriorMaterial { get; set; }       // chất liệu nội thất (nhựa mềm, ốp gỗ...)
+
+    [MaxLength(100)]
+    [Column("air_conditioning")]
+    public string? AirConditioning { get; set; }        // Điều hòa (1 vùng/2 vùng, tự động...)
+
+    [MaxLength(100)]
+    [Column("speaker_system")]
+    public string? SpeakerSystem { get; set; }          // Loa (số loa, thương hiệu)
+
+    [MaxLength(100)]
+    [Column("in_vehicle_cabinet")]
+    public string? InVehicleCabinet { get; set; }       // Tủ trên xe (có/loại/kiểu bố trí)
+
+    // --- Ngoại thất ---
+    [Column("length_mm")]
+    public int? LengthMm { get; set; }                  // dài (mm)
+
+    [Column("width_mm")]
+    public int? WidthMm { get; set; }                   // rộng (mm)
+
+    [Column("height_mm")]
+    public int? HeightMm { get; set; }                  // cao (mm)
+
+    [MaxLength(100)]
+    [Column("wheels")]
+    public string? Wheels { get; set; }                 // bánh xe (mâm, kích thước lốp)
+
+    [MaxLength(100)]
+    [Column("headlights")]
+    public string? Headlights { get; set; }             // đèn trước (Halogen/LED/Matrix...)
+
+    [MaxLength(100)]
+    [Column("taillights")]
+    public string? Taillights { get; set; }             // đèn sau (LED, dạng đồ họa...)
+
+    [MaxLength(100)]
+    [Column("frame_chassis")]
+    public string? FrameChassis { get; set; }           // khung xe (monocoque, body-on-frame...)
+
+    [Column("door_count")]
+    public int? DoorCount { get; set; }                 // số lượng cửa
+
+    [MaxLength(100)]
+    [Column("glass_windows")]
+    public string? GlassWindows { get; set; }           // kính xe (cách nhiệt, tối màu...)
+
+    [MaxLength(100)]
+    [Column("mirrors")]
+    public string? Mirrors { get; set; }                // gương (gập điện, sấy, cảnh báo điểm mù)
+
+    [MaxLength(100)]
+    [Column("cameras")]
+    public string? Cameras { get; set; }
     [Column("create_date")]
     public DateTime? CreateDate { get; set; }
 

@@ -22,6 +22,23 @@ namespace ElectricVehicleDealer.DTO.Responses
         public string? VehicleType { get; set; }           // Minicar
         public int? TrunkCapacity { get; set; }            // 285 L
         public int? DailyDrivingLimit { get; set; }        // 300 km/day
+        public string? Screen { get; set; }
+        public string? SeatMaterial { get; set; }
+        public string? InteriorMaterial { get; set; }
+        public string? AirConditioning { get; set; }
+        public string? SpeakerSystem { get; set; }
+        public string? InVehicleCabinet { get; set; }
+        public int? LengthMm { get; set; }
+        public int? WidthMm { get; set; }
+        public int? HeightMm { get; set; }
+        public string? Wheels { get; set; }
+        public string? Headlights { get; set; }
+        public string? Taillights { get; set; }
+        public string? FrameChassis { get; set; }
+        public int? DoorCount { get; set; }
+        public string? GlassWindows { get; set; }
+        public string? Mirrors { get; set; }
+        public string? Cameras { get; set; }
         public DateTime? CreateDate { get; set; }
     }
 }
