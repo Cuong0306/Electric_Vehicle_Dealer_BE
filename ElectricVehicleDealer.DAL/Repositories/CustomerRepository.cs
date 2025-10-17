@@ -35,7 +35,10 @@ namespace ElectricVehicleDealer.DAL.Repositories
                 Phone = dto.Phone,
                 Email = dto.Email,
                 Address = dto.Address,
+                LicenseUp = dto.LicenseUp,
+                LicenseDown = dto.LicenseDown,
                 CreateDate = DateTime.Now
+               
             };
 
             await _context.Customers.AddAsync(entity);
