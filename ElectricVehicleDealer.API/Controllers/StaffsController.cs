@@ -26,5 +26,45 @@ namespace ElectricVehicleDealer.API.Controllers
 
         [HttpDelete("{{id}}")]
         public async Task<IActionResult> Delete(int id) => Ok(await _service.DeleteAsync(id));
+
+        [HttpDelete("hard/{{id}}")]
+        public async Task<IActionResult> HardDeleteUser(int staffId)
+        {
+            try
+            {
+                if (staffId <= 0)
+                    return BadRequest("Invalid staff ID");
+                var success = await _service.HardDeleteUserAsync(staffId);
+                return success ? Ok("Staff deleted successfully") : NotFound("Staff not found or already deleted");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpDelete("soft/{{id}}")]
+        public async Task<IActionResult> SoftDeleteUser(int id)
+        {
+
+            try
+            {
+                if (id <= 0)
+                    return BadRequest("Invalid staff ID");
+
+                var success = await _service.SoftDeleteUserAsync(id);
+                return success ? Ok("Staff deleted successfully") : NotFound("Staff not found or already deleted");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        [HttpGet("activeStaff")]
+        public async Task<IActionResult> GetAllActiveStaffs()
+        {
+            var staffs = await _service.GetAllActiveStaffAsync();
+            return Ok(staffs);
+        }
     }
 }

@@ -12,5 +12,8 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<StaffResponse> CreateAsync(CreateStaffRequest dto);
         Task<StaffResponse> UpdateAsync(int id, UpdateStaffRequest dto);
         Task<bool> DeleteAsync(int id);
+        Task<bool> SoftDeleteUserAsync(int id);
+        Task<bool> HardDeleteUserAsync(int id);
+        Task<List<StaffResponse>> GetAllActiveStaffAsync();
     }
 }
