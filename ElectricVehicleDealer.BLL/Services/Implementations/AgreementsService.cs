@@ -3,7 +3,6 @@ using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Enum;
-using ElectricVehicleDealer.DAL.Repositories;
 using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DAL.Repositories.Interfaces;
 using ElectricVehicleDealer.DAL.UnitOfWork;
@@ -15,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.BLL.Services.Implementations
+namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 {
     public class AgreementsService : IAgreementsService
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
+namespace ElectricVehicleDealer.DAL.Services.Interfaces
 {
     public interface IAuthService
     {
