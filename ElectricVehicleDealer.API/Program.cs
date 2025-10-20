@@ -51,6 +51,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IAgreementsService, AgreementsService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<ITestAppointmentService, TestAppointmentService>();
 
 // Repositories (nếu dùng interface thì đăng ký qua interface)
 builder.Services.AddScoped<CustomerRepository>();
