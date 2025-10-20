@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.BLL.Services
+namespace ElectricVehicleDealer.BLL.Services.Interfaces
 {
     public interface ICustomerService
     {
