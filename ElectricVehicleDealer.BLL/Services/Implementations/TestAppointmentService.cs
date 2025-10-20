@@ -49,7 +49,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             entity.VehicleId = dto.VehicleId;
             entity.DealerId = dto.DealerId;
             entity.AppointmentDate = dto.AppointmentDate;
-            //entity.Status = dto.Status;
+            entity.Status = dto.Status ?? TestAppointmentEnum.Draft;
             _unitOfWork.Repository<TestAppointment>().Update(entity);
             await _unitOfWork.SaveAsync();
             return MapToResponse(entity);
