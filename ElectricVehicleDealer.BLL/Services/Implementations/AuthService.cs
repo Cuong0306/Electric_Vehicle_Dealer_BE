@@ -1,5 +1,5 @@
 ﻿using ElectricVehicleDealer.DAL.Entities;
-using ElectricVehicleDealer.DAL.Repositories.Interfaces;
+using ElectricVehicleDealer.DAL.Services.Interfaces;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

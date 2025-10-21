@@ -2,10 +2,11 @@
 using ElectricVehicleDealer.BLL.Services;
 using ElectricVehicleDealer.BLL.Services.Implementations;
 using ElectricVehicleDealer.BLL.Services.Interfaces;
+using ElectricVehicleDealer.BLL.Services.Interfaces.Implementations;
 using ElectricVehicleDealer.DAL.Entities;
-using ElectricVehicleDealer.DAL.Repositories;
 using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DAL.Repositories.Interfaces;
+using ElectricVehicleDealer.DAL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.UnitOfWork;
 using ElectricVehicleDealer.DTO.Config;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -65,6 +66,7 @@ builder.Services.AddScoped<PaymentRepository>();
 builder.Services.AddScoped<PromotionRepository>();
 builder.Services.AddScoped<IAgreementsRepository, AgreementsRepository>();
 builder.Services.AddScoped<StoreRepository>();
+builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 
 // --- Cloudinary ---
 var cloud = builder.Configuration.GetSection("Cloudinary");

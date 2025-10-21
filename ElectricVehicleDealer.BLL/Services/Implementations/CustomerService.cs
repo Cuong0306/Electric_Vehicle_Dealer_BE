@@ -1,5 +1,6 @@
-﻿using ElectricVehicleDealer.DAL.Entities;
-using ElectricVehicleDealer.DAL.Repositories;
+﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
+using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DTO.Requests;
 using System;
 using System.Collections.Generic;
@@ -9,22 +10,28 @@ using System.Threading.Tasks;
 
 namespace ElectricVehicleDealer.BLL.Services
 {
-    public class OrderService : IOrderService
+    public class CustomerService : ICustomerService
     {
-        private readonly OrderRepository _repository;
-        public OrderService(OrderRepository repository) { _repository = repository; }
-        public async Task<int> CreateAsync(CreateOrderDto order)
+        private readonly CustomerRepository _repository;
+        public CustomerService(CustomerRepository repository) { _repository = repository; }
+        public async Task<int> CreateAsync(CreateCustomerDto customer)
         {
-            return await _repository.CreateAsync(order); 
+            try
+            {
+                return await _repository.CreateAsync(customer);
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex);
+                throw; 
+            }
         }
-
 
         public async Task<bool> DeleteAsync(int id)
         {
             try
             {
                 var item = await _repository.GetByIdAsync(id);
-
+                
                 if (item != null)
                 {
                     return await _repository.DeleteAsync(id);
@@ -34,7 +41,7 @@ namespace ElectricVehicleDealer.BLL.Services
             return false;
         }
 
-        public async Task<List<Order>> GetAllAsync()
+        public async Task<List<Customer>> GetAllAsync()
         {
             try
             {
@@ -47,7 +54,8 @@ namespace ElectricVehicleDealer.BLL.Services
             }
         }
 
-        public async Task<Order> GetByIdAsync(int id)
+
+        public async Task<Customer> GetByIdAsync(int id)
         {
             try
             {
@@ -59,16 +67,17 @@ namespace ElectricVehicleDealer.BLL.Services
             }
         }
 
-        public async Task<int> UpdateAsync(Order order)
+        public async Task<int> UpdateAsync(Customer customer)
         {
             try
             {
-                return await _repository.UpdateAsync(order);
+                return await _repository.UpdateAsync(customer);
             }
             catch (Exception ex)
             {
                 throw new Exception("Error when updating customer", ex);
             }
         }
+
     }
 }

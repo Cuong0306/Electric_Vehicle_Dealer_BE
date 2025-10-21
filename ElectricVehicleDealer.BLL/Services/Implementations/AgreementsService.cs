@@ -3,7 +3,6 @@ using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Enum;
-using ElectricVehicleDealer.DAL.Repositories;
 using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DAL.Repositories.Interfaces;
 using ElectricVehicleDealer.DAL.UnitOfWork;
@@ -15,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.BLL.Services.Implementations
+namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 {
     public class AgreementsService : IAgreementsService
     {
@@ -76,7 +75,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 CustomerId = agreement.CustomerId,
                 CustomerName = agreement.Customer.FullName,
                 TermsAndConditions = agreement.TermsAndConditions,
-                //Status = agreement.Status,
+                Status = agreement.Status,
                 AgreementDate = agreement.AgreementDate
             };
         }
@@ -97,7 +96,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 CustomerId = agreement.CustomerId,
                 CustomerName = agreement.Customer.FullName,
                 TermsAndConditions = agreement.TermsAndConditions,
-                //Status = agreement.Status,
+                Status = agreement.Status,
                 AgreementDate = agreement.AgreementDate
             }).ToList();
         }

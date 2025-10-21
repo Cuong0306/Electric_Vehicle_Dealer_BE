@@ -1,4 +1,4 @@
-﻿using ElectricVehicleDealer.BLL.Services;
+﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.AspNetCore.Mvc;

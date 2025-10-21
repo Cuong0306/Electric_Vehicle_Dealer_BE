@@ -1,5 +1,6 @@
-﻿using ElectricVehicleDealer.DAL.Entities;
-using ElectricVehicleDealer.DAL.Repositories;
+﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
+using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DTO.Requests;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.BLL.Services
+namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 {
     public class PaymentService : IPaymentService
     {
