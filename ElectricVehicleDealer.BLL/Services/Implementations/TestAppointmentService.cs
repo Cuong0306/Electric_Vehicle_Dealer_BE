@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.BLL.Services.Implementations
+namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 {
     public class TestAppointmentService : ITestAppointmentService
     {
@@ -49,7 +49,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             entity.VehicleId = dto.VehicleId;
             entity.DealerId = dto.DealerId;
             entity.AppointmentDate = dto.AppointmentDate;
-            //entity.Status = dto.Status;
+            entity.Status = dto.Status ?? TestAppointmentEnum.Draft;
             _unitOfWork.Repository<TestAppointment>().Update(entity);
             await _unitOfWork.SaveAsync();
             return MapToResponse(entity);

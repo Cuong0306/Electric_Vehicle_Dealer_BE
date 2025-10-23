@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.BLL.Services.Implementations
+namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 {
     public class StoreService : IStoreService
     {

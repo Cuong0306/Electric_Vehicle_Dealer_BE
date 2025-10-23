@@ -1,4 +1,5 @@
 ﻿using ElectricVehicleDealer.DAL.Repositories.Interfaces;
+using ElectricVehicleDealer.DAL.Services.Interfaces;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

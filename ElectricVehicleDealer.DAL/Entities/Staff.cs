@@ -39,5 +39,6 @@ namespace ElectricVehicleDealer.DAL.Entities
         [Column("position")]
         public string? Position { get; set; }
 
+        public string? Status { get; set; }
     }
 }

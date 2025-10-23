@@ -11,6 +11,7 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
     {
         IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class;
         IAgreementsRepository Agreements { get; }
+        IStaffRepository Staff { get; }
         Task<int> SaveAsync();
     }
 }

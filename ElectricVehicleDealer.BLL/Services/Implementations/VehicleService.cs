@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.BLL.Services.Implementations
+namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 {
     public class VehicleService : IVehicleService
     {
@@ -46,7 +46,26 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 Airbags = dto.Airbags,
                 Transmission = dto.Transmission,
                 SeatingCapacity = dto.SeatingCapacity,
+                ImageUrls = dto.ImageUrls,
+                Screen  = dto.Screen,
+                SeatMaterial = dto.SeatMaterial,
+                InteriorMaterial = dto.InteriorMaterial,
+                AirConditioning = dto.AirConditioning,
+                SpeakerSystem = dto.SpeakerSystem,
+                InVehicleCabinet = dto.InVehicleCabinet,
+                LengthMm = dto.LengthMm,
+                WidthMm = dto.WidthMm,
+                HeightMm = dto.HeightMm,
+                Wheels = dto.Wheels,
+                Headlights = dto.Headlights,
+                Taillights = dto.Taillights,
+                FrameChassis = dto.FrameChassis,
+                DoorCount = dto.DoorCount,
+                GlassWindows = dto.GlassWindows,
+                Mirrors = dto.Mirrors,
+                Cameras = dto.Cameras,
                 CreateDate = dto.CreateDate,
+                
             };
             await _unitOfWork.Repository<Vehicle>().AddAsync(entity);
             await _unitOfWork.SaveAsync();
@@ -98,6 +117,24 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             Airbags = x.Airbags,
             Transmission = x.Transmission,
             SeatingCapacity = x.SeatingCapacity,
+            ImageUrls = x.ImageUrls,
+            Screen = x.Screen,
+            SeatMaterial = x.SeatMaterial,
+            InteriorMaterial = x.InteriorMaterial,
+            AirConditioning = x.AirConditioning,
+            SpeakerSystem = x.SpeakerSystem,
+            InVehicleCabinet = x.InVehicleCabinet,
+            LengthMm = x.LengthMm,
+            WidthMm = x.WidthMm,
+            HeightMm = x.HeightMm,
+            Wheels = x.Wheels,
+            Headlights = x.Headlights,
+            Taillights = x.Taillights,
+            FrameChassis = x.FrameChassis,
+            DoorCount = x.DoorCount,
+            GlassWindows = x.GlassWindows,
+            Mirrors = x.Mirrors,
+            Cameras = x.Cameras,
             CreateDate = x.CreateDate,
         };
     }

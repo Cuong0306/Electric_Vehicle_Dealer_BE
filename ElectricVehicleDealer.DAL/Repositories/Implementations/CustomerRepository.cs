@@ -1,11 +1,10 @@
 ﻿using ElectricVehicleDealer.DAL.Entities;
-using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.DAL.Repositories
+namespace ElectricVehicleDealer.DAL.Repositories.Implementations
 {
     public class CustomerRepository : GenericRepository<Customer>
     {
@@ -35,7 +34,10 @@ namespace ElectricVehicleDealer.DAL.Repositories
                 Phone = dto.Phone,
                 Email = dto.Email,
                 Address = dto.Address,
+                LicenseUp = dto.LicenseUp,
+                LicenseDown = dto.LicenseDown,
                 CreateDate = DateTime.Now
+               
             };
 
             await _context.Customers.AddAsync(entity);
