@@ -1,4 +1,5 @@
-using ElectricVehicleDealer.BLL.Services.Interfaces;
+﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
+using ElectricVehicleDealer.BLL.Services.Interfaces.Implementations;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -11,6 +12,27 @@ namespace ElectricVehicleDealer.API.Controllers
     {
         private readonly IStorageService _service;
         public StoragesController(IStorageService service) => _service = service;
+
+        [HttpPost("allocate")]
+        public async Task<IActionResult> AllocateVehicles([FromBody] AllocateVehicleDto dto)
+        {
+            var result = await _service.AllocateVehiclesAsync(dto);
+            return Ok(new { success = result, message = "Phân bổ xe thành công." });
+        }
+
+        [HttpGet("store/{storeId}/vehicles")]
+        public async Task<IActionResult> GetVehiclesByStore(int storeId)
+        {
+            var result = await _service.GetVehiclesByStoreIdAsync(storeId);
+            return Ok(result);
+        }
+
+        [HttpPost("recall")]
+        public async Task<IActionResult> RecallVehicles([FromBody] AllocateVehicleDto dto)
+        {
+            var result = await _service.RecallVehiclesAsync(dto);
+            return Ok(new { success = result, message = "Thu hồi xe thành công." });
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
