@@ -75,16 +75,46 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         public async Task<VehicleResponse> UpdateAsync(int id, UpdateVehicleRequest dto)
         {
             var entity = await _unitOfWork.Repository<Vehicle>().GetByIdAsync(id);
-            entity.BrandId = dto.BrandId;
-            entity.ModelName = dto.ModelName;
-            entity.Version = dto.Version;
-            entity.Year = dto.Year;
-            entity.Color = dto.Color;
-            entity.Price = dto.Price;
-            entity.BatteryCapacity = dto.BatteryCapacity;
-            entity.RangePerCharge = dto.RangePerCharge;
-            entity.WarrantyPeriod = dto.WarrantyPeriod;
-            entity.CreateDate = dto.CreateDate;
+            if (dto.BrandId != null) entity.BrandId = dto.BrandId.Value;
+            if (!string.IsNullOrWhiteSpace(dto.ModelName)) entity.ModelName = dto.ModelName;
+            if (!string.IsNullOrWhiteSpace(dto.ImageUrls))
+                entity.ImageUrls = dto.ImageUrls.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            if (!string.IsNullOrWhiteSpace(dto.Version)) entity.Version = dto.Version;
+            if (dto.Year != null) entity.Year = dto.Year.Value;
+            if (!string.IsNullOrWhiteSpace(dto.Color)) entity.Color = dto.Color;
+            if (dto.Price != null) entity.Price = dto.Price.Value;
+            if (!string.IsNullOrWhiteSpace(dto.BatteryCapacity))
+                entity.BatteryCapacity = dto.BatteryCapacity;
+
+            if (!string.IsNullOrWhiteSpace(dto.RangePerCharge))
+                entity.RangePerCharge = dto.RangePerCharge;
+            if (!string.IsNullOrWhiteSpace(dto.WarrantyPeriod)) entity.WarrantyPeriod = dto.WarrantyPeriod;
+            if (dto.SeatingCapacity != null) entity.SeatingCapacity = dto.SeatingCapacity.Value;
+            if (!string.IsNullOrWhiteSpace(dto.Transmission)) entity.Transmission = dto.Transmission;
+            if (dto.Airbags != null) entity.Airbags = dto.Airbags.Value;
+            if (dto.Horsepower != null) entity.Horsepower = dto.Horsepower.Value;
+            if (!string.IsNullOrWhiteSpace(dto.VehicleType)) entity.VehicleType = dto.VehicleType;
+            if (dto.TrunkCapacity != null) entity.TrunkCapacity = dto.TrunkCapacity.Value;
+            if (dto.DailyDrivingLimit != null) entity.DailyDrivingLimit = dto.DailyDrivingLimit.Value;
+            if (!string.IsNullOrWhiteSpace(dto.Screen)) entity.Screen = dto.Screen;
+            if (!string.IsNullOrWhiteSpace(dto.SeatMaterial)) entity.SeatMaterial = dto.SeatMaterial;
+            if (!string.IsNullOrWhiteSpace(dto.InteriorMaterial)) entity.InteriorMaterial = dto.InteriorMaterial;
+            if (!string.IsNullOrWhiteSpace(dto.AirConditioning)) entity.AirConditioning = dto.AirConditioning;
+            if (!string.IsNullOrWhiteSpace(dto.SpeakerSystem)) entity.SpeakerSystem = dto.SpeakerSystem;
+            if (!string.IsNullOrWhiteSpace(dto.InVehicleCabinet)) entity.InVehicleCabinet = dto.InVehicleCabinet;
+            if (dto.LengthMm != null) entity.LengthMm = dto.LengthMm.Value;
+            if (dto.WidthMm != null) entity.WidthMm = dto.WidthMm.Value;
+            if (dto.HeightMm != null) entity.HeightMm = dto.HeightMm.Value;
+            if (!string.IsNullOrWhiteSpace(dto.Wheels)) entity.Wheels = dto.Wheels;
+            if (!string.IsNullOrWhiteSpace(dto.Headlights)) entity.Headlights = dto.Headlights;
+            if (!string.IsNullOrWhiteSpace(dto.Taillights)) entity.Taillights = dto.Taillights;
+            if (!string.IsNullOrWhiteSpace(dto.FrameChassis)) entity.FrameChassis = dto.FrameChassis;
+            if (dto.DoorCount != null) entity.DoorCount = dto.DoorCount.Value;
+            if (!string.IsNullOrWhiteSpace(dto.GlassWindows)) entity.GlassWindows = dto.GlassWindows;
+            if (!string.IsNullOrWhiteSpace(dto.Mirrors)) entity.Mirrors = dto.Mirrors;
+            if (!string.IsNullOrWhiteSpace(dto.Cameras)) entity.Cameras = dto.Cameras;
+            if (dto.CreateDate != null) entity.CreateDate = dto.CreateDate.Value;
+
             _unitOfWork.Repository<Vehicle>().Update(entity);
             await _unitOfWork.SaveAsync();
             return MapToResponse(entity);
