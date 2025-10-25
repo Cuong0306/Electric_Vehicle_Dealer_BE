@@ -3,6 +3,7 @@ using System;
 using ElectricVehicleDealer.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ElectricVehicleDealer.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251016071218_addAirBag")]
+    partial class addAirBag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -472,9 +475,6 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("role");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("text");
-
                     b.Property<int?>("StoreId")
                         .HasColumnType("integer");
 
@@ -615,11 +615,6 @@ namespace ElectricVehicleDealer.DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VehicleId"));
 
-                    b.Property<string>("AirConditioning")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("air_conditioning");
-
                     b.Property<int?>("Airbags")
                         .HasColumnType("integer")
                         .HasColumnName("airbags");
@@ -632,11 +627,6 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.Property<int>("BrandId")
                         .HasColumnType("integer")
                         .HasColumnName("brand_id");
-
-                    b.Property<string>("Cameras")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("cameras");
 
                     b.Property<string>("Color")
                         .HasMaxLength(50)
@@ -653,29 +643,6 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("daily_driving_limit");
 
-                    b.Property<int?>("DoorCount")
-                        .HasColumnType("integer")
-                        .HasColumnName("door_count");
-
-                    b.Property<string>("FrameChassis")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("frame_chassis");
-
-                    b.Property<string>("GlassWindows")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("glass_windows");
-
-                    b.Property<string>("Headlights")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("headlights");
-
-                    b.Property<int?>("HeightMm")
-                        .HasColumnType("integer")
-                        .HasColumnName("height_mm");
-
                     b.Property<int?>("Horsepower")
                         .HasColumnType("integer")
                         .HasColumnName("horsepower");
@@ -684,29 +651,6 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("text[]")
                         .HasColumnName("image_urls");
-
-                    b.Property<string>("InVehicleCabinet")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("in_vehicle_cabinet");
-
-                    b.Property<string>("InteriorMaterial")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("interior_material");
-
-                    b.Property<bool>("IsAllocation")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_allocation");
-
-                    b.Property<int?>("LengthMm")
-                        .HasColumnType("integer")
-                        .HasColumnName("length_mm");
-
-                    b.Property<string>("Mirrors")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("mirrors");
 
                     b.Property<string>("ModelName")
                         .IsRequired()
@@ -724,29 +668,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("range_per_charge");
 
-                    b.Property<string>("Screen")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("screen");
-
-                    b.Property<string>("SeatMaterial")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("seat_material");
-
                     b.Property<int?>("SeatingCapacity")
                         .HasColumnType("integer")
                         .HasColumnName("seating_capacity");
-
-                    b.Property<string>("SpeakerSystem")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("speaker_system");
-
-                    b.Property<string>("Taillights")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("taillights");
 
                     b.Property<string>("Transmission")
                         .HasColumnType("text")
@@ -769,15 +693,6 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("warranty_period");
-
-                    b.Property<string>("Wheels")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("wheels");
-
-                    b.Property<int?>("WidthMm")
-                        .HasColumnType("integer")
-                        .HasColumnName("width_mm");
 
                     b.Property<int?>("Year")
                         .HasColumnType("integer")

@@ -139,6 +139,10 @@ public partial class Vehicle
     [MaxLength(100)]
     [Column("cameras")]
     public string? Cameras { get; set; }
+
+    [Column("is_allocation")]
+    public bool IsAllocation { get; set; } = false;
+
     [Column("create_date")]
     public DateTime? CreateDate { get; set; }
 
