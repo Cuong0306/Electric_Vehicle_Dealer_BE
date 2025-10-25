@@ -107,9 +107,9 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             if (agreement == null)
                 throw new Exception("Agreement not found");
 
-            
-            if (!string.IsNullOrEmpty(dto.Status))
-                //agreement.Status = dto.Status;
+
+            if (dto.Status.HasValue)
+                agreement.Status = dto.Status.Value;
 
             if (!string.IsNullOrEmpty(dto.TermsAndConditions))
                 agreement.TermsAndConditions = dto.TermsAndConditions;
