@@ -1,4 +1,5 @@
-﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
+﻿using ElectricVehicleDealer.BLL.Intergations.Implementations;
+using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.AspNetCore.Mvc;
@@ -8,54 +9,32 @@ using Microsoft.AspNetCore.Mvc;
 namespace ElectricVehicleDealer.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/payment")]
     public class PaymentController : ControllerBase
     {
-        private readonly IPaymentService _service;
+        private readonly PayOsService _payOsService;
 
-        public PaymentController(IPaymentService service)
+        public PaymentController(PayOsService payOsService)
         {
-            _service = service;
+            _payOsService = payOsService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<Payment>>> GetAll()
+        // ========== TẠO GIAO DỊCH THANH TOÁN ==========
+        [HttpPost("create")]
+        public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequest request)
         {
-            return Ok(await _service.GetAllAsync());
+            var result = await _payOsService.CreatePaymentAsync(request);
+            return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Payment>> GetById(int id)
+        // ========== NHẬN CALLBACK TỪ PAYOS ==========
+        [HttpPost("callback")]
+        public IActionResult Callback([FromBody] object payload)
         {
-            var order = await _service.GetByIdAsync(id);
-            if (order == null) return NotFound();
-            return Ok(order);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Create(CreatePaymentDto payment)
-        {
-            var result = await _service.CreateAsync(payment);
-            if (result > 0) return Ok("Created successfully");
-            return BadRequest("Failed to create customer");
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, Payment payment)
-        {
-            if (id != payment.PaymentId) return BadRequest("ID mismatch");
-
-            var result = await _service.UpdateAsync(payment);
-            if (result > 0) return Ok("Updated successfully");
-            return NotFound("Customer not found");
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            var result = await _service.DeleteAsync(id);
-            if (result) return Ok("Deleted successfully");
-            return NotFound("Customer not found");
+            Console.WriteLine("=== PAYOS CALLBACK ===");
+            Console.WriteLine(payload);
+            // TODO: verify checksum, update order status in DB
+            return Ok("Callback received successfully");
         }
     }
 }
