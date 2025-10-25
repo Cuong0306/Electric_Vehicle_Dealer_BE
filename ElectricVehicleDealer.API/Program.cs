@@ -1,4 +1,5 @@
 ﻿using CloudinaryDotNet;
+using ElectricVehicleDealer.BLL.Intergations.Implementations;
 using ElectricVehicleDealer.BLL.Services;
 using ElectricVehicleDealer.BLL.Services.Implementations;
 using ElectricVehicleDealer.BLL.Services.Interfaces;
@@ -47,7 +48,7 @@ builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IPaymentService, PaymentService>();
+//builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IAgreementsService, AgreementsService>();
@@ -55,14 +56,16 @@ builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<ITestAppointmentService, TestAppointmentService>();
 builder.Services.AddScoped<IQuoteService, QuoteService>();
 builder.Services.AddScoped<IStaffService, StaffService>();
-builder.Services.AddScoped<IPaymentService,PaymentService>();
+//builder.Services.AddScoped<IPaymentService,PaymentService>();
+
+builder.Services.AddHttpClient<PayOsService>();
 
 
 // Repositories (nếu dùng interface thì đăng ký qua interface)
 builder.Services.AddScoped<CustomerRepository>();
 builder.Services.AddScoped<BrandRepository>();
 builder.Services.AddScoped<OrderRepository>();
-builder.Services.AddScoped<PaymentRepository>();
+//builder.Services.AddScoped<PaymentRepository>();
 builder.Services.AddScoped<PromotionRepository>();
 builder.Services.AddScoped<IAgreementsRepository, AgreementsRepository>();
 builder.Services.AddScoped<StoreRepository>();

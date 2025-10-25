@@ -64,7 +64,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 GlassWindows = dto.GlassWindows,
                 Mirrors = dto.Mirrors,
                 Cameras = dto.Cameras,
-                CreateDate = dto.CreateDate,
+                //CreateDate = dto.CreateDate,
                 
             };
             await _unitOfWork.Repository<Vehicle>().AddAsync(entity);
