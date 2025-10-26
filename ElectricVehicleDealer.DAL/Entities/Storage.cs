@@ -6,6 +6,7 @@ namespace ElectricVehicleDealer.DAL.Entities;
 public partial class Storage
 {
     public int StorageId { get; set; }
+    public int BrandId { get; set; }
 
     public int VehicleId { get; set; }
 

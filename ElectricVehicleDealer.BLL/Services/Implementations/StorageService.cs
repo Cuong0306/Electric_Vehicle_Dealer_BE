@@ -3,6 +3,7 @@ using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.UnitOfWork;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 {
     public class StorageService : IStorageService
     {
+        private readonly AppDbContext _context;
         private readonly IUnitOfWork _unitOfWork;
         public StorageService(IUnitOfWork uow) => _unitOfWork = uow;
 
@@ -124,8 +126,10 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             {
                 VehicleId = dto.VehicleId,
                 StoreId = dto.StoreId,
+                BrandId = dto.BrandId,
                 QuantityAvailable = dto.QuantityAvailable,
                 LastUpdated = dto.LastUpdated,
+
             };
             await _unitOfWork.Repository<Storage>().AddAsync(entity);
             await _unitOfWork.SaveAsync();
@@ -157,8 +161,30 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             StorageId = x.StorageId,
             VehicleId = x.VehicleId,
             StoreId = x.StoreId,
+            BrandId = x.BrandId,
             QuantityAvailable = x.QuantityAvailable,
             LastUpdated = x.LastUpdated,
         };
+        public async Task<IEnumerable<StorageResponse>> GetStorageByBrandIdAsync(int brandId)
+        {
+            var storages = await _unitOfWork.Repository<Storage>()
+                .GetAllAsync();
+
+            var storagesByBrand = storages
+                .Join(_unitOfWork.Repository<Vehicle>().GetAllAsync().Result,
+                      s => s.VehicleId,
+                      v => v.VehicleId,
+                      (s, v) => new { Storage = s, Vehicle = v })
+                .Where(x => x.Vehicle != null && x.Vehicle.BrandId == brandId)
+                .Select(x => x.Storage)
+                .ToList();
+
+            if (!storagesByBrand.Any())
+            {
+                return Enumerable.Empty<StorageResponse>();
+            }
+
+            return storagesByBrand.Select(MapToResponse);
+        }
     }
 }
