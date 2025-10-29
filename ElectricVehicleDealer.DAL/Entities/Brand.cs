@@ -16,4 +16,6 @@ public partial class Brand
     public int? FounderYear { get; set; }
 
     public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
+    public virtual ICollection<Staff> Staffs { get; set; } = new List<Staff>();
+
 }

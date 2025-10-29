@@ -3,6 +3,7 @@ using System;
 using ElectricVehicleDealer.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ElectricVehicleDealer.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251027061610_AddBrandToStaff")]
+    partial class AddBrandToStaff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,9 +192,6 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("integer")
                         .HasColumnName("role");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("text");
 
                     b.Property<int?>("StoreId")
                         .HasColumnType("integer")
@@ -444,7 +444,7 @@ namespace ElectricVehicleDealer.DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("StaffId"));
 
-                    b.Property<int?>("BrandId")
+                    b.Property<int>("BrandId")
                         .HasColumnType("integer")
                         .HasColumnName("brand_id");
 
@@ -482,10 +482,15 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("text");
 
+                    b.Property<int?>("StoreId")
+                        .HasColumnType("integer");
+
                     b.HasKey("StaffId")
                         .HasName("staff_pkey");
 
                     b.HasIndex("BrandId");
+
+                    b.HasIndex("StoreId");
 
                     b.HasIndex(new[] { "Email" }, "staff_email_key")
                         .IsUnique();
@@ -915,7 +920,13 @@ namespace ElectricVehicleDealer.DAL.Migrations
                 {
                     b.HasOne("ElectricVehicleDealer.DAL.Entities.Brand", "Brand")
                         .WithMany("Staffs")
-                        .HasForeignKey("BrandId");
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ElectricVehicleDealer.DAL.Entities.Store", null)
+                        .WithMany("Staff")
+                        .HasForeignKey("StoreId");
 
                     b.Navigation("Brand");
                 });
@@ -1018,6 +1029,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
             modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.Store", b =>
                 {
                     b.Navigation("Dealers");
+
+                    b.Navigation("Staff");
 
                     b.Navigation("Storages");
                 });

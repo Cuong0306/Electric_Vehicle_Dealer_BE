@@ -1,4 +1,5 @@
 ﻿using ElectricVehicleDealer.DTO.Requests;
+using ElectricVehicleDealer.DTO.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace ElectricVehicleDealer.DAL.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<string?> LoginAsync(LoginRequest model);
+        Task<LoginResponse?> LoginAsync(LoginRequest dto);
+        Task<StaffResponse?> CreateStaffAsync(CreateStaffRequest dto);
+        Task<DealerResponse?> CreateDealerAsync(CreateDealerRequest dto);
     }
 }

@@ -40,5 +40,13 @@ namespace ElectricVehicleDealer.DAL.Entities
         public string? Position { get; set; }
 
         public string? Status { get; set; }
+
+        // 🔗 Thêm khóa ngoại đến Brand
+        [ForeignKey(nameof(Brand))]
+        [Column("brand_id")]
+        public int? BrandId { get; set; }
+
+        // 🔄 Navigation property
+        public virtual Brand? Brand { get; set; } = null!;
     }
 }

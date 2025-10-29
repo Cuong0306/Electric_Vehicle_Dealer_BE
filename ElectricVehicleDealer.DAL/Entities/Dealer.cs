@@ -40,6 +40,7 @@ namespace ElectricVehicleDealer.DAL.Entities
 
         [Column("role")]
         public RoleDealerEnum Role { get; set; } = RoleDealerEnum.Dealer_staff;
+        public string? Status { get; set; } = "Active";
 
         // 🔗 Navigations
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

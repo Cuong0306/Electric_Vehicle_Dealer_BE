@@ -21,15 +21,19 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
 
         public IStaffRepository Staff { get; }
 
+        public IDealerRepository Dealers { get; }
+
         public UnitOfWork(
             AppDbContext context,
             IAgreementsRepository agreementsRepository,
-            IStaffRepository staffRepository)
+            IStaffRepository staffRepository,
+            IDealerRepository dealers)
         {
             _context = context;
             Agreements = agreementsRepository;
             Staff = staffRepository;
             _repositories = new Hashtable();
+            Dealers = dealers;
         }
         public void Dispose()
         {
