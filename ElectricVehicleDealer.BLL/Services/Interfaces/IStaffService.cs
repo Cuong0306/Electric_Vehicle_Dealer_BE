@@ -9,7 +9,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
     {
         Task<IEnumerable<StaffResponse>> GetAllAsync();
         Task<StaffResponse> GetByIdAsync(int id);
-        Task<StaffResponse> CreateAsync(CreateStaffRequest dto);
+        //Task<StaffResponse?> CreateAsync(CreateStaffRequest dto);
         Task<StaffResponse> UpdateAsync(int id, UpdateStaffRequest dto);
         Task<bool> DeleteAsync(int id);
         Task<bool> SoftDeleteUserAsync(int id);

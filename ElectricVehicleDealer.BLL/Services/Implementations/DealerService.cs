@@ -27,7 +27,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             return MapToResponse(entity);
         }
 
-        public async Task<DealerResponse> CreateAsync(CreateDealerRequest dto)
+        /*public async Task<DealerResponse> CreateAsync(CreateDealerRequest dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Password))
                 throw new ArgumentException("Password is required");
@@ -56,7 +56,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 
             return MapToResponse(entity); 
         }
-
+        */
         public async Task<DealerResponse> UpdateAsync(int id, UpdateDealerRequest dto)
         {
             var entity = await _unitOfWork.Repository<Dealer>().GetByIdAsync(id);
@@ -86,7 +86,69 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             Email = x.Email,
             Address = x.Address,
             StoreId = x.StoreId,
+            Status = x.Status,
             Role = x.Role,
         };
+
+        public async Task<bool> SoftDeleteUserAsync(int id)
+        {
+            var staff = await _unitOfWork.Repository<Staff>().GetByIdAsync(id);
+
+            if (staff == null || staff.Status == "Deleted")
+                return false;
+
+            staff.Status = "Deleted";
+            staff.Email = $"deleted_{Guid.NewGuid()}@deleted.com";
+            staff.FullName = "Deleted User";
+            staff.Phone = "Deleted";
+            staff.Password = $"{Guid.NewGuid()}";
+
+            await _unitOfWork.Staff.UpdateStaffAsync(staff);
+            return true;
+        }
+
+        public async Task<bool> HardDeleteUserAsync(int id)
+        {
+            var staff = await _unitOfWork.Repository<Staff>().GetByIdAsync(id);
+            if (staff != null)
+            {
+                var staffId = staff.StaffId;
+
+                if (staff.Status != "Deleted")
+                    throw new Exception("This Dealer cannot be Hard deleted");
+
+                var result = await _unitOfWork.Staff.HardDeleteUserAsync(id);
+                if (result)
+                {
+                    await _unitOfWork.SaveAsync();
+                    return true;
+                }
+                else
+                {
+                    throw new Exception("Failed to delete Dealer");
+                }
+            }
+            else
+            {
+                throw new Exception("User not found");
+            }
+
+        }
+        public async Task<List<DealerResponse>> GetAllActiveDealerAsync()
+        {
+            var dealers = await _unitOfWork.Dealers.GetAllActiveDealersAsync();
+
+            return dealers.Select(d => new DealerResponse
+            {
+                DealerId = d.DealerId,
+                FullName = d.FullName,
+                Phone = d.Phone,
+                Email = d.Email,
+                Address = d.Address,
+                StoreId = d.StoreId,
+                Role = d.Role,
+                
+            }).ToList();
+        }
     }
 }

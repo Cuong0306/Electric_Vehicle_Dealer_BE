@@ -1,7 +1,8 @@
-using ElectricVehicleDealer.BLL.Services.Interfaces;
+﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.UnitOfWork;
+using ElectricVehicleDealer.DTO.Config;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
 using System.Collections.Generic;
@@ -13,7 +14,11 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
     public class StaffService : IStaffService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public StaffService(IUnitOfWork uow) => _unitOfWork = uow;
+        public StaffService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+            
+        }
 
         public async Task<IEnumerable<StaffResponse>> GetAllAsync()
         {
@@ -27,30 +32,22 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             return MapToResponse(entity);
         }
 
-        public async Task<StaffResponse> CreateAsync(CreateStaffRequest dto)
-        {
-            var entity = new Staff()
-            {
-                FullName = dto.FullName,
-                Phone = dto.Phone,
-                Email = dto.Email,
-                Status = dto.Status,
-                Password = dto.Password,
-                Role = dto.Role ?? RoleStaffEnum.EVM_Staff
-            };
-            await _unitOfWork.Repository<Staff>().AddAsync(entity);
-            await _unitOfWork.SaveAsync();
-            return MapToResponse(entity);
-        }
 
         public async Task<StaffResponse> UpdateAsync(int id, UpdateStaffRequest dto)
         {
-            var entity = await _unitOfWork.Repository<Staff>().GetByIdAsync(id);
-            entity.FullName = dto.FullName;
-            entity.Phone = dto.Phone;
-            entity.Email = dto.Email;
-            entity.Status = dto.Status;
-            entity.Password = dto.Password;
+            var entity = await _unitOfWork.Repository<Staff>().GetByIdAsync(id)
+                 ?? throw new Exception("Staff not found");
+
+            if (!string.IsNullOrWhiteSpace(dto.FullName)) entity.FullName = dto.FullName.Trim();
+            if (!string.IsNullOrWhiteSpace(dto.Phone)) entity.Phone = dto.Phone.Trim();
+            if (!string.IsNullOrWhiteSpace(dto.Email)) entity.Email = dto.Email.Trim().ToLowerInvariant();
+            if (!string.IsNullOrWhiteSpace(dto.Status)) entity.Status = dto.Status.Trim();
+            if (dto.BrandId.HasValue)
+                entity.BrandId = dto.BrandId.Value;
+
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+                entity.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+
             _unitOfWork.Repository<Staff>().Update(entity);
             await _unitOfWork.SaveAsync();
             return MapToResponse(entity);
@@ -67,11 +64,11 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
         private static StaffResponse MapToResponse(Staff x) => new StaffResponse
         {
             StaffId = x.StaffId,
+            BrandId = x.BrandId,
             FullName = x.FullName,
             Phone = x.Phone,
             Email = x.Email,
             Status = x.Status,
-            Password = x.Password,
             Role = x.Role
         };
 
@@ -131,7 +128,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 Phone = u.Phone,
                 Email = u.Email,
                 Status = u.Status,
-                Password = u.Password,
+                
                 Role = u.Role
 
             }).ToList();

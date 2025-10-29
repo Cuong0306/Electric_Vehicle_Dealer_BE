@@ -11,6 +11,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetByIdAsync(int id);
+        //Task<T?> GetByEmailAsync(string email);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression);
         Task<T?> SingleOrDefaultAsync(Expression<Func<T, bool>> expression);
         Task AddAsync(T entity);

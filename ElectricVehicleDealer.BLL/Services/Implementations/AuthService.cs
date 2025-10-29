@@ -1,8 +1,13 @@
-﻿using ElectricVehicleDealer.DAL.Entities;
+﻿    using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.Services.Interfaces;
+using ElectricVehicleDealer.DAL.UnitOfWork;
+using ElectricVehicleDealer.DTO.Config;
 using ElectricVehicleDealer.DTO.Requests;
+using ElectricVehicleDealer.DTO.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,96 +17,160 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
 {
     public class AuthService : IAuthService
     {
-        private readonly AppDbContext _context;
-        private readonly IConfiguration _configuration;
+        private readonly JwtSettings _jwtSettings;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AuthService(AppDbContext context, IConfiguration configuration)
+        public AuthService(IUnitOfWork unitOfWork, IOptions<JwtSettings> jwtOptions)
         {
-            _context = context;
-            _configuration = configuration;
+            _unitOfWork = unitOfWork;
+            _jwtSettings = jwtOptions.Value;
         }
 
-        public async Task<string?> LoginAsync(LoginRequest model)
+        public async Task<StaffResponse?> CreateStaffAsync(CreateStaffRequest dto)
         {
-            if (model is null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Password))
-                return null;
+            string role = "EVM_Staff";
+            var normalizedEmail = dto.Email?.Trim().ToLower();
+            var staff = await _unitOfWork.Staff.GetByEmailAsync(normalizedEmail);
 
-            // Chuẩn hóa email
-            var email = model.Email.Trim().ToLowerInvariant();
+            if (await _unitOfWork.Staff.IsEmailExistsAsync(dto.Email, 0))
+                throw new Exception("Email đã được sử dụng.");
 
-            // ---- 1) Thử Staff trước
-            var staff = await _context.Staff
-                .AsNoTracking()
-                .FirstOrDefaultAsync(s => s.Email != null && s.Email.ToLower() == email);
-
-            if (staff is not null)
+            var newStaff = new Staff
             {
-                // Nếu staff.Password đã hash BCrypt:
-                var ok = BCrypt.Net.BCrypt.Verify(model.Password, staff.Password);
-
-                // Nếu hiện tại staff còn đang lưu plain-text, tạm fallback:
-                if (!ok && staff.Password == model.Password) ok = true;
-
-                if (!ok) return null;
-
-                return GenerateJwtToken(
-                    subjectId: staff.StaffId.ToString(),
-                    name: staff.FullName,
-                    email: staff.Email,
-                    role: "Staff"
-                );
-            }
-
-            // ---- 2) Thử Dealer
-            var dealer = await _context.Dealers
-                .AsNoTracking()
-                .FirstOrDefaultAsync(d => d.Email != null && d.Email.ToLower() == email);
-
-            if (dealer is not null)
-            {
-                // Dealer bạn đã hash BCrypt khi tạo
-                var ok = BCrypt.Net.BCrypt.Verify(model.Password, dealer.Password);
-
-                // (tuỳ chọn) fallback nếu dữ liệu cũ còn plain-text
-                if (!ok && dealer.Password == model.Password) ok = true;
-
-                if (!ok) return null;
-
-                return GenerateJwtToken(
-                    subjectId: dealer.DealerId.ToString(),
-                    name: dealer.FullName,
-                    email: dealer.Email,
-                    role: "Dealer"
-                );
-            }
-
-            // ---- 3) Không tìm thấy
-            return null;
-        }
-
-        private string GenerateJwtToken(string subjectId, string name, string? email, string role)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, subjectId),
-                new Claim(ClaimTypes.Name, name),
-                new Claim(ClaimTypes.Email, email ?? string.Empty),
-                new Claim(ClaimTypes.Role, role),             // <-- phân quyền
-                new Claim("UserType", role),                  // <-- thêm 1 claim phụ nếu cần
+                BrandId = dto.BrandId,
+                FullName = dto.FullName,
+                Email = normalizedEmail,
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                Phone = null,
+                Role = Enum.Parse<RoleStaffEnum>(role),
+                Status = "Active"
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            // Thêm người dùng mới vào cơ sở dữ liệu
+            await _unitOfWork.Staff.CreateAsync(newStaff);
+            await _unitOfWork.SaveAsync();
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            // Trả về thông tin người dùng mới
+            return new StaffResponse
+            {
+                StaffId = newStaff.StaffId,
+                BrandId = newStaff.BrandId,
+                FullName = newStaff.FullName,
+                Email = newStaff.Email,
+                Phone = newStaff.Phone,
+                Role = newStaff.Role,
+                Position = newStaff.Position,
+            };
         }
+        public async Task<DealerResponse?> CreateDealerAsync(CreateDealerRequest dto)
+        {
+            string role = "Dealer_staff";
+            var normalizedEmail = dto.Email?.Trim().ToLower();
+            var dealer = await _unitOfWork.Dealers.GetByEmailAsync(normalizedEmail);
+
+            if (await _unitOfWork.Dealers.IsEmailExistsAsync(dto.Email, 0))
+                throw new Exception("Email đã được sử dụng.");
+
+            var newDealer = new Dealer
+            {
+                StoreId = dto.StoreId,
+                FullName = dto.FullName,
+                Email = normalizedEmail,
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                Phone = null,
+                Role = Enum.Parse<RoleDealerEnum>(role),
+                Status = "Active"
+            };
+
+            // Thêm người dùng mới vào cơ sở dữ liệu
+            await _unitOfWork.Dealers.CreateAsync(newDealer);
+            await _unitOfWork.SaveAsync();
+
+            // Trả về thông tin người dùng mới
+            return new DealerResponse
+            {
+                DealerId = newDealer.DealerId,
+                StoreId = newDealer.StoreId,
+                Address = newDealer.Address,
+                FullName = newDealer.FullName,
+                Email = newDealer.Email,
+                Phone = newDealer.Phone,
+                Role = newDealer.Role,
+                Status = newDealer.Status
+
+            };
+        }
+        public async Task<LoginResponse?> LoginAsync(LoginRequest dto)
+        {
+            var email = dto.Email?.Trim().ToLowerInvariant();
+            if (string.IsNullOrEmpty(email)) throw new Exception("Email is required");
+
+            // Thử tìm ở cả hai bảng
+            var staff = await _unitOfWork.Staff.GetByEmailAsync(email);
+            var dealer = await _unitOfWork.Dealers.GetByEmailAsync(email);
+
+            // Ưu tiên đối tượng khớp mật khẩu
+            var now = DateTime.UtcNow;
+            var lifetime = TimeSpan.FromMinutes(_jwtSettings.ExpiryMinutes);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_jwtSettings.Key);
+
+            // Nếu có staff và password đúng => đăng nhập staff
+            if (staff != null && BCrypt.Net.BCrypt.Verify(dto.Password, staff.Password))
+            {
+                var claims = new[]
+                {
+            new Claim(ClaimTypes.NameIdentifier, staff.StaffId.ToString()),
+            new Claim(ClaimTypes.Email, staff.Email ?? string.Empty),
+            new Claim(ClaimTypes.Name, staff.FullName ?? string.Empty),
+            new Claim(ClaimTypes.Role, staff.Role.ToString()),
+            new Claim("user_type", "staff")
+        };
+
+                var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims),
+                    NotBefore = now,
+                    IssuedAt = now,
+                    Expires = now.Add(lifetime),
+                    Issuer = _jwtSettings.Issuer,
+                    Audience = _jwtSettings.Audience,
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                });
+
+                return new LoginResponse { Token = tokenHandler.WriteToken(token), ExpiresIn = (int)lifetime.TotalSeconds };
+            }
+
+            // Nếu có dealer và password đúng => đăng nhập dealer
+            if (dealer != null && BCrypt.Net.BCrypt.Verify(dto.Password, dealer.Password))
+            {
+                var claims = new[]
+                {
+            new Claim(ClaimTypes.NameIdentifier, dealer.DealerId.ToString()),
+            new Claim(ClaimTypes.Email, dealer.Email ?? string.Empty),
+            new Claim(ClaimTypes.Name, dealer.FullName ?? string.Empty),
+            new Claim(ClaimTypes.Role, dealer.Role.ToString()),
+            new Claim("user_type", "dealer")
+        };
+
+                var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims),
+                    NotBefore = now,
+                    IssuedAt = now,
+                    Expires = now.Add(lifetime),
+                    Issuer = _jwtSettings.Issuer,
+                    Audience = _jwtSettings.Audience,
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                });
+
+                return new LoginResponse { Token = tokenHandler.WriteToken(token), ExpiresIn = (int)lifetime.TotalSeconds };
+            }
+
+            // Không khớp tài khoản nào
+            throw new Exception("Invalid email or password");
+        }
+
+
     }
 }
