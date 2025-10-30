@@ -8,7 +8,7 @@ namespace ElectricVehicleDealer.DTO.Responses
 {
     public class StoreResponse
     {
-        public int StoreId { get; set; }
+        public int? StoreId { get; set; }
 
         public string? StoreName { get; set; }
 
