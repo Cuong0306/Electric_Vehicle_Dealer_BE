@@ -53,6 +53,8 @@ builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddScoped<IDealerRepository, DealerRepository>();
+
+
 //builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
@@ -61,6 +63,7 @@ builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<ITestAppointmentService, TestAppointmentService>();
 builder.Services.AddScoped<IQuoteService, QuoteService>();
 builder.Services.AddScoped<IStaffService, StaffService>();
+
 //builder.Services.AddScoped<IPaymentService,PaymentService>();
 
 builder.Services.AddHttpClient<PayOsService>();
@@ -75,6 +78,7 @@ builder.Services.AddScoped<PromotionRepository>();
 builder.Services.AddScoped<IAgreementsRepository, AgreementsRepository>();
 builder.Services.AddScoped<StoreRepository>();
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 
 // --- Cloudinary ---
 var cloud = builder.Configuration.GetSection("Cloudinary");

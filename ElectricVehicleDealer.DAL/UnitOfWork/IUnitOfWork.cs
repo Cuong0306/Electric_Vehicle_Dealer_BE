@@ -13,6 +13,7 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
         IAgreementsRepository Agreements { get; }
         IStaffRepository Staff { get; }
         IDealerRepository Dealers { get; }
+        IVehicleRepository Vehicles { get; }
         Task<int> SaveAsync();
     }
 }

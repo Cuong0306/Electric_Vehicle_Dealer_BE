@@ -12,5 +12,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<VehicleResponse> CreateAsync(CreateVehicleRequest dto);
         Task<VehicleResponse> UpdateAsync(int id, UpdateVehicleRequest dto);
         Task<bool> DeleteAsync(int id);
+        Task<IEnumerable<VehicleResponse>> GetAllVehicleByStoreIdAsync(int storeId);
+        Task<IEnumerable<VehicleResponse>> GetAllVehicleByBrandIdAsync(int brandId);
     }
 }

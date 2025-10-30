@@ -38,6 +38,7 @@ namespace ElectricVehicleDealer.DTO.Requests
         public string? GlassWindows { get; set; }
         public string? Mirrors { get; set; }
         public string? Cameras { get; set; }
+        public bool IsAllocation { get; set; } = false;
         //public DateTime? CreateDate { get; set; }
     }
 }

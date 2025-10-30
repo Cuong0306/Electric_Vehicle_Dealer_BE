@@ -28,7 +28,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
 
         public async Task<StaffResponse?> CreateStaffAsync(CreateStaffRequest dto)
         {
-            string role = "EVM_Staff";
+            string role = dto.Role.ToString();
             var normalizedEmail = dto.Email?.Trim().ToLower();
             var staff = await _unitOfWork.Staff.GetByEmailAsync(normalizedEmail);
 
@@ -64,7 +64,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
         }
         public async Task<DealerResponse?> CreateDealerAsync(CreateDealerRequest dto)
         {
-            string role = "Dealer_staff";
+            string role = dto.Role.ToString();
             var normalizedEmail = dto.Email?.Trim().ToLower();
             var dealer = await _unitOfWork.Dealers.GetByEmailAsync(normalizedEmail);
 
