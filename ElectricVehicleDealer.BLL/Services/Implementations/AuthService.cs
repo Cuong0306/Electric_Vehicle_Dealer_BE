@@ -41,7 +41,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 FullName = dto.FullName,
                 Email = normalizedEmail,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                Phone = null,
+                Phone = dto.Phone,
                 Role = Enum.Parse<RoleStaffEnum>(role),
                 Status = "Active"
             };
@@ -77,7 +77,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 FullName = dto.FullName,
                 Email = normalizedEmail,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                Phone = null,
+                Phone = dto.Phone,
                 Role = Enum.Parse<RoleDealerEnum>(role),
                 Status = "Active"
             };
