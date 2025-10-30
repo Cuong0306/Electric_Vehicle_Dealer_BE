@@ -1,8 +1,10 @@
+﻿using Azure;
 using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.UnitOfWork;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -64,8 +66,9 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 GlassWindows = dto.GlassWindows,
                 Mirrors = dto.Mirrors,
                 Cameras = dto.Cameras,
+                IsAllocation = dto.IsAllocation,
                 //CreateDate = dto.CreateDate,
-                
+
             };
             await _unitOfWork.Repository<Vehicle>().AddAsync(entity);
             await _unitOfWork.SaveAsync();
@@ -114,7 +117,8 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             if (!string.IsNullOrWhiteSpace(dto.Mirrors)) entity.Mirrors = dto.Mirrors;
             if (!string.IsNullOrWhiteSpace(dto.Cameras)) entity.Cameras = dto.Cameras;
             if (dto.CreateDate != null) entity.CreateDate = dto.CreateDate.Value;
-
+            if (dto.IsAllocation.HasValue)
+                entity.IsAllocation = dto.IsAllocation.Value;
             _unitOfWork.Repository<Vehicle>().Update(entity);
             await _unitOfWork.SaveAsync();
             return MapToResponse(entity);
@@ -165,7 +169,21 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             GlassWindows = x.GlassWindows,
             Mirrors = x.Mirrors,
             Cameras = x.Cameras,
+            IsAllocation = x.IsAllocation,
             CreateDate = x.CreateDate,
         };
+
+        public async Task<IEnumerable<VehicleResponse>> GetAllVehicleByStoreIdAsync(int storeId)
+        {
+            // Truy vấn tất cả các xe theo StoreId
+            var vehicles = await _unitOfWork.Vehicles.GetAllByStoreIdAsync(storeId);
+            return vehicles.Select(v => MapToResponse(v)).ToList();
+        }
+
+        public async Task<IEnumerable<VehicleResponse>> GetAllVehicleByBrandIdAsync(int brandId)
+        {
+            var vehicles = await _unitOfWork.Vehicles.GetAllByBrandIdAsync(brandId);
+            return vehicles.Select(v => MapToResponse(v)).ToList();
+        }
     }
 }
