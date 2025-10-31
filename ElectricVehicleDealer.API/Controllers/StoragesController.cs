@@ -54,5 +54,12 @@ namespace ElectricVehicleDealer.API.Controllers
             var result = await _service.GetStorageByBrandIdAsync(brandId);
             return Ok(result);
         }
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetByFilter([FromQuery] int brandId = 0, [FromQuery] int storeId = 0)
+        {
+            var result = await _service.GetByFilterAsync(brandId, storeId);
+            return Ok(result);
+        }
     }
 }

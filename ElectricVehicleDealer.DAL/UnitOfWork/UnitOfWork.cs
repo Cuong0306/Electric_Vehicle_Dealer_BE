@@ -25,12 +25,15 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
 
         public IVehicleRepository Vehicles { get; }
 
+        public IStorageRepository Storages { get; }
+
         public UnitOfWork(
             AppDbContext context,
             IAgreementsRepository agreementsRepository,
             IStaffRepository staffRepository,
             IDealerRepository dealers,
-            IVehicleRepository vehicles)
+            IVehicleRepository vehicles,
+            IStorageRepository storages)
         {
             _context = context;
             Agreements = agreementsRepository;
@@ -38,6 +41,7 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
             _repositories = new Hashtable();
             Dealers = dealers;
             Vehicles = vehicles;
+            Storages = storages;
         }
         public void Dispose()
         {
