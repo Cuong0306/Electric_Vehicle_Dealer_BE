@@ -187,17 +187,17 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             return storagesByBrand.Select(MapToResponse);
         }
 
-        public async Task<IEnumerable<StorageResponse>> GetByFilterAsync(int? brandId, int? storeId)
+        public async Task<IEnumerable<StorageResponse>> GetByFilterAsync(int? brandId, int? vehicleId)
         {
             var allStorages = await _unitOfWork.Repository<Storage>().GetAllAsync();
             var query = allStorages.AsQueryable();
             if (brandId != 0)
             {
-                query = query.Where(s => s.BrandId == brandId);
+                query = query.Where(b => b.BrandId == brandId);
             }
-            if (storeId != 0)
+            if (vehicleId != 0)
             {
-                query = query.Where(s => s.StoreId == storeId);
+                query = query.Where(v => v.VehicleId == vehicleId);
             }
             var storageEntities = query.ToList();
             return storageEntities.Select(MapToResponse);

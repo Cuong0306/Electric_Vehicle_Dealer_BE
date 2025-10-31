@@ -9,7 +9,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
 {
     public interface IStorageRepository : IGenericRepository<Storage>
     {
-        Task<IEnumerable<Storage>> GetStorageByFilterAsync(int? brandId, int? storeId);
+        Task<IEnumerable<Storage>> GetStorageByFilterAsync(int? brandId, int? vehicleId);
     }
 }
 

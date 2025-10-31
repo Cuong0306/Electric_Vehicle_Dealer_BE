@@ -18,7 +18,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<Storage>> GetStorageByFilterAsync(int? brandId, int? storeId)
+        public async Task<IEnumerable<Storage>> GetStorageByFilterAsync(int? brandId, int? vehicleId)
         {
             // Bắt đầu một truy vấn IQueryable
             var query = _context.Set<Storage>().AsQueryable();
@@ -30,9 +30,9 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             }
 
             // Nếu storeId có giá trị, thêm điều kiện Where
-            if (storeId.HasValue)
+            if (vehicleId.HasValue)
             {
-                query = query.Where(s => s.StoreId == storeId.Value);
+                query = query.Where(v => v.VehicleId == vehicleId.Value);
             }
 
             // Thực thi truy vấn và trả về kết quả
