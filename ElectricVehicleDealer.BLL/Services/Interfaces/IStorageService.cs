@@ -17,7 +17,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<bool> RecallVehiclesAsync(AllocateVehicleDto dto);
         Task<IEnumerable<StorageResponse>> GetStorageByBrandIdAsync(int brandId);
 
-        Task<IEnumerable<StorageResponse>> GetByFilterAsync(int? brandId, int? storeId);
+        Task<IEnumerable<StorageResponse>> GetByFilterAsync(int? brandId, int? vehicleId);
 
     }
 }

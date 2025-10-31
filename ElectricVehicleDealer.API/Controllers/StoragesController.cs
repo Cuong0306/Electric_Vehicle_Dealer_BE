@@ -56,9 +56,9 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         [HttpGet("filter")]
-        public async Task<IActionResult> GetByFilter([FromQuery] int brandId = 0, [FromQuery] int storeId = 0)
+        public async Task<IActionResult> GetByFilter([FromQuery] int brandId = 0, [FromQuery] int vehicleId = 0)
         {
-            var result = await _service.GetByFilterAsync(brandId, storeId);
+            var result = await _service.GetByFilterAsync(brandId, vehicleId);
             return Ok(result);
         }
     }
