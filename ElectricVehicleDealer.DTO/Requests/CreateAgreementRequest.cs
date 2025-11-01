@@ -12,6 +12,7 @@ namespace ElectricVehicleDealer.DTO.Requests
 
         public string? TermsAndConditions { get; set; }
         public AgreementEnum? Status { get; set; }
+        public int StoreId { get; set; }
 
         public int OrderId { get; set; }
 
