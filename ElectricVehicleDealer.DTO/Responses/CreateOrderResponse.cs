@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ElectricVehicleDealer.DTO.Responses
 {
-    public class PaymentResponse
+    public class CreateOrderResponse
     {
+        public int OrderId { get; set; }
         public int PaymentId { get; set; }
-        public string? CheckoutUrl { get; set; }
-        public decimal Amount { get; set; }
-        public string? Status { get; set; }
+        public string CheckoutUrl { get; set; }
+        public string PaymentLink { get; set; }
     }
 }
