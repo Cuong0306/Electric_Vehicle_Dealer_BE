@@ -36,6 +36,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 TermsAndConditions = dto.TermsAndConditions,
                 Status = dto.Status ?? AgreementEnum.Pending,
                 FileUrl = dto.FileUrl,
+                StoreId = dto.StoreId,
                 AgreementDate = dto.AgreementDate
             };
             await _unitOfWork.Agreements.CreateAsync(newAgreement);
@@ -47,6 +48,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 CustomerName = newAgreement.Customer.FullName,
                 TermsAndConditions = newAgreement.TermsAndConditions,
                 Status = newAgreement.Status,
+                StoreId = newAgreement.StoreId,
                 AgreementDate = newAgreement.AgreementDate
             };
         }
@@ -75,6 +77,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 CustomerId = agreement.CustomerId,
                 CustomerName = agreement.Customer.FullName,
                 TermsAndConditions = agreement.TermsAndConditions,
+                StoreId = agreement.StoreId,
                 Status = agreement.Status,
                 AgreementDate = agreement.AgreementDate
             };
@@ -96,6 +99,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 CustomerId = agreement.CustomerId,
                 CustomerName = agreement.Customer.FullName,
                 TermsAndConditions = agreement.TermsAndConditions,
+                StoreId = agreement.StoreId,
                 Status = agreement.Status,
                 AgreementDate = agreement.AgreementDate
             }).ToList();

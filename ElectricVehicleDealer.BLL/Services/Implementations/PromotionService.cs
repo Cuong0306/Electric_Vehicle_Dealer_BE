@@ -27,7 +27,8 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 Description = dto.Description,
                 DiscountPercent = dto.DiscountPercent,
                 StartDate = dto.StartDate,
-                EndDate = dto.EndDate
+                EndDate = dto.EndDate,
+                StoreId = dto.StoreId,
             };
 
             await _unitOfWork.Repository<Promotion>().AddAsync(newPromotion);
@@ -40,6 +41,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 Description = newPromotion.Description,
                 DiscountPercent = newPromotion.DiscountPercent,
                 StartDate = newPromotion.StartDate,
+                StoreId = newPromotion.StoreId,
                 EndDate = newPromotion.EndDate
             };
         }

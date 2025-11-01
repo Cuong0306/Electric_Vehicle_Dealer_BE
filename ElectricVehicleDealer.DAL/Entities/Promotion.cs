@@ -1,19 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ElectricVehicleDealer.DAL.Entities;
-
-public partial class Promotion
+namespace ElectricVehicleDealer.DAL.Entities
 {
-    public int PromotionId { get; set; }
+    [Table("promotion")]
+    public partial class Promotion
+    {
+        [Column("promotion_id")]
+        public int PromotionId { get; set; }
 
-    public string? Title { get; set; }
+        [Column("title")]
+        public string? Title { get; set; }
 
-    public string? Description { get; set; }
+        [Column("description")]
+        public string? Description { get; set; }
 
-    public decimal? DiscountPercent { get; set; }
+        [Column("discount_percent")]
+        public decimal? DiscountPercent { get; set; }
 
-    public DateOnly? StartDate { get; set; }
+        [Column("start_date")]
+        public DateOnly? StartDate { get; set; }
 
-    public DateOnly? EndDate { get; set; }
+        [Column("end_date")]
+        public DateOnly? EndDate { get; set; }
+
+        [Column("store_id")]
+        public int? StoreId { get; set; } // nullable nếu promotion không bắt buộc có store
+
+        [ForeignKey("StoreId")]
+        public virtual Store? Store { get; set; }
+    }
 }

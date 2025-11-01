@@ -3,6 +3,7 @@ using System;
 using ElectricVehicleDealer.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ElectricVehicleDealer.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251101034933_CustomersAddStores")]
+    partial class CustomersAddStores
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,10 +335,6 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("numeric(15,2)")
                         .HasColumnName("amount");
 
-                    b.Property<string>("CheckoutUrl")
-                        .HasColumnType("text")
-                        .HasColumnName("checkout_url");
-
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer")
                         .HasColumnName("customer_id");
@@ -359,10 +358,6 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("integer")
                         .HasColumnName("status");
-
-                    b.Property<string>("TransactionId")
-                        .HasColumnType("text")
-                        .HasColumnName("transaction_id");
 
                     b.HasKey("PaymentId")
                         .HasName("payment_pkey");

@@ -24,6 +24,18 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(await _service.GetAllAsync());
         }
 
+        [HttpGet("store/{id}/customers")]
+        public async Task<ActionResult<List<Customer>>> GetCustomersByStore(int id)
+        {
+            var customers = await _service.GetCustomersByStoreAsync(id);
+
+            if (customers == null || !customers.Any())
+                return NotFound(new { Message = "No customers found for this store." });
+
+            return Ok(customers);
+        }
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetById(int id)
         {
