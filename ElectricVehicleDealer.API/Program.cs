@@ -1,6 +1,8 @@
 ﻿using CloudinaryDotNet;
 using ElectricVehicleDealer.API.Middlewares;
+using ElectricVehicleDealer.BLL.Intergations.Interfaces;
 using ElectricVehicleDealer.BLL.Intergations.Implementations;
+using ElectricVehicleDealer.DTO.Config;
 using ElectricVehicleDealer.BLL.Services;
 using ElectricVehicleDealer.BLL.Services.Implementations;
 using ElectricVehicleDealer.BLL.Services.Interfaces;
@@ -10,7 +12,6 @@ using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DAL.Repositories.Interfaces;
 using ElectricVehicleDealer.DAL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.UnitOfWork;
-using ElectricVehicleDealer.DTO.Config;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -66,7 +67,7 @@ builder.Services.AddScoped<IStaffService, StaffService>();
 
 //builder.Services.AddScoped<IPaymentService,PaymentService>();
 
-builder.Services.AddHttpClient<PayOsService>();
+//builder.Services.AddHttpClient<PayOsService>();
 
 
 // Repositories (nếu dùng interface thì đăng ký qua interface)
@@ -89,6 +90,14 @@ builder.Services.AddSingleton(new Cloudinary(new Account(
 // QUAN TRỌNG: đăng ký service interface để controller resolve được
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
+
+// --- PayOS ---
+// Đọc cấu hình từ appsettings.json
+builder.Services.Configure<PayOsSettings>(
+    builder.Configuration.GetSection("PayOS")
+);
+
+builder.Services.AddHttpClient<IPayOsService, PayOsService>();
 // --- CORS ---
 builder.Services.AddCors(options =>
 {

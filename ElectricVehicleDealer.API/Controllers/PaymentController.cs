@@ -1,10 +1,13 @@
-﻿using ElectricVehicleDealer.BLL.Intergations.Implementations;
-using ElectricVehicleDealer.BLL.Services.Interfaces;
+﻿using ElectricVehicleDealer.BLL.Intergations.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DAL.Enum;
+using ElectricVehicleDealer.DTO.Config;
 using ElectricVehicleDealer.DTO.Requests;
+using ElectricVehicleDealer.DTO.Responses;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Microsoft.Extensions.Options;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace ElectricVehicleDealer.API.Controllers
 {
@@ -12,29 +15,60 @@ namespace ElectricVehicleDealer.API.Controllers
     [Route("api/v1/payment")]
     public class PaymentController : ControllerBase
     {
-        private readonly PayOsService _payOsService;
-
-        public PaymentController(PayOsService payOsService)
+        private readonly IPayOsService _payOsService;
+        private readonly PayOsSettings _payOsSettings;
+        
+        public PaymentController(IPayOsService payOsService, IOptions<PayOsSettings> payosOptions)
         {
             _payOsService = payOsService;
+            _payOsSettings = payosOptions.Value;
         }
 
-        // ========== TẠO GIAO DỊCH THANH TOÁN ==========
         [HttpPost("create")]
         public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequest request)
         {
-            var result = await _payOsService.CreatePaymentAsync(request);
-            return Ok(result);
+            var (qrUrl, qrImage, expiresAt, status, paymentId) =
+                await _payOsService.CreatePaymentAsync(
+                    request.CustomerId,
+                    request.OrderId,
+                    (int)request.Amount,
+                    request.Description,
+                    request.ReturnUrl,
+                    request.CancelUrl
+                );
+
+            var response = new PaymentResponse
+            {
+                PaymentId = paymentId,
+                CheckoutUrl = qrUrl,
+                Amount = request.Amount,
+                Status = status
+            };
+
+            return Ok(response);
+        }
+        [HttpPost("callback")]
+        public async Task<IActionResult> Callback([FromBody] PayOsCallbackRequest payload)
+        {
+            try
+            {
+                await _payOsService.HandleCallbackAsync(payload);
+                return Ok(new { Message = "Callback processed successfully" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[PayOS Callback Error]");
+                Console.WriteLine(ex);
+
+                return StatusCode(500, new
+                {
+                    Message = "Failed to process callback",
+                    Exception = ex.Message,
+                    InnerException = ex.InnerException?.Message
+                });
+            }
         }
 
-        // ========== NHẬN CALLBACK TỪ PAYOS ==========
-        [HttpPost("callback")]
-        public IActionResult Callback([FromBody] object payload)
-        {
-            Console.WriteLine("=== PAYOS CALLBACK ===");
-            Console.WriteLine(payload);
-            // TODO: verify checksum, update order status in DB
-            return Ok("Callback received successfully");
-        }
     }
 }
+
