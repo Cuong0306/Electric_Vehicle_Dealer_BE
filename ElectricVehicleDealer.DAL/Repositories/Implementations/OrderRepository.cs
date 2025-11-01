@@ -33,6 +33,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             {
                 CustomerId = dto.CustomerId,
                 DealerId = dto.DealerId,
+                StoreId = dto.StoreId,
                 Quantity = dto.Quantity,
                 TotalPrice = dto.TotalPrice,
                 Status = dto.Status ?? OrderEnum.Pending,
