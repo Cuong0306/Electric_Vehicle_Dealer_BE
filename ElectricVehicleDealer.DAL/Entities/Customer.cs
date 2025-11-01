@@ -37,4 +37,6 @@ public partial class Customer
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
     public virtual ICollection<Quote> Quotes { get; set; } = new List<Quote>();
     public virtual ICollection<TestAppointment> TestAppointments { get; set; } = new List<TestAppointment>();
+
+    public virtual ICollection<StoreCustomer> StoreCustomers { get; set; } = new List<StoreCustomer>();
 }

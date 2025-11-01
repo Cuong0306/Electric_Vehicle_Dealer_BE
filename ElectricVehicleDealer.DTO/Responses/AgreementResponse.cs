@@ -16,7 +16,7 @@ namespace ElectricVehicleDealer.DTO.Responses
         public DateTime? AgreementDate { get; set; }
 
         public string? TermsAndConditions { get; set; }
-
+        public int? StoreId { get; set; }
         public AgreementEnum? Status { get; set; }
         public string? CustomerName { get; set; }
     }

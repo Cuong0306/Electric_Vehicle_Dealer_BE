@@ -13,6 +13,7 @@ namespace ElectricVehicleDealer.DTO.Requests
         public int DealerId { get; set; }
         public int? Quantity { get; set; }
         public decimal? TotalPrice { get; set; }
+        public int? StoreId { get; set; }
         public OrderEnum? Status { get; set; }
 
         public string? Note { get; set; }

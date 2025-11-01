@@ -20,4 +20,12 @@ public partial class Store
     //public virtual ICollection<Staff> Staff { get; set; } = new List<Staff>();
 
     public virtual ICollection<Storage> Storages { get; set; } = new List<Storage>();
+
+    public virtual ICollection<Promotion> Promotions { get; set; } = new List<Promotion>();
+
+    public virtual ICollection<Agreement> Agreements { get; set; } = new List<Agreement>();
+
+    public virtual ICollection<Order> Orders{ get; set; } = new List<Order>();
+
+    public virtual ICollection<StoreCustomer> StoreCustomers { get; set; } = new List<StoreCustomer>();
 }

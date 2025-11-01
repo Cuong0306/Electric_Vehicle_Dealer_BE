@@ -12,6 +12,7 @@ namespace ElectricVehicleDealer.DTO.Responses
         public string? Title { get; set; }
         public string? Description { get; set; }
         public decimal? DiscountPercent { get; set; }
+        public int? StoreId { get; set; }
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
     }
