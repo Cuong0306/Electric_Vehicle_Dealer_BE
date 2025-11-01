@@ -15,5 +15,7 @@ namespace ElectricVehicleDealer.DTO.Requests
         public string? Address { get; set; }
         public string? LicenseUp { get; set; }
         public string? LicenseDown { get; set; }
+
+        public int StoreId { get; set; }
     }
 }

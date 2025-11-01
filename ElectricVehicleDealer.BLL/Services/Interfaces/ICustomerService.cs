@@ -12,6 +12,9 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
     {
         Task<List<Customer>> GetAllAsync();
         Task<Customer> GetByIdAsync(int id);
+
+        Task<List<Customer>> GetCustomersByStoreAsync(int storeId);
+
         Task<int> CreateAsync(CreateCustomerDto customer);
         Task<int> UpdateAsync(Customer customer);
         Task<bool> DeleteAsync(int id);

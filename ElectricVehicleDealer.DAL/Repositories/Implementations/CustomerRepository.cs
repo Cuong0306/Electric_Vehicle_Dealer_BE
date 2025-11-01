@@ -19,6 +19,20 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             return await _context.Customers.ToListAsync();
         }
 
+        public async Task<List<Customer>> GetCustomersByStoreAsync(int storeId)
+        {
+            if (storeId <= 0)
+                throw new ArgumentException("Invalid store ID");
+
+            var customers = await _context.StoreCustomers
+                .Where(sc => sc.StoreId == storeId)
+                .Select(sc => sc.Customer)
+                .ToListAsync();
+
+            return customers;
+        }
+
+
         public async Task<Customer> GetByIdAsync(int id)
         {
             return await _context.Customers.FirstOrDefaultAsync(c => c.CustomerId == id);
@@ -28,6 +42,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
         {
             if (dto is null) throw new ArgumentNullException(nameof(dto), "CreateCustomerDto is null");
             if (string.IsNullOrWhiteSpace(dto.FullName)) throw new ArgumentException("FullName is required");
+
             var entity = new Customer
             {
                 FullName = dto.FullName,
@@ -37,12 +52,27 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                 LicenseUp = dto.LicenseUp,
                 LicenseDown = dto.LicenseDown,
                 CreateDate = DateTime.Now
-               
             };
+
+            // Nếu truyền storeId => gán vào bảng trung gian store_customer
+      
+            
+                var store = await _context.Stores.FindAsync(dto.StoreId);
+                if (store == null)
+                    throw new Exception($"Store with ID {dto.StoreId} not found.");
+
+                entity.StoreCustomers.Add(new StoreCustomer
+                {
+                    StoreId = dto.StoreId,
+                    Customer = entity
+                });
+            
 
             await _context.Customers.AddAsync(entity);
             return await _context.SaveChangesAsync();
         }
+
+
 
 
         public async Task<int> UpdateAsync(Customer customer)

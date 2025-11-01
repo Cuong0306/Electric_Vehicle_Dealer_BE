@@ -43,6 +43,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Vehicle> Vehicles { get; set; }
 
+    public virtual DbSet<StoreCustomer> StoreCustomers { get; set; }
+
     //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
     //        => optionsBuilder.UseNpgsql("Host=dpg-d34eq8ur433s73chvri0-a.singapore-postgres.render.com;Port=5432;Database=evm_st5f;Username=evm_st5f_user;Password=Mn6oB3m20pSgp24HE8R9Px86qL7MN9hT;SSL Mode=Require;Trust Server Certificate=true");
@@ -448,6 +450,18 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.BrandId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("vehicle_brand_id_fkey");
+        });
+        modelBuilder.Entity<StoreCustomer>(entity =>
+        {
+            entity.HasKey(sc => new { sc.StoreId, sc.CustomerId }); // 👈 KHÓA CHÍNH KÉP
+
+            entity.HasOne(sc => sc.Store)
+                  .WithMany(s => s.StoreCustomers)
+                  .HasForeignKey(sc => sc.StoreId);
+
+            entity.HasOne(sc => sc.Customer)
+                  .WithMany(c => c.StoreCustomers)
+                  .HasForeignKey(sc => sc.CustomerId);
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -28,5 +28,11 @@ namespace ElectricVehicleDealer.DAL.Entities
         // 🔗 navigation
         [ForeignKey(nameof(CustomerId))]
         public virtual Customer Customer { get; set; } = null!;
+
+        [Column("store_id")]
+        public int? StoreId { get; set; } // nullable nếu promotion không bắt buộc có store
+
+        [ForeignKey("StoreId")]
+        public virtual Store? Store { get; set; }
     }
 }
