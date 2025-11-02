@@ -80,8 +80,8 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             var entity = await _unitOfWork.Repository<Vehicle>().GetByIdAsync(id);
             if (dto.BrandId != null) entity.BrandId = dto.BrandId.Value;
             if (!string.IsNullOrWhiteSpace(dto.ModelName)) entity.ModelName = dto.ModelName;
-            if (!string.IsNullOrWhiteSpace(dto.ImageUrls))
-                entity.ImageUrls = dto.ImageUrls.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            if (dto.ImageUrls != null && dto.ImageUrls.Any())
+                entity.ImageUrls = dto.ImageUrls;
             if (!string.IsNullOrWhiteSpace(dto.Version)) entity.Version = dto.Version;
             if (dto.Year != null) entity.Year = dto.Year.Value;
             if (!string.IsNullOrWhiteSpace(dto.Color)) entity.Color = dto.Color;
