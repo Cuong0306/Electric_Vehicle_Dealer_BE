@@ -15,5 +15,12 @@ namespace ElectricVehicleDealer.DTO.Responses
         public decimal? TotalPrice { get; set; }
         public string? Status { get; set; }
         public string? Note { get; set; }
+
+        public CustomerResponse? Customer { get; set; }
+        public DealerResponse? Dealer { get; set; }
+        public StoreResponse? Store { get; set; }
+
+        public List<QuoteResponse>? Quotes { get; set; }
+        
     }
 }

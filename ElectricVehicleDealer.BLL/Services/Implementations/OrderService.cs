@@ -2,6 +2,7 @@
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DTO.Requests;
+using ElectricVehicleDealer.DTO.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             return false;
         }
 
-        public async Task<List<Order>> GetAllAsync()
+        public async Task<List<OrderResponse>> GetAllAsync()
         {
             try
             {
