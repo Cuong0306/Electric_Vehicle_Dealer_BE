@@ -24,65 +24,80 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 
         public async Task<bool> AllocateVehiclesAsync(AllocateVehicleDto dto)
         {
-            if (dto.VehicleIds == null || !dto.VehicleIds.Any())
-                throw new ArgumentException("Danh sách VehicleIds không được để trống.");
+            if (dto.Stores == null || !dto.Stores.Any())
+                throw new ArgumentException("Danh sách store không được để trống.");
 
-            foreach (var vehicleId in dto.VehicleIds)
+            var vehicle = await _unitOfWork.Repository<Vehicle>().GetByIdAsync(dto.VehicleId);
+            if (vehicle == null)
+                throw new ArgumentException("Xe không tồn tại.");
+
+            foreach (var storeInfo in dto.Stores)
             {
-                // Lấy xe theo Id
-                var vehicle = await _unitOfWork.Repository<Vehicle>().GetByIdAsync(vehicleId);
-                if (vehicle == null)
-                    continue; // bỏ qua xe không tồn tại
+                var existingStorage = (await _unitOfWork.Repository<Storage>().GetAllAsync())
+                    .FirstOrDefault(s => s.VehicleId == dto.VehicleId && s.StoreId == storeInfo.StoreId);
 
-                // Đánh dấu đã phân bổ
-                vehicle.IsAllocation = true;
-                _unitOfWork.Repository<Vehicle>().Update(vehicle);
-
-                // Tạo bản ghi trong Storage
-                var storage = new Storage
+                if (existingStorage != null)
                 {
-                    VehicleId = vehicleId,
-                    StoreId = dto.StoreId,
-                    QuantityAvailable = 1,
-                    LastUpdated = DateTime.Now
-                };
-
-                await _unitOfWork.Repository<Storage>().AddAsync(storage);
-            }
-
-            await _unitOfWork.SaveAsync();
-            return true;
-        }
-
-        public async Task<bool> RecallVehiclesAsync(AllocateVehicleDto dto)
-        {
-            if (dto.VehicleIds == null || !dto.VehicleIds.Any())
-                throw new ArgumentException("Danh sách VehicleIds không được để trống.");
-
-            foreach (var vehicleId in dto.VehicleIds)
-            {
-                // --- 1. Cập nhật lại Vehicle ---
-                var vehicle = await _unitOfWork.Repository<Vehicle>().GetByIdAsync(vehicleId);
-                if (vehicle == null)
-                    continue;
-
-                vehicle.IsAllocation = false; // Đánh dấu là chưa phân bổ
-                _unitOfWork.Repository<Vehicle>().Update(vehicle);
-
-                // --- 2. Xóa bản ghi trong Storage của storeId ---
-                var storages = await _unitOfWork.Repository<Storage>().GetAllAsync();
-                var storageRecord = storages.FirstOrDefault(s =>
-                    s.VehicleId == vehicleId && s.StoreId == dto.StoreId);
-
-                if (storageRecord != null)
+                    existingStorage.QuantityAvailable += storeInfo.Quantity;
+                    existingStorage.LastUpdated = DateTime.Now;
+                    _unitOfWork.Repository<Storage>().Update(existingStorage);
+                }
+                else
                 {
-                    _unitOfWork.Repository<Storage>().Remove(storageRecord);
+                    var newStorage = new Storage
+                    {
+                        VehicleId = dto.VehicleId,
+                        StoreId = storeInfo.StoreId,
+                        QuantityAvailable = storeInfo.Quantity,
+                        LastUpdated = DateTime.Now,
+                        BrandId = vehicle.BrandId
+                    };
+                    await _unitOfWork.Repository<Storage>().AddAsync(newStorage);
                 }
             }
 
             await _unitOfWork.SaveAsync();
             return true;
         }
+
+
+        public async Task<bool> RecallVehiclesAsync(AllocateVehicleDto dto)
+        {
+            if (dto.Stores == null || !dto.Stores.Any())
+                throw new ArgumentException("Danh sách store không được để trống.");
+
+            var vehicle = await _unitOfWork.Repository<Vehicle>().GetByIdAsync(dto.VehicleId);
+            if (vehicle == null)
+                throw new ArgumentException("Xe không tồn tại.");
+
+            foreach (var storeInfo in dto.Stores)
+            {
+                var existingStorage = (await _unitOfWork.Repository<Storage>().GetAllAsync())
+                    .FirstOrDefault(s => s.VehicleId == dto.VehicleId && s.StoreId == storeInfo.StoreId);
+
+                if (existingStorage != null)
+                {
+                    // Trừ số lượng
+                    existingStorage.QuantityAvailable -= storeInfo.Quantity;
+
+                    if (existingStorage.QuantityAvailable <= 0)
+                    {
+                        // Nếu hết xe thì xóa luôn dòng storage
+                        _unitOfWork.Repository<Storage>().Remove(existingStorage);
+                    }
+                    else
+                    {
+                        existingStorage.LastUpdated = DateTime.Now;
+                        _unitOfWork.Repository<Storage>().Update(existingStorage);
+                    }
+                }
+                // Nếu không có record thì bỏ qua (vì không thể thu hồi từ store chưa có xe)
+            }
+
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
+
 
         public async Task<IEnumerable<VehicleResponse>> GetVehiclesByStoreIdAsync(int storeId)
         {
