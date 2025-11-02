@@ -1,4 +1,4 @@
-using ElectricVehicleDealer.BLL.Services.Interfaces;
+﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.UnitOfWork;
@@ -45,15 +45,49 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         public async Task<QuoteResponse> UpdateAsync(int id, UpdateQuoteRequest dto)
         {
             var entity = await _unitOfWork.Repository<Quote>().GetByIdAsync(id);
-            entity.CustomerId = dto.CustomerId;
-            entity.VehicleId = dto.VehicleId;
-            entity.DealerId = dto.DealerId;
-            entity.QuoteDate = dto.QuoteDate;
-            //entity.Status = dto.Status;
+            if (entity == null)
+                throw new Exception($"Quote with id {id} not found");
+
+            // ✅ Update từng field nếu có giá trị
+            if (dto.CustomerId != 0)
+                entity.CustomerId = dto.CustomerId;
+
+            if (dto.VehicleId != 0)
+                entity.VehicleId = dto.VehicleId;
+
+            if (dto.DealerId != 0)
+                entity.DealerId = dto.DealerId;
+
+            if (dto.QuoteDate.HasValue)
+                entity.QuoteDate = dto.QuoteDate.Value;
+
+            // ✅ Xử lý Status linh hoạt (nhận cả số lẫn chữ)
+            if (!string.IsNullOrEmpty(dto.Status))
+            {
+                entity.Status = ParseQuoteStatus(dto.Status);
+            }
+
             _unitOfWork.Repository<Quote>().Update(entity);
             await _unitOfWork.SaveAsync();
+
             return MapToResponse(entity);
         }
+
+        private static QuoteEnum ParseQuoteStatus(string status)
+        {
+            if (int.TryParse(status, out var numericStatus))
+            {
+                if (Enum.IsDefined(typeof(QuoteEnum), numericStatus))
+                    return (QuoteEnum)numericStatus;
+                throw new ArgumentException($"Invalid numeric quote status: {status}");
+            }
+
+            if (Enum.TryParse<QuoteEnum>(status, true, out var parsedEnum))
+                return parsedEnum;
+
+            throw new ArgumentException($"Invalid quote status: {status}");
+        }
+
 
         public async Task<bool> DeleteAsync(int id)
         {
