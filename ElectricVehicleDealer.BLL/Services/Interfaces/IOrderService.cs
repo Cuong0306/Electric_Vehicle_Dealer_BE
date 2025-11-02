@@ -12,7 +12,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
     public interface IOrderService
     {
         Task<List<OrderResponse>> GetAllAsync();
-        Task<Order> GetByIdAsync(int id);
+        Task<OrderResponse> GetByIdAsync(int id);
         Task<int> CreateAsync(CreateOrderDto order);
         Task<int> UpdateAsync(Order order);
         Task<bool> DeleteAsync(int id);

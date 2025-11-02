@@ -49,7 +49,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             }
         }
 
-        public async Task<Order> GetByIdAsync(int id)
+        public async Task<OrderResponse> GetByIdAsync(int id)
         {
             try
             {
