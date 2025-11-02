@@ -11,5 +11,6 @@ namespace ElectricVehicleDealer.DTO.Responses
         public int DealerId { get; set; }
         public DateTime? QuoteDate { get; set; }
         public QuoteEnum? Status { get; set; }
+        public VehicleResponse? Vehicle { get; set; }
     }
 }
