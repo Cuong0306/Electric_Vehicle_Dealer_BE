@@ -6,7 +6,7 @@ namespace ElectricVehicleDealer.DTO.Requests
     {
         public int? BrandId { get; set; }
         public string? ModelName { get; set; }
-        public string? ImageUrls { get; set; }
+        public string[] ImageUrls { get; set; } = Array.Empty<string>();
         public string? Version { get; set; }
         public int? Year { get; set; }
         public string? Color { get; set; }

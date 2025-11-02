@@ -22,7 +22,7 @@ namespace ElectricVehicleDealer.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateVehicleRequest dto) => Ok(await _service.CreateAsync(dto));
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateVehicleRequest dto) => Ok(await _service.UpdateAsync(id, dto));
+        public async Task<IActionResult> Update(int id, UpdateVehicleRequest dto) => Ok(await _service.UpdateAsync(id, dto));
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id) => Ok(await _service.DeleteAsync(id));
