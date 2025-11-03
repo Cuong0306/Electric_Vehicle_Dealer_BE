@@ -17,5 +17,6 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
         Task<int> UpdateAsync(Order order);
         Task<bool> DeleteAsync(int id);
         Task<Order?> GetEntityByIdAsync(int id);
+        Task<List<OrderResponse>> GetOrdersByBrandIdAsync(int brandId);
     }
 }

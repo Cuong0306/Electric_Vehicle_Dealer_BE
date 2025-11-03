@@ -17,5 +17,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<UpdateOrderResponse?> UpdateOrderAsync(int id, UpdateOrderRequest request);
         Task<bool> DeleteAsync(int id);
 
+        Task<List<OrderResponse>> GetOrdersByBrandIdAsync(int brandId);
+
     }
 }
