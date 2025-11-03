@@ -1,5 +1,6 @@
 ﻿using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DTO.Requests;
+using ElectricVehicleDealer.DTO.Responses;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,10 +15,42 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<List<Customer>> GetAllAsync()
+        public async Task<List<GetAllCustomerResponse>> GetAllAsync()
         {
-            return await _context.Customers.ToListAsync();
+            return await _context.Customers
+                .Include(c => c.Agreements)
+                .Include(c => c.Orders)
+                .Select(c => new GetAllCustomerResponse
+                {
+                    CustomerId = c.CustomerId,
+                    FullName = c.FullName,
+                    Phone = c.Phone,
+                    Email = c.Email,
+                    Address = c.Address,
+                    CreateDate = c.CreateDate,
+                    Agreements = c.Agreements.Select(a => new AgreementResponse
+                    {
+                        AgreementId = a.AgreementId,
+                        CustomerId = a.CustomerId,
+                        AgreementDate = a.AgreementDate,
+                        TermsAndConditions = a.TermsAndConditions,
+                        StoreId = a.StoreId,
+                        Status = a.Status,
+                        CustomerName = c.FullName
+                    }).ToList(),
+                    Orders = c.Orders.Select(o => new OrderLiteResponse
+                    {
+                        OrderId = o.OrderId,
+                        CustomerId = o.CustomerId,
+                        DealerId = o.DealerId,
+                        OrderDate = o.OrderDate,
+                        TotalPrice = o.TotalPrice,
+                        Status = o.Status.ToString(),
+                        Note = o.Note
+                    }).ToList()
+                }).ToListAsync();
         }
+
 
         public async Task<List<Customer>> GetCustomersByStoreAsync(int storeId)
         {
@@ -33,10 +66,48 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
         }
 
 
-        public async Task<Customer> GetByIdAsync(int id)
+        public async Task<GetAllCustomerResponse?> GetByIdAsync(int id)
         {
-            return await _context.Customers.FirstOrDefaultAsync(c => c.CustomerId == id);
+            var customer = await _context.Customers
+                .Include(c => c.Agreements)
+                .Include(c => c.Orders)
+                .FirstOrDefaultAsync(c => c.CustomerId == id);
+
+            if (customer == null) return null;
+
+            return new GetAllCustomerResponse
+            {
+                CustomerId = customer.CustomerId,
+                FullName = customer.FullName,
+                Phone = customer.Phone,
+                Email = customer.Email,
+                Address = customer.Address,
+                CreateDate = customer.CreateDate,
+
+                Agreements = customer.Agreements.Select(a => new AgreementResponse
+                {
+                    AgreementId = a.AgreementId,
+                    CustomerId = a.CustomerId,
+                    AgreementDate = a.AgreementDate,
+                    TermsAndConditions = a.TermsAndConditions,
+                    StoreId = a.StoreId,
+                    Status = a.Status,
+                    CustomerName = customer.FullName
+                }).ToList(),
+
+                Orders = customer.Orders.Select(o => new OrderLiteResponse
+                {
+                    OrderId = o.OrderId,
+                    CustomerId = o.CustomerId,
+                    DealerId = o.DealerId,
+                    OrderDate = o.OrderDate,
+                    TotalPrice = o.TotalPrice,
+                    Status = o.Status.ToString(),
+                    Note = o.Note
+                }).ToList()
+            };
         }
+
 
         public async Task<int> CreateAsync(CreateCustomerDto dto)
         {

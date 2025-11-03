@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.BLL.Services.Interfaces
+namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
 {
-    public interface IOrderService
+    public interface IOrderRepository : IGenericRepository<Order>
     {
         Task<List<OrderResponse>> GetAllAsync();
-        Task<OrderResponse> GetByIdAsync(int id);
-        Task<int> CreateAsync(CreateOrderDto order);
-        Task<UpdateOrderResponse?> UpdateOrderAsync(int id, UpdateOrderRequest request);
+        Task<OrderResponse?> GetByIdAsync(int id);
+        Task<int> CreateAsync(CreateOrderDto dto);
+        Task<int> UpdateAsync(Order order);
         Task<bool> DeleteAsync(int id);
-
+        Task<Order?> GetEntityByIdAsync(int id);
     }
 }

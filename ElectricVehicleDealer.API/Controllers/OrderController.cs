@@ -53,14 +53,15 @@ namespace ElectricVehicleDealer.API.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, Order order)
+        public async Task<ActionResult> Update(int id, [FromBody] UpdateOrderRequest request)
         {
-            if (id != order.CustomerId) return BadRequest("ID mismatch");
+            var result = await _service.UpdateOrderAsync(id, request);
+            if (result == null)
+                return NotFound("Order not found");
 
-            var result = await _service.UpdateAsync(order);
-            if (result > 0) return Ok("Updated successfully");
-            return NotFound("Customer not found");
+            return Ok(result);
         }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)

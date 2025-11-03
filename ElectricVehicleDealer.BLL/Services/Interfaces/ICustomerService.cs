@@ -1,5 +1,6 @@
 ﻿using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DTO.Requests;
+using ElectricVehicleDealer.DTO.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,8 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
 {
     public interface ICustomerService
     {
-        Task<List<Customer>> GetAllAsync();
-        Task<Customer> GetByIdAsync(int id);
+        Task<List<GetAllCustomerResponse>> GetAllAsync();
+        Task<GetAllCustomerResponse> GetByIdAsync(int id);
 
         Task<List<Customer>> GetCustomersByStoreAsync(int storeId);
 
