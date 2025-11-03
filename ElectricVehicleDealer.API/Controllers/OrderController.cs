@@ -1,4 +1,5 @@
 ﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
+using ElectricVehicleDealer.BLL.Services.Interfaces.Implementations;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.AspNetCore.Mvc;
@@ -70,5 +71,15 @@ namespace ElectricVehicleDealer.API.Controllers
             if (result) return Ok("Deleted successfully");
             return NotFound("Customer not found");
         }
+
+        [HttpGet("brand/{brandId}")]
+        public async Task<IActionResult> GetByBrandId(int brandId)
+        {
+            var result = await _service.GetOrdersByBrandIdAsync(brandId);
+            if (result == null || result.Count == 0)
+                return NotFound($"No orders found for brandId {brandId}");
+            return Ok(result);
+        }
+
     }
 }

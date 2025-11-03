@@ -120,5 +120,18 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             };
         }
 
+        public async Task<List<OrderResponse>> GetOrdersByBrandIdAsync(int brandId)
+        {
+            try
+            {
+                return await _repository.GetOrdersByBrandIdAsync(brandId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error when getting orders by brandId {brandId}", ex);
+            }
+        }
+
+
     }
 }
