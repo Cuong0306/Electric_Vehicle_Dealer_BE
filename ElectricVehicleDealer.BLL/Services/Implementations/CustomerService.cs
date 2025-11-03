@@ -2,6 +2,7 @@
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DTO.Requests;
+using ElectricVehicleDealer.DTO.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace ElectricVehicleDealer.BLL.Services
             return false;
         }
 
-        public async Task<List<Customer>> GetAllAsync()
+        public async Task<List<GetAllCustomerResponse>> GetAllAsync()
         {
             try
             {
@@ -57,7 +58,7 @@ namespace ElectricVehicleDealer.BLL.Services
         }
 
 
-        public async Task<Customer> GetByIdAsync(int id)
+        public async Task<GetAllCustomerResponse> GetByIdAsync(int id)
         {
             try
             {

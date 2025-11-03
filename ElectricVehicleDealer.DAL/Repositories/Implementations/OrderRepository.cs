@@ -1,5 +1,6 @@
 ﻿using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Enum;
+using ElectricVehicleDealer.DAL.Repositories.Interfaces;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ElectricVehicleDealer.DAL.Repositories.Implementations
 {
-    public class OrderRepository : GenericRepository<Order>
+    public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
         private readonly AppDbContext _context;
         public OrderRepository(AppDbContext context) : base(context)
@@ -267,6 +268,11 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             _context.Orders.Remove(oder);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<Order?> GetEntityByIdAsync(int id)
+        {
+            return await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == id);
         }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.Repositories.Implementations;
+using ElectricVehicleDealer.DAL.Repositories.Interfaces;
+using ElectricVehicleDealer.DAL.UnitOfWork;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
 using System;
@@ -13,8 +16,14 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 {
     public class OrderService : IOrderService
     {
-        private readonly OrderRepository _repository;
-        public OrderService(OrderRepository repository) { _repository = repository; }
+        private readonly IUnitOfWork _unitOfWork; 
+        private readonly IOrderRepository _repository;
+        public OrderService(IOrderRepository repository, IUnitOfWork unitOfWork) 
+        { 
+            _repository = repository;
+            _unitOfWork = unitOfWork;
+        }
+
         public async Task<int> CreateAsync(CreateOrderDto order)
         {
             return await _repository.CreateAsync(order); 
@@ -44,7 +53,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             }
             catch (Exception ex)
             {
-                // có thể log lỗi
+                
                 throw new Exception("Error when getting all customers", ex);
             }
         }
@@ -61,16 +70,55 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             }
         }
 
-        public async Task<int> UpdateAsync(Order order)
+        public async Task<UpdateOrderResponse?> UpdateOrderAsync(int id, UpdateOrderRequest request)
         {
-            try
+            var existingOrder = await _repository.GetEntityByIdAsync(id);
+            if (existingOrder == null)
+                return null;
+
+            
+            if (request.CustomerId != 0)
+                existingOrder.CustomerId = request.CustomerId;
+
+            if (request.DealerId != 0)
+                existingOrder.DealerId = request.DealerId;
+
+            if (request.OrderDate.HasValue)
+                existingOrder.OrderDate = request.OrderDate;
+
+            if (request.TotalPrice.HasValue)
+                existingOrder.TotalPrice = request.TotalPrice;
+
+            if (!string.IsNullOrEmpty(request.Status))
             {
-                return await _repository.UpdateAsync(order);
+                if (int.TryParse(request.Status, out var numericStatus) &&
+                    Enum.IsDefined(typeof(OrderEnum), numericStatus))
+                {
+                    existingOrder.Status = (OrderEnum)numericStatus;
+                }
+                else if (Enum.TryParse<OrderEnum>(request.Status, true, out var parsedStatus))
+                {
+                    existingOrder.Status = parsedStatus;
+                }
             }
-            catch (Exception ex)
+
+
+            if (!string.IsNullOrEmpty(request.Note))
+                existingOrder.Note = request.Note;
+
+            await _repository.UpdateAsync(existingOrder);
+
+            return new UpdateOrderResponse
             {
-                throw new Exception("Error when updating customer", ex);
-            }
+                OrderId = existingOrder.OrderId,
+                CustomerId = existingOrder.CustomerId,
+                DealerId = existingOrder.DealerId,
+                OrderDate = existingOrder.OrderDate,
+                TotalPrice = existingOrder.TotalPrice,
+                Status = existingOrder.Status.ToString(),
+                Note = existingOrder.Note
+            };
         }
+
     }
 }
