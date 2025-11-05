@@ -38,5 +38,12 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             // Thực thi truy vấn và trả về kết quả
             return await query.ToListAsync();
         }
+
+        public async Task<Storage?> GetByVehicleAndStoreAsync(int vehicleId, int? storeId)
+        {
+            return await _context.Storages
+                .FirstOrDefaultAsync(s => s.VehicleId == vehicleId && s.StoreId == storeId);
+        }
+
     }
 }

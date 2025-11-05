@@ -137,19 +137,37 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 
         public async Task<StorageResponse> CreateAsync(CreateStorageRequest dto)
         {
-            var entity = new Storage()
+            var existingStorage = (await _unitOfWork.Repository<Storage>().GetAllAsync())
+                .FirstOrDefault(s =>
+                    s.VehicleId == dto.VehicleId &&
+                    s.BrandId == dto.BrandId &&
+                    s.StoreId == dto.StoreId);
+
+            if (existingStorage != null)
+            {
+                existingStorage.QuantityAvailable += dto.QuantityAvailable;
+                existingStorage.LastUpdated = DateTime.Now;
+                _unitOfWork.Repository<Storage>().Update(existingStorage);
+                await _unitOfWork.SaveAsync();
+                return MapToResponse(existingStorage);
+            }
+
+            var newStorage = new Storage
             {
                 VehicleId = dto.VehicleId,
-                StoreId = dto.StoreId,
                 BrandId = dto.BrandId,
+                StoreId = dto.StoreId,
                 QuantityAvailable = dto.QuantityAvailable,
-                LastUpdated = dto.LastUpdated,
-
+                LastUpdated = DateTime.Now
             };
-            await _unitOfWork.Repository<Storage>().AddAsync(entity);
+
+            await _unitOfWork.Repository<Storage>().AddAsync(newStorage);
             await _unitOfWork.SaveAsync();
-            return MapToResponse(entity);
+
+            return MapToResponse(newStorage);
         }
+
+
 
         public async Task<StorageResponse> UpdateAsync(int id, UpdateStorageRequest dto)
         {
