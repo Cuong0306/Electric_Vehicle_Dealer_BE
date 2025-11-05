@@ -109,10 +109,50 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
         }
 
 
+        //public async Task<int> CreateAsync(CreateCustomerDto dto)
+        //{
+        //    if (dto is null) throw new ArgumentNullException(nameof(dto), "CreateCustomerDto is null");
+        //    if (string.IsNullOrWhiteSpace(dto.FullName)) throw new ArgumentException("FullName is required");
+
+        //    var entity = new Customer
+        //    {
+        //        FullName = dto.FullName,
+        //        Phone = dto.Phone,
+        //        Email = dto.Email,
+        //        Address = dto.Address,
+        //        LicenseUp = dto.LicenseUp,
+        //        LicenseDown = dto.LicenseDown,
+        //        CreateDate = DateTime.Now
+        //    };
+
+        //    // Nếu truyền storeId => gán vào bảng trung gian store_customer
+
+
+        //        var store = await _context.Stores.FindAsync(dto.StoreId);
+        //        if (store == null)
+        //            throw new Exception($"Store with ID {dto.StoreId} not found.");
+
+        //        entity.StoreCustomers.Add(new StoreCustomer
+        //        {
+        //            StoreId = dto.StoreId,
+        //            Customer = entity
+        //        });
+
+
+        //    await _context.Customers.AddAsync(entity);
+        //    return await _context.SaveChangesAsync();
+        //}
+
         public async Task<int> CreateAsync(CreateCustomerDto dto)
         {
-            if (dto is null) throw new ArgumentNullException(nameof(dto), "CreateCustomerDto is null");
-            if (string.IsNullOrWhiteSpace(dto.FullName)) throw new ArgumentException("FullName is required");
+            if (dto is null)
+                throw new ArgumentNullException(nameof(dto), "CreateCustomerDto is null");
+
+            if (string.IsNullOrWhiteSpace(dto.FullName))
+                throw new ArgumentException("FullName is required");
+
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                throw new ArgumentException("Email is required to link StoreCustomer");
 
             var entity = new Customer
             {
@@ -125,24 +165,28 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                 CreateDate = DateTime.Now
             };
 
-            // Nếu truyền storeId => gán vào bảng trung gian store_customer
-      
-            
-                var store = await _context.Stores.FindAsync(dto.StoreId);
-                if (store == null)
-                    throw new Exception($"Store with ID {dto.StoreId} not found.");
-
-                entity.StoreCustomers.Add(new StoreCustomer
-                {
-                    StoreId = dto.StoreId,
-                    Customer = entity
-                });
-            
-
             await _context.Customers.AddAsync(entity);
+            await _context.SaveChangesAsync();
+
+            var createdCustomer = await _context.Customers
+                .FirstOrDefaultAsync(c => c.Email == dto.Email);
+
+            if (createdCustomer == null)
+                throw new Exception($"Customer with email {dto.Email} not found after creation.");
+
+            var store = await _context.Stores.FindAsync(dto.StoreId);
+            if (store == null)
+                throw new Exception($"Store with ID {dto.StoreId} not found.");
+
+            var storeCustomer = new StoreCustomer
+            {
+                StoreId = dto.StoreId,
+                CustomerId = createdCustomer.CustomerId
+            };
+
+            await _context.Set<StoreCustomer>().AddAsync(storeCustomer);
             return await _context.SaveChangesAsync();
         }
-
 
 
 

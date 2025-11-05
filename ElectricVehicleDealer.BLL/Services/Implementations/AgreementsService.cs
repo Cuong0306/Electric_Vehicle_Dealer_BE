@@ -105,7 +105,10 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 TermsAndConditions = agreement.TermsAndConditions,
                 StoreId = agreement.StoreId,
                 Status = agreement.Status,
-                AgreementDate = agreement.AgreementDate
+                AgreementDate = agreement.AgreementDate,
+                FileUrl = agreement.FileUrl,
+                Customer = agreement.Customer,
+                Store = agreement.Store,
             }).ToList();
         }
 
