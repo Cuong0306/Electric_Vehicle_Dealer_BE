@@ -92,7 +92,11 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         {
             var agreements = await _unitOfWork.Agreements.GetAll();
             if (agreements == null || !agreements.Any())
+            {
                 return new List<AgreementResponse>();
+
+            }
+
             return agreements.Select(agreement => new AgreementResponse
             {
                 AgreementId = agreement.AgreementId,

@@ -39,19 +39,15 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             }
         }
 
-        public Task<List<Agreement>> GetAll()
+        public async Task<List<Agreement>> GetAll()
         {
-            var agreements = _context.Agreements
-                .Include(agm => agm.Customer)
-                .ToList();
-            if (agreements == null)
-            {
-                throw new Exception("No Agreements found");
-            }
-            else
-            {
-                return Task.FromResult(agreements);
-            }
+            var agreements = await _context.Agreements
+                    .Include(agm => agm.Customer)
+                    .Include(agm => agm.Store)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+            return agreements;
         }
 
         public Task<Agreement> GetByIdAsync(int id)
