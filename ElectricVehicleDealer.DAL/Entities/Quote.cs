@@ -13,6 +13,7 @@ public partial class Quote
     public int VehicleId { get; set; }
 
     public int DealerId { get; set; }
+    public decimal TaxRate { get; set; } = 0;
 
     public DateTime? QuoteDate { get; set; }
 

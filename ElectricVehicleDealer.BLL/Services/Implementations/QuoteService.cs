@@ -4,6 +4,7 @@ using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.UnitOfWork;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,64 +16,82 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         private readonly IUnitOfWork _unitOfWork;
         public QuoteService(IUnitOfWork uow) => _unitOfWork = uow;
 
+        // Lấy tất cả quote
         public async Task<IEnumerable<QuoteResponse>> GetAllAsync()
         {
-            var list = await _unitOfWork.Repository<Quote>().GetAllAsync();
-            return list.Select(x => MapToResponse(x));
+            var quotes = await _unitOfWork.Repository<Quote>().GetAllAsync();
+            var result = new List<QuoteResponse>();
+
+            foreach (var quote in quotes)
+            {
+                result.Add(await MapToResponseAsync(quote));
+            }
+
+            return result;
         }
 
+        // Lấy quote theo id
         public async Task<QuoteResponse> GetByIdAsync(int id)
         {
-            var entity = await _unitOfWork.Repository<Quote>().GetByIdAsync(id);
-            return MapToResponse(entity);
+            var quote = await _unitOfWork.Repository<Quote>().GetByIdAsync(id);
+            if (quote == null)
+                throw new Exception($"Quote with id {id} not found");
+
+            return await MapToResponseAsync(quote);
         }
 
+        // Tạo mới quote
         public async Task<QuoteResponse> CreateAsync(CreateQuoteRequest dto)
         {
-            var entity = new Quote()
+            var quote = new Quote
             {
                 CustomerId = dto.CustomerId,
                 VehicleId = dto.VehicleId,
                 DealerId = dto.DealerId,
+                TaxRate = dto.TaxRate ?? 0,
                 QuoteDate = dto.QuoteDate,
-                Status = dto.Status ?? QuoteEnum.Draft,
+                Status = dto.Status ?? QuoteEnum.Draft
             };
-            await _unitOfWork.Repository<Quote>().AddAsync(entity);
+
+            await _unitOfWork.Repository<Quote>().AddAsync(quote);
             await _unitOfWork.SaveAsync();
-            return MapToResponse(entity);
+
+            return await MapToResponseAsync(quote);
         }
 
+        // Cập nhật quote
         public async Task<QuoteResponse> UpdateAsync(int id, UpdateQuoteRequest dto)
         {
-            var entity = await _unitOfWork.Repository<Quote>().GetByIdAsync(id);
-            if (entity == null)
+            var quote = await _unitOfWork.Repository<Quote>().GetByIdAsync(id);
+            if (quote == null)
                 throw new Exception($"Quote with id {id} not found");
 
-            // ✅ Update từng field nếu có giá trị
-            if (dto.CustomerId != 0)
-                entity.CustomerId = dto.CustomerId;
+            if (dto.CustomerId != 0) quote.CustomerId = dto.CustomerId;
+            if (dto.VehicleId != 0) quote.VehicleId = dto.VehicleId;
+            if (dto.DealerId != 0) quote.DealerId = dto.DealerId;
+            if (dto.QuoteDate.HasValue) quote.QuoteDate = dto.QuoteDate.Value;
+            if (dto.TaxRate.HasValue) quote.TaxRate = dto.TaxRate.Value;
+            if (!string.IsNullOrEmpty(dto.Status)) quote.Status = ParseQuoteStatus(dto.Status);
 
-            if (dto.VehicleId != 0)
-                entity.VehicleId = dto.VehicleId;
-
-            if (dto.DealerId != 0)
-                entity.DealerId = dto.DealerId;
-
-            if (dto.QuoteDate.HasValue)
-                entity.QuoteDate = dto.QuoteDate.Value;
-
-            // ✅ Xử lý Status linh hoạt (nhận cả số lẫn chữ)
-            if (!string.IsNullOrEmpty(dto.Status))
-            {
-                entity.Status = ParseQuoteStatus(dto.Status);
-            }
-
-            _unitOfWork.Repository<Quote>().Update(entity);
+            _unitOfWork.Repository<Quote>().Update(quote);
             await _unitOfWork.SaveAsync();
 
-            return MapToResponse(entity);
+            return await MapToResponseAsync(quote);
         }
 
+        // Xóa quote
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var quote = await _unitOfWork.Repository<Quote>().GetByIdAsync(id);
+            if (quote == null)
+                throw new Exception($"Quote with id {id} not found");
+
+            _unitOfWork.Repository<Quote>().Remove(quote);
+            await _unitOfWork.SaveAsync();
+            return true;
+        }
+
+        // Parse status linh hoạt
         private static QuoteEnum ParseQuoteStatus(string status)
         {
             if (int.TryParse(status, out var numericStatus))
@@ -88,23 +107,24 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             throw new ArgumentException($"Invalid quote status: {status}");
         }
 
-
-        public async Task<bool> DeleteAsync(int id)
+        // Map Quote -> QuoteResponse
+        private async Task<QuoteResponse> MapToResponseAsync(Quote quote)
         {
-            var entity = await _unitOfWork.Repository<Quote>().GetByIdAsync(id);
-            _unitOfWork.Repository<Quote>().Remove(entity);
-            await _unitOfWork.SaveAsync();
-            return true;
+            // Lấy vehicle riêng theo VehicleId
+            var vehicle = await _unitOfWork.Repository<Vehicle>().GetByIdAsync(quote.VehicleId);
+
+            return new QuoteResponse
+            {
+                QuoteId = quote.QuoteId,
+                CustomerId = quote.CustomerId,
+                VehicleId = quote.VehicleId,
+                DealerId = quote.DealerId,
+                TaxRate = quote.TaxRate,
+                QuoteDate = quote.QuoteDate,
+                Status = quote.Status,
+                VehiclePrice = vehicle?.Price ?? 0m,
+                PriceWithTax = (vehicle?.Price ?? 0m) + ((vehicle?.Price ?? 0m) * quote.TaxRate / 100)
+            };
         }
-
-        private static QuoteResponse MapToResponse(Quote x) => new QuoteResponse
-        {
-            QuoteId = x.QuoteId,
-            CustomerId = x.CustomerId,
-            VehicleId = x.VehicleId,
-            DealerId = x.DealerId,
-            QuoteDate = x.QuoteDate,
-            Status = x.Status,
-        };
     }
 }
