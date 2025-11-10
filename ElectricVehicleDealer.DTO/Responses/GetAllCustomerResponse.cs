@@ -13,6 +13,8 @@ namespace ElectricVehicleDealer.DTO.Responses
         public string Phone { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
+        public string Status { get; set; }
+        public string Description { get; set; }
         public DateTime? CreateDate { get; set; }
 
         public List<AgreementResponse> Agreements { get; set; } = new();

@@ -1,5 +1,6 @@
 ﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ElectricVehicleDealer.API.Controllers
@@ -16,74 +17,83 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         /// <summary>
-        /// Tổng quan (tổng doanh thu, khách hàng, đơn hàng)
+        /// Tổng quan cơ bản (doanh thu, khách hàng, đơn hàng, tổng xe bán ra)
         /// </summary>
         [HttpGet("summary")]
-        public async Task<IActionResult> GetSummary()
+        public async Task<IActionResult> GetSummary([FromQuery] int storeId)
         {
-            var totalRevenue = await _reportService.GetTotalRevenueAsync();
-            var totalCustomers = await _reportService.GetTotalCustomersAsync();
-            var totalOrders = await _reportService.GetTotalOrdersAsync();
+            var totalRevenue = await _reportService.GetTotalRevenueAsync(storeId);
+            var totalCustomers = await _reportService.GetTotalCustomersAsync(storeId);
+            var totalOrders = await _reportService.GetTotalOrdersAsync(storeId);
+            var totalVehiclesSold = await _reportService.GetTotalVehiclesSoldAsync(storeId);
 
-            var result = new
+            return Ok(new
             {
                 TotalRevenue = totalRevenue,
                 TotalCustomers = totalCustomers,
-                TotalOrders = totalOrders
-            };
-
-            return Ok(result);
+                TotalOrders = totalOrders,
+                TotalVehiclesSold = totalVehiclesSold
+            });
         }
 
         /// <summary>
-        /// Doanh thu theo tháng (dùng cho biểu đồ line/bar)
+        /// Top dealer (thực hiện nhiều order nhất)
+        /// </summary>
+        [HttpGet("top-dealer")]
+        public async Task<IActionResult> GetTopDealer([FromQuery] int storeId)
+        {
+            var topDealer = await _reportService.GetTopDealerAsync(storeId);
+            return Ok(new { topDealer.DealerName, topDealer.OrdersCount });
+        }
+
+        /// <summary>
+        /// Top customer (chi tiền nhiều nhất)
+        /// </summary>
+        [HttpGet("top-customer")]
+        public async Task<IActionResult> GetTopCustomer([FromQuery] int storeId)
+        {
+            var topCustomer = await _reportService.GetTopCustomerAsync(storeId);
+            return Ok(new { topCustomer.CustomerName, topCustomer.TotalSpent });
+        }
+
+        /// <summary>
+        /// Doanh thu theo tháng (line/bar chart)
         /// </summary>
         [HttpGet("revenue-by-month")]
-        public async Task<IActionResult> GetRevenueByMonth()
+        public async Task<IActionResult> GetRevenueByMonth([FromQuery] int storeId)
         {
-            var data = await _reportService.GetRevenueByMonthAsync();
-
-            var result = data.Select(x => new
-            {
-                Month = x.Month,
-                Revenue = x.Revenue
-            });
-
-            return Ok(result);
+            var revenueByMonth = await _reportService.GetRevenueByMonthAsync(storeId);
+            return Ok(revenueByMonth.Select(x => new { x.Month, x.Revenue }));
         }
 
         /// <summary>
-        /// Top xe bán chạy nhất
+        /// Top 5 xe bán chạy nhất
         /// </summary>
         [HttpGet("top-vehicles")]
-        public async Task<IActionResult> GetTopVehicles([FromQuery] int top = 5)
+        public async Task<IActionResult> GetTopVehicles([FromQuery] int storeId, [FromQuery] int top = 5)
         {
-            var data = await _reportService.GetTopVehiclesAsync(top);
+            var topVehicles = await _reportService.GetTopVehiclesAsync(storeId, top);
+            return Ok(topVehicles.Select(x => new { x.ModelName, x.Quantity }));
+        }
 
-            var result = data.Select(x => new
-            {
-                ModelName = x.ModelName,
-                Quantity = x.Quantity
-            });
-
-            return Ok(result);
+        /// <summary>
+        /// Top 5 xe ít được mua
+        /// </summary>
+        [HttpGet("bottom-vehicles")]
+        public async Task<IActionResult> GetBottomVehicles([FromQuery] int storeId, [FromQuery] int top = 5)
+        {
+            var bottomVehicles = await _reportService.GetBottomVehiclesAsync(storeId, top);
+            return Ok(bottomVehicles.Select(x => new { x.ModelName, x.Quantity }));
         }
 
         /// <summary>
         /// Tồn kho theo từng model xe
         /// </summary>
         [HttpGet("inventory")]
-        public async Task<IActionResult> GetInventory()
+        public async Task<IActionResult> GetInventory([FromQuery] int storeId)
         {
-            var data = await _reportService.GetInventoryAsync();
-
-            var result = data.Select(x => new
-            {
-                ModelName = x.ModelName,
-                Stock = x.Stock
-            });
-
-            return Ok(result);
+            var inventory = await _reportService.GetInventoryAsync(storeId);
+            return Ok(inventory.Select(x => new { x.ModelName, x.Stock }));
         }
     }
 }
