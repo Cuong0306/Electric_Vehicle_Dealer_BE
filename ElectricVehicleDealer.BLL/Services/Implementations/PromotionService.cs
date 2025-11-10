@@ -71,6 +71,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 Title = p.Title,
                 Description = p.Description,
                 DiscountPercent = p.DiscountPercent,
+                StoreId = p.StoreId,
                 StartDate = p.StartDate,
                 EndDate = p.EndDate
             }).ToList();
@@ -88,6 +89,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 Title = promotion.Title,
                 Description = promotion.Description,
                 DiscountPercent = promotion.DiscountPercent,
+                StoreId = promotion.StoreId,
                 StartDate = promotion.StartDate,
                 EndDate = promotion.EndDate
             };
@@ -123,6 +125,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 Title = promotion.Title,
                 Description = promotion.Description,
                 DiscountPercent = promotion.DiscountPercent,
+                StoreId = promotion.StoreId,
                 StartDate = promotion.StartDate,
                 EndDate = promotion.EndDate
             };
