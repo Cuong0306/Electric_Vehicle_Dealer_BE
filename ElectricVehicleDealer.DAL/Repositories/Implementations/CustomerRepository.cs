@@ -27,6 +27,8 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                     Phone = c.Phone,
                     Email = c.Email,
                     Address = c.Address,
+                    Status = c.Status,
+                    Description = c.Description,
                     CreateDate = c.CreateDate,
                     Agreements = c.Agreements.Select(a => new AgreementResponse
                     {
@@ -77,11 +79,13 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
 
             return new GetAllCustomerResponse
             {
-                CustomerId = customer.CustomerId,
-                FullName = customer.FullName,
-                Phone = customer.Phone,
-                Email = customer.Email,
-                Address = customer.Address,
+                    CustomerId = customer.CustomerId,
+                    FullName = customer.FullName,
+                    Phone = customer.Phone,
+                    Email = customer.Email,
+                    Address = customer.Address,
+                    Status = customer.Status,
+                    Description = customer.Description,
                 CreateDate = customer.CreateDate,
 
                 Agreements = customer.Agreements.Select(a => new AgreementResponse
@@ -162,6 +166,8 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                 Address = dto.Address,
                 LicenseUp = dto.LicenseUp,
                 LicenseDown = dto.LicenseDown,
+                Status = dto.Status,
+                Description = dto.Description,
                 CreateDate = DateTime.Now
             };
 
