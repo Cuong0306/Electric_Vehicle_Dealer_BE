@@ -46,6 +46,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 // --- UnitOfWork/Repositories/Services ---
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
 // Services (mỗi service đăng ký 1 lần)
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IDealerService, DealerService>();
@@ -67,6 +69,7 @@ builder.Services.AddScoped<ITestAppointmentService, TestAppointmentService>();
 builder.Services.AddScoped<IQuoteService, QuoteService>();
 builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 //builder.Services.AddScoped<IPaymentService,PaymentService>();
 
 //builder.Services.AddHttpClient<PayOsService>();

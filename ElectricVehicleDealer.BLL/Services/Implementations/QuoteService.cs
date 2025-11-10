@@ -1,4 +1,5 @@
-﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
+﻿using ElectricVehicleDealer.BLL.Intergations.Interfaces;
+using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.UnitOfWork;
@@ -9,24 +10,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
+namespace ElectricVehicleDealer.BLL.Services.Implementations
 {
     public class QuoteService : IQuoteService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public QuoteService(IUnitOfWork uow) => _unitOfWork = uow;
+        private readonly IEmailService _emailService;
+
+        public QuoteService(IUnitOfWork uow, IEmailService emailService)
+        {
+            _unitOfWork = uow;
+            _emailService = emailService;
+        }
 
         // Lấy tất cả quote
         public async Task<IEnumerable<QuoteResponse>> GetAllAsync()
         {
             var quotes = await _unitOfWork.Repository<Quote>().GetAllAsync();
             var result = new List<QuoteResponse>();
-
             foreach (var quote in quotes)
             {
                 result.Add(await MapToResponseAsync(quote));
             }
-
             return result;
         }
 
@@ -34,9 +39,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         public async Task<QuoteResponse> GetByIdAsync(int id)
         {
             var quote = await _unitOfWork.Repository<Quote>().GetByIdAsync(id);
-            if (quote == null)
-                throw new Exception($"Quote with id {id} not found");
-
+            if (quote == null) throw new Exception($"Quote with id {id} not found");
             return await MapToResponseAsync(quote);
         }
 
@@ -56,6 +59,12 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             await _unitOfWork.Repository<Quote>().AddAsync(quote);
             await _unitOfWork.SaveAsync();
 
+            // Gửi mail ngay nếu quote tạo xong là Accepted
+            if (quote.Status == QuoteEnum.Accepted)
+            {
+                await SendQuoteAcceptedEmailAsync(quote);
+            }
+
             return await MapToResponseAsync(quote);
         }
 
@@ -63,8 +72,9 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         public async Task<QuoteResponse> UpdateAsync(int id, UpdateQuoteRequest dto)
         {
             var quote = await _unitOfWork.Repository<Quote>().GetByIdAsync(id);
-            if (quote == null)
-                throw new Exception($"Quote with id {id} not found");
+            if (quote == null) throw new Exception($"Quote with id {id} not found");
+
+            var oldStatus = quote.Status;
 
             if (dto.CustomerId != 0) quote.CustomerId = dto.CustomerId;
             if (dto.VehicleId != 0) quote.VehicleId = dto.VehicleId;
@@ -76,6 +86,12 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             _unitOfWork.Repository<Quote>().Update(quote);
             await _unitOfWork.SaveAsync();
 
+            // Gửi mail nếu status đổi thành Accepted
+            if (quote.Status == QuoteEnum.Accepted && oldStatus != QuoteEnum.Accepted)
+            {
+                await SendQuoteAcceptedEmailAsync(quote);
+            }
+
             return await MapToResponseAsync(quote);
         }
 
@@ -83,8 +99,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         public async Task<bool> DeleteAsync(int id)
         {
             var quote = await _unitOfWork.Repository<Quote>().GetByIdAsync(id);
-            if (quote == null)
-                throw new Exception($"Quote with id {id} not found");
+            if (quote == null) throw new Exception($"Quote with id {id} not found");
 
             _unitOfWork.Repository<Quote>().Remove(quote);
             await _unitOfWork.SaveAsync();
@@ -110,7 +125,6 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         // Map Quote -> QuoteResponse
         private async Task<QuoteResponse> MapToResponseAsync(Quote quote)
         {
-            // Lấy vehicle riêng theo VehicleId
             var vehicle = await _unitOfWork.Repository<Vehicle>().GetByIdAsync(quote.VehicleId);
 
             return new QuoteResponse
@@ -125,6 +139,24 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 VehiclePrice = vehicle?.Price ?? 0m,
                 PriceWithTax = (vehicle?.Price ?? 0m) + ((vehicle?.Price ?? 0m) * quote.TaxRate / 100)
             };
+        }
+
+        // Gửi mail thông báo quote Accepted
+        private async Task SendQuoteAcceptedEmailAsync(Quote quote)
+        {
+            var customer = await _unitOfWork.Repository<Customer>().GetByIdAsync(quote.CustomerId);
+            if (customer == null || string.IsNullOrEmpty(customer.Email)) return;
+
+            string subject = "Your Quote is Accepted!";
+            string body = $@"
+                <p>Hello {customer.FullName},</p>
+                <p>Your quote #{quote.QuoteId} has been <b>accepted</b>.</p>
+                <p>Vehicle ID: {quote.VehicleId}<br/>
+                Tax: {quote.TaxRate}%<br/>
+                Total Price: {quote.TaxRate / 100 * quote.TaxRate}</p>
+                <p>Thank you for choosing our dealership!</p>";
+
+            await _emailService.SendEmailAsync(customer.Email, subject, body);
         }
     }
 }
