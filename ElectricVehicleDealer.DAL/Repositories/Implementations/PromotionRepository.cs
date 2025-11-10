@@ -38,12 +38,16 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
 
         public async Task<List<Promotion>> GetAll()
         {
-            return await _context.Promotions.ToListAsync();
+            return await _context.Promotions
+                .Include(pr => pr.Store)
+                .ToListAsync();
         }
 
         public async Task<Promotion> GetByIdAsync(int id)
         {
-            var promotion = await _context.Promotions.FirstOrDefaultAsync(pr => pr.PromotionId == id);
+            var promotion = await _context.Promotions
+                .Include(pr => pr.Store)
+                .FirstOrDefaultAsync(pr => pr.PromotionId == id);
             if (promotion == null)
             {
                 throw new KeyNotFoundException("Promotion not found");

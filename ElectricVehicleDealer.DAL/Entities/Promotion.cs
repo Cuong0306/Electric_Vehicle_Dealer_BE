@@ -25,7 +25,7 @@ namespace ElectricVehicleDealer.DAL.Entities
         public DateOnly? EndDate { get; set; }
 
         [Column("store_id")]
-        public int? StoreId { get; set; } // nullable nếu promotion không bắt buộc có store
+        public int? StoreId { get; set; }
 
         [ForeignKey("StoreId")]
         public virtual Store? Store { get; set; }

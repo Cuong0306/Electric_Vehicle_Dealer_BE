@@ -31,6 +31,8 @@ builder.Services.AddControllers()
         o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         // converter DateTime của bạn
         o.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+
+        o.JsonSerializerOptions.Converters.Add(new DateOnlyConverter());
         // Nếu có model tham chiếu vòng:
         // o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
@@ -54,7 +56,7 @@ builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddScoped<IDealerRepository, DealerRepository>();
-
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 //builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -64,7 +66,7 @@ builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<ITestAppointmentService, TestAppointmentService>();
 builder.Services.AddScoped<IQuoteService, QuoteService>();
 builder.Services.AddScoped<IStaffService, StaffService>();
-
+builder.Services.AddScoped<IReportService, ReportService>();
 //builder.Services.AddScoped<IPaymentService,PaymentService>();
 
 //builder.Services.AddHttpClient<PayOsService>();

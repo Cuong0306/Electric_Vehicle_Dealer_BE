@@ -26,6 +26,7 @@ public partial class Customer
 
     [Column("create_date")]
     public DateTime? CreateDate { get; set; }
+    public string? Description { get; set; }
 
     public string? Status { get; set; }
 
