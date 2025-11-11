@@ -15,5 +15,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<bool> SoftDeleteUserAsync(int id);
         Task<bool> HardDeleteUserAsync(int id);
         Task<List<DealerResponse>> GetAllActiveDealerAsync();
+        Task<PagedResult<DealerResponse>> GetPagedAsync(
+            int pageNumber, int pageSize, string? search = null, string? sortBy = null, string? status = null);
     }
 }

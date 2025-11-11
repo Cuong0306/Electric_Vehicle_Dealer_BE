@@ -1,9 +1,11 @@
 ﻿    using ElectricVehicleDealer.BLL.Intergations.Interfaces;
     using ElectricVehicleDealer.DAL.Entities;
     using ElectricVehicleDealer.DAL.Enum;
-    using ElectricVehicleDealer.DTO.Config;
+using ElectricVehicleDealer.DAL.UnitOfWork;
+using ElectricVehicleDealer.DTO.Config;
     using ElectricVehicleDealer.DTO.Requests;
-    using Microsoft.EntityFrameworkCore;
+using ElectricVehicleDealer.DTO.Responses;
+using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Options;
     using System;
     using System.Net.Http;
@@ -19,12 +21,14 @@ namespace ElectricVehicleDealer.BLL.Intergations.Implementations
         private readonly HttpClient _httpClient;
         private readonly PayOsSettings _settings;
         private readonly AppDbContext _appContext;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PayOsService(HttpClient httpClient, IOptions<PayOsSettings> settings, AppDbContext appContext)
+        public PayOsService(HttpClient httpClient, IOptions<PayOsSettings> settings, AppDbContext appContext, IUnitOfWork unitOfWork)
         {
             _httpClient = httpClient;
             _settings = settings.Value;
             _appContext = appContext;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<(string qrUrl, string qrImage, DateTime expiresAt, string status, int paymentId)> CreatePaymentAsync(
@@ -170,6 +174,71 @@ namespace ElectricVehicleDealer.BLL.Intergations.Implementations
 
             Console.WriteLine($"[PayOS Callback] OrderId={payload.OrderCode}, PaymentStatus={payment.Status}, OrderStatus={payment.Order?.Status}");
         }
+        public async Task<PagedResult<PaymentResponse>> GetPaymentsAsync(PaymentQueryRequest request)
+        {
+            // 1. Lấy queryable từ DB
+            var query = _appContext.Payments
+                .OrderByDescending(p => p.PaymentDate ?? DateTime.MinValue)
+                .AsQueryable();
 
+            // 2. Search PaymentId (chính xác)
+            if (request.PaymentId.HasValue)
+            {
+                query = query.Where(p => p.PaymentId == request.PaymentId.Value);
+            }
+
+            // 3. Search CustomerId (chính xác)
+            if (request.CustomerId.HasValue)
+            {
+                query = query.Where(p => p.CustomerId == request.CustomerId.Value);
+            }
+
+            // 4. Search Status (server-side) bằng EF.Functions.Like
+            if (!string.IsNullOrWhiteSpace(request.Status))
+            {
+                string statusLower = request.Status.Trim().ToLower();
+
+                query = query.Where(p =>
+                    EF.Functions.Like(p.Status.ToString().ToLower(), $"%{statusLower}%")
+                );
+            }
+
+            // 5. Tổng số bản ghi
+            int totalCount = await query.CountAsync();
+
+            // 6. Phân trang & projection
+            var items = await query
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(p => new PaymentResponse
+                {
+                    PaymentId = p.PaymentId,
+                    CheckoutUrl = p.CheckoutUrl,
+                    Amount = p.Amount ?? 0,
+                    Status = p.Status.ToString()
+                })
+                .ToListAsync();
+
+            // 7. Trả về kết quả phân trang
+            return new PagedResult<PaymentResponse>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize
+            };
+        }
+        public async Task<List<PaymentResponse>> GetPaymentsByStoreIdAsync(int storeId)
+        {
+            var payments = await _unitOfWork.Payments.GetPaymentsByStoreIdAsync(storeId);
+
+            return payments.Select(p => new PaymentResponse
+            {
+                PaymentId = p.PaymentId,
+                CheckoutUrl = p.CheckoutUrl,
+                Amount = p.Amount ?? 0,
+                Status = p.Status.ToString()
+            }).ToList();
+        }
     }
 }

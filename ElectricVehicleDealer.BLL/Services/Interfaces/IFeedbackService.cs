@@ -12,5 +12,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<FeedbackResponse> CreateAsync(CreateFeedbackRequest dto);
         Task<FeedbackResponse> UpdateAsync(int id, UpdateFeedbackRequest dto);
         Task<bool> DeleteAsync(int id);
+        Task<PagedResult<FeedbackResponse>> GetPagedAsync(
+    int pageNumber, int pageSize, string? search = null, int? rating = null);
     }
 }

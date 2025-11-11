@@ -73,5 +73,12 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public IQueryable<Staff> GetStaffQuery()
+        {
+            return _context.Staff
+                .Include(s => s.Brand)
+                .AsQueryable();
+        }
     }
 }

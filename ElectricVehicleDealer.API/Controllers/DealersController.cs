@@ -26,5 +26,14 @@ namespace ElectricVehicleDealer.API.Controllers
 
         [HttpDelete("{{id}}")]
         public async Task<IActionResult> Delete(int id) => Ok(await _service.DeleteAsync(id));
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged(
+    int pageNumber = 1, int pageSize = 10, string? search = null, string? sortBy = null, string? status = null)
+        {
+            var result = await _service.GetPagedAsync(pageNumber, pageSize, search, sortBy, status);
+            return Ok(result);
+        }
+
     }
 }

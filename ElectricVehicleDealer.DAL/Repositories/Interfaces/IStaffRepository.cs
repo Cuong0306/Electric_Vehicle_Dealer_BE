@@ -16,5 +16,6 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
         Task<List<Staff>> GetAllActiveStaffsAsync();
         Task<bool> UpdateStaffAsync(Staff dto);
         Task<bool> HardDeleteUserAsync(int id);
+        IQueryable<Staff> GetStaffQuery();
     }
 }

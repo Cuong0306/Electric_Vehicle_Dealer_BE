@@ -85,6 +85,11 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                 _context.Agreements.Update(existingAgreement);
                 return Task.FromResult(_context.SaveChanges() > 0);
             }
+
+        }
+        public IQueryable<Agreement> GetAllQuery()
+        {
+            return _context.Agreements.AsQueryable();
         }
     }
 }

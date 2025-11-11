@@ -1,5 +1,6 @@
 ﻿using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Repositories.Interfaces;
+using ElectricVehicleDealer.DTO.Responses;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
@@ -72,6 +73,24 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             _context.Dealers.Update(dealer);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public IQueryable<DealerResponse> GetAllDealerQuery()
+        {
+            return _context.Dealers
+                .Include(d => d.Store)
+                .Where(d => d.Status != "Deleted")
+                .Select(d => new DealerResponse
+                {
+                    DealerId = d.DealerId,
+                    FullName = d.FullName,
+                    Phone = d.Phone,
+                    Email = d.Email,
+                    Address = d.Address,
+                    StoreId = d.StoreId,
+                    Status = d.Status,
+                    Role = d.Role
+                });
         }
     }
 }

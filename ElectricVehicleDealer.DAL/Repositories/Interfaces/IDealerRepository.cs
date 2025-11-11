@@ -1,4 +1,5 @@
 ﻿using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DTO.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,6 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
         Task<List<Dealer>> GetAllActiveDealersAsync();
         Task<bool> UpdateDealerAsync(Dealer dto);
         Task<bool> HardDeleteDealerAsync(int id);
+        IQueryable<DealerResponse> GetAllDealerQuery();
     }
 }

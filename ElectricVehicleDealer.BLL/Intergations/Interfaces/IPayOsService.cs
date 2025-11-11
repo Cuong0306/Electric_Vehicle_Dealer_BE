@@ -1,4 +1,5 @@
 ﻿using ElectricVehicleDealer.DTO.Requests;
+using ElectricVehicleDealer.DTO.Responses;
 using System;
 using System.Threading.Tasks;
 
@@ -16,5 +17,8 @@ namespace ElectricVehicleDealer.BLL.Intergations.Interfaces
         );
 
         Task HandleCallbackAsync(PayOsCallbackRequest payload);
+
+        Task<PagedResult<PaymentResponse>> GetPaymentsAsync(PaymentQueryRequest request);
+        Task<List<PaymentResponse>> GetPaymentsByStoreIdAsync(int storeId);
     }
 }

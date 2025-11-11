@@ -1,4 +1,5 @@
 ﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
+using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.AspNetCore.Mvc;
 
@@ -144,6 +145,33 @@ namespace ElectricVehicleDealer.API.Controllers
                     Error = ex.Message,
                     StackTrace = ex.StackTrace,
                     InnerException = ex.InnerException?.Message
+                });
+            }
+        }
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged(
+    [FromQuery] int pageNumber = 1,
+    [FromQuery] int pageSize = 10,
+    [FromQuery] string? search = null,
+    [FromQuery] string? sortBy = null,
+    [FromQuery] bool sortDesc = false,
+    [FromQuery] AgreementEnum? status = null,
+    [FromQuery] int? storeId = null)
+        {
+            try
+            {
+                var pagedResult = await _agreementsService.GetPagedAgreementsAsync(
+                    pageNumber, pageSize, search, sortBy, sortDesc, status, storeId);
+
+                return Ok(pagedResult);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while getting paged agreements");
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while processing your request.",
+                    Error = ex.Message
                 });
             }
         }

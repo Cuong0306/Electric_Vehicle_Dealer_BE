@@ -18,5 +18,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
         Task<bool> DeleteAsync(int id);
         Task<Order?> GetEntityByIdAsync(int id);
         Task<List<OrderResponse>> GetOrdersByBrandIdAsync(int brandId);
+        Task<List<OrderResponse>> GetOrdersByStoreIdAsync(int storeId);
+        IQueryable<Order> GetOrderQuery();
     }
 }

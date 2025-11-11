@@ -1,4 +1,5 @@
-﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
+﻿using ElectricVehicleDealer.BLL.Extensions;
+using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.UnitOfWork;
@@ -133,5 +134,46 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
 
             }).ToList();
         }
+
+        public async Task<PagedResult<StaffResponse>> GetStaffsPagedAsync(
+    int pageNumber = 1, int pageSize = 10, string? search = null, string? status = null)
+        {
+            var query = _unitOfWork.Staff.GetStaffQuery();
+
+            // Filter theo search
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(s =>
+                    s.FullName.Contains(search) ||
+                    s.Email.Contains(search) ||
+                    s.Phone.Contains(search));
+            }
+
+            // Filter theo status
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(s => s.Status == status);
+            }
+
+            // Sort theo FullName
+            query = query.OrderBy(s => s.FullName);
+
+            // Map & phân trang
+            var pagedResult = await query
+                .Select(s => new StaffResponse
+                {
+                    StaffId = s.StaffId,
+                    FullName = s.FullName,
+                    Phone = s.Phone,
+                    Email = s.Email,
+                    Status = s.Status,
+                    Role = s.Role,
+                    BrandId = s.BrandId
+                })
+                .ToPagedResultAsync(pageNumber, pageSize);
+
+            return pagedResult;
+        }
+
     }
 }

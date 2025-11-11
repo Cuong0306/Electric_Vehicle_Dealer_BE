@@ -1,4 +1,5 @@
-﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
+﻿using ElectricVehicleDealer.BLL.Extensions;
+using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.UnitOfWork;
@@ -149,6 +150,46 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 Role = d.Role,
                 
             }).ToList();
+        }
+
+        public async Task<PagedResult<DealerResponse>> GetPagedAsync(
+    int pageNumber, int pageSize, string? search = null, string? sortBy = null, string? status = null)
+        {
+            var query = _unitOfWork.Dealers.GetAllDealerQuery();
+
+            // Filter status
+            if (!string.IsNullOrEmpty(status))
+                query = query.Where(d => d.Status == status);
+
+            // Filter search theo tên, email, phone
+            if (!string.IsNullOrEmpty(search))
+                query = query.Where(d =>
+                    d.FullName.Contains(search) ||
+                    d.Email.Contains(search) ||
+                    d.Phone.Contains(search));
+
+            // Sort
+            query = sortBy?.ToLower() switch
+            {
+                "fullname" => query.OrderBy(d => d.FullName),
+                "email" => query.OrderBy(d => d.Email),
+                _ => query.OrderBy(d => d.DealerId)
+            };
+
+            // Map sang response trước khi phân trang
+            var projectedQuery = query.Select(x => new DealerResponse
+            {
+                DealerId = x.DealerId,
+                FullName = x.FullName,
+                Phone = x.Phone,
+                Email = x.Email,
+                Address = x.Address,
+                StoreId = x.StoreId,
+                Status = x.Status,
+                Role = x.Role,
+            });
+
+            return await projectedQuery.ToPagedResultAsync(pageNumber, pageSize);
         }
     }
 }

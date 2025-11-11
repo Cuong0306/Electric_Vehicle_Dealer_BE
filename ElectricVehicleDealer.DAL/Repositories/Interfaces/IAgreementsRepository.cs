@@ -1,4 +1,5 @@
 ﻿using ElectricVehicleDealer.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
         Task<bool> CreateAsync(Agreement agreement);
         Task<bool> UpdateAsync(Agreement agreement);
         Task<bool> DeleteAsync(int id);
+        IQueryable<Agreement> GetAllQuery();
         
+
     }
 }

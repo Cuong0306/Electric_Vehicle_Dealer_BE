@@ -20,5 +20,6 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
         void Update(T entity);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
+        IQueryable<T> GetAllQuery();
     }
 }
