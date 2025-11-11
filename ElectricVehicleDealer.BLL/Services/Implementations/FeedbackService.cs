@@ -4,6 +4,7 @@ using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.UnitOfWork;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -105,6 +106,27 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             });
 
             return await projectedQuery.ToPagedResultAsync(pageNumber, pageSize);
+        }
+
+        public async Task<IEnumerable<FeedbackResponse>> GetByStoreIdAsync(int storeId)
+        {
+            if (storeId <= 0)
+                throw new ArgumentException("StoreId không hợp lệ", nameof(storeId));
+
+            // Lấy query Feedback
+            var query = _unitOfWork.Repository<Feedback>().GetAllQuery();
+
+            // Filter theo StoreId thông qua Order
+            query = query.Where(f => f.Order.StoreId == storeId);
+
+            // Sắp xếp mới nhất lên trước (tuỳ chọn)
+            query = query.OrderByDescending(f => f.CreateDate);
+
+            // Thực thi query
+            var list = await query.ToListAsync();
+
+            // Map sang DTO
+            return list.Select(MapToResponse);
         }
     }
 }
