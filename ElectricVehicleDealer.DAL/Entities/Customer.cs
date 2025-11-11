@@ -28,7 +28,7 @@ public partial class Customer
     public DateTime? CreateDate { get; set; }
     public string? Description { get; set; }
 
-    //public string? Status { get; set; }
+    public string? Status { get; set; }
 
     [Column("license_up")] public string? LicenseUp { get; set; }
     [Column("license_down")] public string? LicenseDown { get; set; }
