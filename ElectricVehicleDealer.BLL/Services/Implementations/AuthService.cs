@@ -76,6 +76,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 StoreId = dto.StoreId,
                 FullName = dto.FullName,
                 Email = normalizedEmail,
+                Address = dto.Address,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 Phone = dto.Phone,
                 Role = Enum.Parse<RoleDealerEnum>(role),

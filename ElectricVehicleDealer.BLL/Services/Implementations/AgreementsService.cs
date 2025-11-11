@@ -94,7 +94,11 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         {
             var agreements = await _unitOfWork.Agreements.GetAll();
             if (agreements == null || !agreements.Any())
+            {
                 return new List<AgreementResponse>();
+
+            }
+
             return agreements.Select(agreement => new AgreementResponse
             {
                 AgreementId = agreement.AgreementId,
@@ -103,7 +107,10 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 TermsAndConditions = agreement.TermsAndConditions,
                 StoreId = agreement.StoreId,
                 Status = agreement.Status,
-                AgreementDate = agreement.AgreementDate
+                AgreementDate = agreement.AgreementDate,
+                FileUrl = agreement.FileUrl,
+                Customer = agreement.Customer,
+                Store = agreement.Store,
             }).ToList();
         }
 
