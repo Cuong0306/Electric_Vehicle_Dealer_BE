@@ -145,18 +145,37 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
         private async Task SendQuoteAcceptedEmailAsync(Quote quote)
         {
             var customer = await _unitOfWork.Repository<Customer>().GetByIdAsync(quote.CustomerId);
-            if (customer == null || string.IsNullOrEmpty(customer.Email)) return;
+            var vehicle = await _unitOfWork.Repository<Vehicle>().GetByIdAsync(quote.VehicleId);
 
-            string subject = "Your Quote is Accepted!";
+            if (customer == null || string.IsNullOrEmpty(customer.Email)) return;
+            if (vehicle == null) return;
+
+            decimal basePrice = vehicle.Price ?? 0;
+            decimal taxAmount = basePrice * quote.TaxRate / 100;
+            decimal totalPrice = basePrice + taxAmount;
+
+            string subject = $"Your Quote #{quote.QuoteId} has been Accepted!";
+
             string body = $@"
-                <p>Hello {customer.FullName},</p>
-                <p>Your quote #{quote.QuoteId} has been <b>accepted</b>.</p>
-                <p>Vehicle ID: {quote.VehicleId}<br/>
-                Tax: {quote.TaxRate}%<br/>
-                Total Price: {quote.TaxRate / 100 * quote.TaxRate}</p>
-                <p>Thank you for choosing our dealership!</p>";
+        <p>Hello <b>{customer.FullName}</b>,</p>
+
+        <p>We’re excited to inform you that your quote <b>#{quote.QuoteId}</b> has been <b>accepted</b>.</p>
+
+        <h3>🚗 Vehicle Details</h3>
+        <ul>
+            <li><b>Brand:</b> {vehicle.Brand}</li>
+            <li><b>Model:</b> {vehicle.ModelName}</li>
+            <li><b>Year:</b> {vehicle.Year}</li>
+            <li><b>Base Price:</b> {basePrice:C}</li>
+            <li><b>Tax:</b> {quote.TaxRate}% ({taxAmount:C})</li>
+            <li><b>Total Price:</b> {totalPrice:C}</li>
+        </ul>
+
+        <p>Thank you for choosing our dealership!</p>
+        <p>— EV Dealer Team</p>";
 
             await _emailService.SendEmailAsync(customer.Email, subject, body);
         }
+
     }
 }
