@@ -1,4 +1,5 @@
 using ElectricVehicleDealer.BLL.Services.Interfaces;
+using ElectricVehicleDealer.BLL.Services.Interfaces.Implementations;
 using ElectricVehicleDealer.DTO.Requests;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -11,7 +12,17 @@ namespace ElectricVehicleDealer.API.Controllers
     {
         private readonly IFeedbackService _service;
         public FeedbacksController(IFeedbackService service) => _service = service;
+        // GET: api/Feedback/store/5
+        [HttpGet("store/{storeId:int}")]
+        public async Task<IActionResult> GetByStoreId(int storeId)
+        {
+            var feedbacks = await _service.GetByStoreIdAsync(storeId);
 
+            if (feedbacks == null || !feedbacks.Any())
+                return NotFound($"Không có feedback nào cho StoreId = {storeId}");
+
+            return Ok(feedbacks);
+        }
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
 

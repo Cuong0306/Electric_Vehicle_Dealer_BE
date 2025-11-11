@@ -1,3 +1,4 @@
+using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
 using System.Collections.Generic;
@@ -14,5 +15,6 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<bool> DeleteAsync(int id);
         Task<PagedResult<FeedbackResponse>> GetPagedAsync(
     int pageNumber, int pageSize, string? search = null, int? rating = null);
+        Task<IEnumerable<FeedbackResponse>> GetByStoreIdAsync(int storeId);
     }
 }
