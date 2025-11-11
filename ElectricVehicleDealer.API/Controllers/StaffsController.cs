@@ -66,5 +66,14 @@ namespace ElectricVehicleDealer.API.Controllers
             var staffs = await _service.GetAllActiveStaffAsync();
             return Ok(staffs);
         }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetStaffsPaged(
+    int pageNumber = 1, int pageSize = 10, string? search = null, string? status = null)
+        {
+            var result = await _service.GetStaffsPagedAsync(pageNumber, pageSize, search, status);
+            return Ok(result);
+        }
+
     }
 }

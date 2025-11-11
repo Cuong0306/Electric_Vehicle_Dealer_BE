@@ -1,6 +1,7 @@
 ﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DTO.Requests;
+using ElectricVehicleDealer.DTO.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -69,5 +70,18 @@ namespace ElectricVehicleDealer.API.Controllers
             if (result) return Ok("Deleted successfully");
             return NotFound("Customer not found");
         }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged(
+           [FromQuery] int pageNumber = 1,
+           [FromQuery] int pageSize = 10,
+           [FromQuery] string? search = null,
+           [FromQuery] string? sortBy = null,
+           [FromQuery] string? status = null)
+        {
+            var result = await _service.GetPagedAsync(pageNumber, pageSize, search, sortBy, status);
+            return Ok(result);
+        }
+
     }
 }

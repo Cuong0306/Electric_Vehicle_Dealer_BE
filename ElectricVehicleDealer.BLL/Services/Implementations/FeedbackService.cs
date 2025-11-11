@@ -1,3 +1,4 @@
+﻿using ElectricVehicleDealer.BLL.Extensions;
 using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.UnitOfWork;
@@ -74,5 +75,36 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             Comment = x.Comment,
             CreateDate = x.CreateDate,
         };
+
+        public async Task<PagedResult<FeedbackResponse>> GetPagedAsync(
+    int pageNumber, int pageSize, string? search = null, int? rating = null)
+        {
+            var query = _unitOfWork.Repository<Feedback>().GetAllQuery();
+
+            // 🔍 Filter theo search (ví dụ comment)
+            if (!string.IsNullOrEmpty(search))
+                query = query.Where(f => f.Comment.Contains(search));
+
+            // 🔍 Filter theo rating
+            if (rating.HasValue)
+                query = query.Where(f => f.Rating == rating.Value);
+
+            // 🔃 Sort theo CreateDate descending
+            query = query.OrderByDescending(f => f.CreateDate);
+
+            // Map sang DTO trước khi phân trang
+            var projectedQuery = query.Select(f => new FeedbackResponse
+            {
+                FeedbackId = f.FeedbackId,
+                CustomerId = f.CustomerId,
+                OrderId = f.OrderId,
+                VehicleId = f.VehicleId,
+                Rating = f.Rating,
+                Comment = f.Comment,
+                CreateDate = f.CreateDate,
+            });
+
+            return await projectedQuery.ToPagedResultAsync(pageNumber, pageSize);
+        }
     }
 }

@@ -1,13 +1,13 @@
 ﻿using ElectricVehicleDealer.DAL.Entities;
+using ElectricVehicleDealer.DAL.Repositories.Interfaces;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace ElectricVehicleDealer.DAL.Repositories.Implementations
 {
-    public class CustomerRepository : GenericRepository<Customer>
+    public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
     {
         private readonly AppDbContext _context;
         public CustomerRepository(AppDbContext context) : base(context)
@@ -210,5 +210,44 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public IQueryable<GetAllCustomerResponse> GetAllCustomerQuery()
+        {
+            return _context.Customers
+                .Include(c => c.Agreements)
+                .Include(c => c.Orders)
+                .Select(c => new GetAllCustomerResponse
+                {
+                    CustomerId = c.CustomerId,
+                    FullName = c.FullName,
+                    Phone = c.Phone,
+                    Email = c.Email,
+                    Address = c.Address,
+                    Status = c.Status,
+                    Description = c.Description,
+                    CreateDate = c.CreateDate,
+                    Agreements = c.Agreements.Select(a => new AgreementResponse
+                    {
+                        AgreementId = a.AgreementId,
+                        CustomerId = a.CustomerId,
+                        AgreementDate = a.AgreementDate,
+                        TermsAndConditions = a.TermsAndConditions,
+                        StoreId = a.StoreId,
+                        Status = a.Status,
+                        CustomerName = c.FullName
+                    }).ToList(),
+                    Orders = c.Orders.Select(o => new OrderLiteResponse
+                    {
+                        OrderId = o.OrderId,
+                        CustomerId = o.CustomerId,
+                        DealerId = o.DealerId,
+                        OrderDate = o.OrderDate,
+                        TotalPrice = o.TotalPrice,
+                        Status = o.Status.ToString(),
+                        Note = o.Note
+                    }).ToList()
+                });
+        }
+
     }
 }

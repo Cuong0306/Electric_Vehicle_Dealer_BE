@@ -1,4 +1,5 @@
-﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
+﻿using ElectricVehicleDealer.BLL.Extensions;
+using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DAL.Repositories.Implementations;
@@ -131,7 +132,79 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 throw new Exception($"Error when getting orders by brandId {brandId}", ex);
             }
         }
+        public async Task<PagedResult<OrderResponse>> GetPagedAsync(
+    int pageNumber, int pageSize, string? search = null, string? status = null)
+        {
+            var query = _repository.GetOrderQuery();
 
+            // Filter search theo note, customer name hoặc dealer name
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(o =>
+                    o.Note.Contains(search) ||
+                    o.Customer.FullName.Contains(search) ||
+                    o.Dealer.FullName.Contains(search));
+            }
+
+            // Filter status
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (Enum.TryParse<OrderEnum>(status, true, out var parsedStatus))
+                {
+                    query = query.Where(o => o.Status == parsedStatus);
+                }
+            }
+
+            // Sort theo OrderDate giảm dần
+            query = query.OrderByDescending(o => o.OrderDate);
+
+            // Map & phân trang
+            var pagedOrders = await query
+                .Select(o => new OrderResponse
+                {
+                    OrderId = o.OrderId,
+                    CustomerId = o.CustomerId,
+                    DealerId = o.DealerId,
+                    OrderDate = o.OrderDate,
+                    TotalPrice = o.TotalPrice,
+                    Status = o.Status.ToString(),
+                    Note = o.Note,
+                    Customer = o.Customer == null ? null : new CustomerResponse
+                    {
+                        CustomerId = o.Customer.CustomerId,
+                        FullName = o.Customer.FullName,
+                        Email = o.Customer.Email,
+                        Phone = o.Customer.Phone,
+                        Address = o.Customer.Address
+                    },
+                    Dealer = o.Dealer == null ? null : new DealerResponse
+                    {
+                        DealerId = o.Dealer.DealerId,
+                        FullName = o.Dealer.FullName,
+                        Role = o.Dealer.Role,
+                        Phone = o.Dealer.Phone,
+                        Email = o.Dealer.Email,
+                        Address = o.Dealer.Address,
+                        Status = o.Dealer.Status,
+                        StoreId = o.Dealer.StoreId
+                    }
+                })
+                .ToPagedResultAsync(pageNumber, pageSize);
+
+            return pagedOrders;
+        }
+
+        public async Task<List<OrderResponse>> GetOrdersByStoreIdAsync(int storeId)
+        {
+            try
+            {
+                return await _repository.GetOrdersByStoreIdAsync(storeId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error when getting orders by StoreId {storeId}", ex);
+            }
+        }
 
     }
 }

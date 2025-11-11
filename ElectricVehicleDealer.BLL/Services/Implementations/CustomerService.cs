@@ -1,8 +1,10 @@
-﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
+﻿using ElectricVehicleDealer.BLL.Extensions;
+using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DAL.Repositories.Implementations;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,17 +19,25 @@ namespace ElectricVehicleDealer.BLL.Services
         public CustomerService(CustomerRepository repository) { _repository = repository; }
         public async Task<int> CreateAsync(CreateCustomerDto customer)
         {
+            // check email duplicate
+            if (await IsEmailDuplicateAsync(customer.Email))
+            {
+                throw new Exception($"Email '{customer.Email}' đã tồn tại trong hệ thống.");
+            }
+
             try
             {
                 return await _repository.CreateAsync(customer);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex);
-                throw; 
+                throw;
             }
         }
 
-        
+
+
 
         public async Task<bool> DeleteAsync(int id)
         {
@@ -98,5 +108,53 @@ namespace ElectricVehicleDealer.BLL.Services
             }
         }
 
+        public async Task<PagedResult<GetAllCustomerResponse>> GetPagedAsync(
+            int pageNumber, int pageSize, string? search = null, string? sortBy = null, string? status = null)
+        {
+            var query = _repository.GetAllCustomerQuery();
+
+            // 🔍 Filter search
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(c =>
+                    c.FullName.Contains(search) ||
+                    c.Email.Contains(search) ||
+                    c.Phone.Contains(search));
+            }
+
+            // 🔍 Filter status
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(c => c.Status.ToString() == status);
+            }
+
+            // 🔃 Sort
+            query = sortBy?.ToLower() switch
+            {
+                "fullname" => query.OrderBy(c => c.FullName),
+                "email" => query.OrderBy(c => c.Email),
+                "createdate" => query.OrderByDescending(c => c.CreateDate),
+                _ => query.OrderBy(c => c.CustomerId)
+            };
+
+            // 🔹 Gọi extension BLL để phân trang
+            return await query.ToPagedResultAsync(pageNumber, pageSize);
+        }
+
+        public async Task<bool> IsEmailDuplicateAsync(string email, int? excludeCustomerId = null)
+        {
+            var query = _repository.GetAllCustomerQuery()
+                .Where(c => c.Email.ToLower() == email.Trim().ToLower());
+
+            if (excludeCustomerId.HasValue)
+            {
+                query = query.Where(c => c.CustomerId != excludeCustomerId.Value);
+            }
+
+            return await query.AnyAsync();
+        }
+
     }
+
 }
+

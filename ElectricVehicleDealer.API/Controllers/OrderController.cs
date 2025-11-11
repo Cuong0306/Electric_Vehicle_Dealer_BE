@@ -81,5 +81,34 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(result);
         }
 
+
+        [HttpGet("store/{storeId}")]
+        public async Task<IActionResult> GetOrdersByStoreId(int storeId)
+        {
+            try
+            {
+                var orders = await _service.GetOrdersByStoreIdAsync(storeId);
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = $"Failed to get orders for StoreId {storeId}",
+                    Exception = ex.Message,
+                    InnerException = ex.InnerException?.Message
+                });
+            }
+        }
+
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged(
+    int pageNumber = 1, int pageSize = 10, string? search = null, string? status = null)
+        {
+            var result = await _service.GetPagedAsync(pageNumber, pageSize, search, status);
+            return Ok(result);
+        }
+
     }
 }

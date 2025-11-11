@@ -65,5 +65,10 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
         {
             _dbSet.Update(entity);
         }
+
+        public IQueryable<T> GetAllQuery()
+        {
+            return _dbSet.AsQueryable();
+        }
     }
 }

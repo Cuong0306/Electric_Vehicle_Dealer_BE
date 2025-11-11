@@ -28,6 +28,8 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
         public IStorageRepository Storages { get; }
         public IOrderRepository Orders { get; }
 
+        public IPaymentRepository Payments { get; }
+
         public UnitOfWork(
             AppDbContext context,
             IAgreementsRepository agreementsRepository,
@@ -35,7 +37,8 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
             IDealerRepository dealers,
             IVehicleRepository vehicles,
             IStorageRepository storages,
-            IOrderRepository orders)
+            IOrderRepository orders,
+            IPaymentRepository payments)
         {
             _context = context;
             Agreements = agreementsRepository;
@@ -45,6 +48,7 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
             Storages = storages;
             Orders = orders;
             _repositories = new Hashtable();
+            Payments = payments;
         }
         public void Dispose()
         {

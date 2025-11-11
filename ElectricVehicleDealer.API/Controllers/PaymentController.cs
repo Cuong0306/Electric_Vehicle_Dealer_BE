@@ -68,6 +68,18 @@ namespace ElectricVehicleDealer.API.Controllers
                 });
             }
         }
+        [HttpGet("page")]
+        public async Task<IActionResult> GetPayments([FromQuery] PaymentQueryRequest request)
+        {
+            var pagedResult = await _payOsService.GetPaymentsAsync(request);
+            return Ok(pagedResult);
+        }
+        [HttpGet("store/{storeId}")]
+        public async Task<IActionResult> GetPaymentsByStoreId(int storeId)
+        {
+            var payments = await _payOsService.GetPaymentsByStoreIdAsync(storeId);
+            return Ok(payments);
+        }
 
     }
 }

@@ -18,6 +18,9 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<bool> DeleteAsync(int id);
 
         Task<List<OrderResponse>> GetOrdersByBrandIdAsync(int brandId);
+        Task<List<OrderResponse>> GetOrdersByStoreIdAsync(int storeId);
+        Task<PagedResult<OrderResponse>> GetPagedAsync(
+    int pageNumber, int pageSize, string? search = null, string? status = null);
 
     }
 }
