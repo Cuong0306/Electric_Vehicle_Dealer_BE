@@ -19,5 +19,12 @@ namespace ElectricVehicleDealer.DTO.Responses
         public int? StoreId { get; set; }
         public AgreementEnum? Status { get; set; }
         public string? CustomerName { get; set; }
+        public string? FileUrl { get; set; }
+        // --- Customer ---
+        public CustomerResponse? Customer { get; set; }
+
+        // --- Store ---
+        public StoreResponse? Store { get; set; }
+
     }
 }
