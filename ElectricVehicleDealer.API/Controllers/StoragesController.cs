@@ -44,7 +44,7 @@ namespace ElectricVehicleDealer.API.Controllers
         public async Task<IActionResult> GetById(int id)
             => Ok(await _service.GetByIdAsync(id));
 
-        [HttpGet("store/{storeId}")]
+        [HttpGet("store/{storeId}/Vehicles")]
         public async Task<IActionResult> GetVehiclesByStore(int storeId)
         {
             var result = await _service.GetVehiclesByStoreIdAsync(storeId);
