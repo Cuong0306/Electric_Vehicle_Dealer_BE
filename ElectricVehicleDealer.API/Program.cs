@@ -87,6 +87,7 @@ builder.Services.AddScoped<StoreRepository>();
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IStorageRepository, StorageRepository>();
+builder.Services.AddScoped<ITestAppointmentRepository, TestAppointmentRepository>();
 
 // --- Cloudinary ---
 var cloud = builder.Configuration.GetSection("Cloudinary");
