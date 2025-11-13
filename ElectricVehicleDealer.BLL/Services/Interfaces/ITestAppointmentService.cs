@@ -12,5 +12,6 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<TestAppointmentResponse> CreateAsync(CreateTestAppointmentRequest dto);
         Task<TestAppointmentResponse> UpdateAsync(int id, UpdateTestAppointmentRequest dto);
         Task<bool> DeleteAsync(int id);
+        Task<List<GetAllTestAppointmentByStoreResponse>> GetAppointmentsByStoreIdAsync(int storeId);
     }
 }

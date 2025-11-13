@@ -17,6 +17,7 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
         IStorageRepository Storages { get; }
         IOrderRepository Orders { get; }
         IPaymentRepository Payments { get; }
+        ITestAppointmentRepository TestAppointments { get; }
         Task<int> SaveAsync();
     }
 }

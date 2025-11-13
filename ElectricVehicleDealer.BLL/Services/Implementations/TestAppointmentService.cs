@@ -72,5 +72,10 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             AppointmentDate = x.AppointmentDate,
             Status = x.Status,
         };
+
+        public async Task<List<GetAllTestAppointmentByStoreResponse>> GetAppointmentsByStoreIdAsync(int storeId)
+        {
+            return await _unitOfWork.TestAppointments.GetAppointmentsByStoreIdAsync(storeId);
+        }
     }
 }
