@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ElectricVehicleDealer.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251031151236_addTransactionForPayment")]
-    partial class addTransactionForPayment
+    [Migration("20251115044218_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,10 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("status");
 
+                    b.Property<int?>("StoreId")
+                        .HasColumnType("integer")
+                        .HasColumnName("store_id");
+
                     b.Property<string>("TermsAndConditions")
                         .HasColumnType("text")
                         .HasColumnName("terms_and_conditions");
@@ -61,6 +65,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasName("agreement_pkey");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("StoreId");
 
                     b.ToTable("agreement", (string)null);
                 });
@@ -120,6 +126,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnName("create_date")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
@@ -143,6 +152,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("phone");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
 
                     b.HasKey("CustomerId")
                         .HasName("customer_pkey");
@@ -294,6 +306,10 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("status");
 
+                    b.Property<int?>("StoreId")
+                        .HasColumnType("integer")
+                        .HasColumnName("store_id");
+
                     b.Property<decimal?>("TotalPrice")
                         .HasPrecision(15, 2)
                         .HasColumnType("numeric(15,2)")
@@ -305,6 +321,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("DealerId");
+
+                    b.HasIndex("StoreId");
 
                     b.ToTable("orders", (string)null);
                 });
@@ -391,6 +409,10 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("date")
                         .HasColumnName("start_date");
 
+                    b.Property<int?>("StoreId")
+                        .HasColumnType("integer")
+                        .HasColumnName("store_id");
+
                     b.Property<string>("Title")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
@@ -398,6 +420,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
 
                     b.HasKey("PromotionId")
                         .HasName("promotion_pkey");
+
+                    b.HasIndex("StoreId");
 
                     b.ToTable("promotion", (string)null);
                 });
@@ -419,6 +443,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("dealer_id");
 
+                    b.Property<int?>("PromotionId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("QuoteDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
@@ -430,6 +457,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("status");
 
+                    b.Property<decimal>("TaxRate")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("VehicleId")
                         .HasColumnType("integer")
                         .HasColumnName("vehicle_id");
@@ -440,6 +470,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("DealerId");
+
+                    b.HasIndex("PromotionId");
 
                     b.HasIndex("VehicleId");
 
@@ -580,6 +612,23 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("store", (string)null);
+                });
+
+            modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.StoreCustomer", b =>
+                {
+                    b.Property<int>("StoreId")
+                        .HasColumnType("integer")
+                        .HasColumnName("store_id");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.HasKey("StoreId", "CustomerId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("store_customer");
                 });
 
             modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.TestAppointment", b =>
@@ -817,7 +866,13 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .IsRequired()
                         .HasConstraintName("agreement_customer_id_fkey");
 
+                    b.HasOne("ElectricVehicleDealer.DAL.Entities.Store", "Store")
+                        .WithMany("Agreements")
+                        .HasForeignKey("StoreId");
+
                     b.Navigation("Customer");
+
+                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.Dealer", b =>
@@ -871,9 +926,15 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .IsRequired()
                         .HasConstraintName("orders_dealer_id_fkey");
 
+                    b.HasOne("ElectricVehicleDealer.DAL.Entities.Store", "Store")
+                        .WithMany("Orders")
+                        .HasForeignKey("StoreId");
+
                     b.Navigation("Customer");
 
                     b.Navigation("Dealer");
+
+                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.Payment", b =>
@@ -895,6 +956,15 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.Promotion", b =>
+                {
+                    b.HasOne("ElectricVehicleDealer.DAL.Entities.Store", "Store")
+                        .WithMany("Promotions")
+                        .HasForeignKey("StoreId");
+
+                    b.Navigation("Store");
+                });
+
             modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.Quote", b =>
                 {
                     b.HasOne("ElectricVehicleDealer.DAL.Entities.Customer", "Customer")
@@ -909,6 +979,10 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .IsRequired()
                         .HasConstraintName("quote_dealer_id_fkey");
 
+                    b.HasOne("ElectricVehicleDealer.DAL.Entities.Promotion", "Promotion")
+                        .WithMany()
+                        .HasForeignKey("PromotionId");
+
                     b.HasOne("ElectricVehicleDealer.DAL.Entities.Vehicle", "Vehicle")
                         .WithMany("Quotes")
                         .HasForeignKey("VehicleId")
@@ -918,6 +992,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Dealer");
+
+                    b.Navigation("Promotion");
 
                     b.Navigation("Vehicle");
                 });
@@ -946,6 +1022,25 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.Navigation("Store");
 
                     b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.StoreCustomer", b =>
+                {
+                    b.HasOne("ElectricVehicleDealer.DAL.Entities.Customer", "Customer")
+                        .WithMany("StoreCustomers")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ElectricVehicleDealer.DAL.Entities.Store", "Store")
+                        .WithMany("StoreCustomers")
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Store");
                 });
 
             modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.TestAppointment", b =>
@@ -1005,6 +1100,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
 
                     b.Navigation("Quotes");
 
+                    b.Navigation("StoreCustomers");
+
                     b.Navigation("TestAppointments");
                 });
 
@@ -1026,9 +1123,17 @@ namespace ElectricVehicleDealer.DAL.Migrations
 
             modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.Store", b =>
                 {
+                    b.Navigation("Agreements");
+
                     b.Navigation("Dealers");
 
+                    b.Navigation("Orders");
+
+                    b.Navigation("Promotions");
+
                     b.Navigation("Storages");
+
+                    b.Navigation("StoreCustomers");
                 });
 
             modelBuilder.Entity("ElectricVehicleDealer.DAL.Entities.Vehicle", b =>

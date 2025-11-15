@@ -440,6 +440,9 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("dealer_id");
 
+                    b.Property<int?>("PromotionId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("QuoteDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
@@ -464,6 +467,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.HasIndex("CustomerId");
 
                     b.HasIndex("DealerId");
+
+                    b.HasIndex("PromotionId");
 
                     b.HasIndex("VehicleId");
 
@@ -971,6 +976,10 @@ namespace ElectricVehicleDealer.DAL.Migrations
                         .IsRequired()
                         .HasConstraintName("quote_dealer_id_fkey");
 
+                    b.HasOne("ElectricVehicleDealer.DAL.Entities.Promotion", "Promotion")
+                        .WithMany()
+                        .HasForeignKey("PromotionId");
+
                     b.HasOne("ElectricVehicleDealer.DAL.Entities.Vehicle", "Vehicle")
                         .WithMany("Quotes")
                         .HasForeignKey("VehicleId")
@@ -980,6 +989,8 @@ namespace ElectricVehicleDealer.DAL.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Dealer");
+
+                    b.Navigation("Promotion");
 
                     b.Navigation("Vehicle");
                 });
