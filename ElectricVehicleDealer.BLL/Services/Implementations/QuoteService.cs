@@ -52,6 +52,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 VehicleId = dto.VehicleId,
                 DealerId = dto.DealerId,
                 TaxRate = dto.TaxRate ?? 0,
+                PromotionId = dto.PromotionId,
                 QuoteDate = dto.QuoteDate,
                 Status = dto.Status ?? QuoteEnum.Draft
             };
@@ -82,7 +83,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             if (dto.QuoteDate.HasValue) quote.QuoteDate = dto.QuoteDate.Value;
             if (dto.TaxRate.HasValue) quote.TaxRate = dto.TaxRate.Value;
             if (!string.IsNullOrEmpty(dto.Status)) quote.Status = ParseQuoteStatus(dto.Status);
-
+            if (dto.PromotionId != 0) quote.PromotionId = dto.PromotionId;
             _unitOfWork.Repository<Quote>().Update(quote);
             await _unitOfWork.SaveAsync();
 
@@ -135,6 +136,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 DealerId = quote.DealerId,
                 TaxRate = quote.TaxRate,
                 QuoteDate = quote.QuoteDate,
+                PromotionId = quote.PromotionId,
                 Status = quote.Status,
                 VehiclePrice = vehicle?.Price ?? 0m,
                 PriceWithTax = (vehicle?.Price ?? 0m) + ((vehicle?.Price ?? 0m) * quote.TaxRate / 100)

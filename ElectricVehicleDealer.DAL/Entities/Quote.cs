@@ -18,6 +18,8 @@ public partial class Quote
     public DateTime? QuoteDate { get; set; }
 
     public QuoteEnum Status { get; set; } = QuoteEnum.Draft;
+    public int? PromotionId { get; set; }
+    public virtual Promotion? Promotion { get; set; }
 
     public virtual Customer Customer { get; set; } = null!;
 
