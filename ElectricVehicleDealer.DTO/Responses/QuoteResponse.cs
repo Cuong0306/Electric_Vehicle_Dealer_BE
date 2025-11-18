@@ -17,5 +17,7 @@ namespace ElectricVehicleDealer.DTO.Responses
 
         public decimal? VehiclePrice { get; set; }
         public decimal? PriceWithTax { get; set; }
+        public decimal? DiscountAmount { get; set; }
+        public decimal? FinalPrice { get; set; }
     }
 }

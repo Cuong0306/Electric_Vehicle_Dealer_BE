@@ -248,6 +248,10 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                     }).ToList()
                 });
         }
-
+        public async Task<Customer?> GetByEmailAsync(string email)
+        {
+            return await _context.Set<Customer>()
+                .FirstOrDefaultAsync(c => c.Email == email);
+        }
     }
 }

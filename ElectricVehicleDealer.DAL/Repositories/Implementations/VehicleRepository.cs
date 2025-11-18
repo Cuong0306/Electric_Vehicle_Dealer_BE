@@ -30,5 +30,12 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                                  .Select(s => s.Vehicle)
                                  .ToListAsync();
         }
+
+        public async Task<Vehicle?> GetByIdWithIncludesAsync(int id)
+        {
+            return await _context.Vehicles
+                .Include(v => v.Brand)
+                .FirstOrDefaultAsync(v => v.VehicleId == id);
+        }
     }
 }
