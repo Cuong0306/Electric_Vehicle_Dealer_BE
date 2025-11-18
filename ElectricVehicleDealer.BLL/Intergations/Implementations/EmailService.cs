@@ -1,36 +1,101 @@
 ﻿using ElectricVehicleDealer.BLL.Intergations.Interfaces;
-using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
-using MimeKit;
+using System.IO;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 public class EmailService : IEmailService
 {
-    private readonly IConfiguration _configuration;
-    public EmailService(IConfiguration configuration)
+    private readonly IConfiguration _config;
+
+    public EmailService(IConfiguration config)
     {
-        _configuration = configuration;
+        _config = config;
     }
 
-    public async Task SendEmailAsync(string to, string subject, string body)
+    public async Task SendEmailAsync(string to, string subject, string htmlBody)
     {
-        var emailMessage = new MimeMessage();
-        emailMessage.From.Add(new MailboxAddress(
-            _configuration["EmailSettings:SenderName"],
-            _configuration["EmailSettings:SenderEmail"]));
-        emailMessage.To.Add(MailboxAddress.Parse(to));
-        emailMessage.Subject = subject;
-        emailMessage.Body = new TextPart("html") { Text = body };
+        var smtpConfig = _config.GetSection("EmailSettings");
 
-        using var client = new SmtpClient();
-        await client.ConnectAsync(
-            _configuration["EmailSettings:SmtpServer"],
-            int.Parse(_configuration["EmailSettings:Port"]),
-            MailKit.Security.SecureSocketOptions.StartTls);
-        await client.AuthenticateAsync(
-            _configuration["EmailSettings:Username"],
-            _configuration["EmailSettings:Password"]);
-        await client.SendAsync(emailMessage);
-        await client.DisconnectAsync(true);
+        using var smtp = new SmtpClient
+        {
+            Host = smtpConfig["Host"],
+            Port = int.Parse(smtpConfig["Port"]),
+            EnableSsl = bool.Parse(smtpConfig["EnableSsl"]),
+            Credentials = new NetworkCredential(
+                smtpConfig["Username"],
+                smtpConfig["Password"]
+            )
+        };
+
+        var mail = new MailMessage
+        {
+            From = new MailAddress(smtpConfig["FromEmail"], "EV Dealer"),
+            Subject = subject,
+            Body = htmlBody,
+            IsBodyHtml = true
+        };
+
+        mail.To.Add(to);
+
+        await smtp.SendMailAsync(mail);
+    }
+
+
+    public async Task SendEmailWithAttachmentAsync(
+    string to,
+    string subject,
+    string htmlBody,
+    byte[] attachmentBytes,
+    string attachmentName
+)
+    {
+        var smtpConfig = _config.GetSection("EmailSettings");
+
+        // SỬA Ở ĐÂY: Dùng TryParse để an toàn, nếu thiếu config thì mặc định là true
+        var enableSslStr = smtpConfig["EnableSsl"];
+        bool enableSsl = true; // Giá trị mặc định
+        if (!string.IsNullOrEmpty(enableSslStr))
+        {
+            bool.TryParse(enableSslStr, out enableSsl);
+        }
+
+        // Tương tự với Port
+        int port = 587;
+        if (int.TryParse(smtpConfig["Port"], out int parsedPort))
+        {
+            port = parsedPort;
+        }
+
+        using var smtp = new SmtpClient
+        {
+            Host = smtpConfig["Host"],
+            Port = port,
+            EnableSsl = enableSsl,
+            Credentials = new NetworkCredential(
+                smtpConfig["Username"],
+                smtpConfig["Password"]
+            )
+        };
+
+        var mail = new MailMessage
+        {
+            From = new MailAddress(smtpConfig["FromEmail"], "EV Dealer"),
+            Subject = subject,
+            Body = htmlBody,
+            IsBodyHtml = true
+        };
+
+        mail.To.Add(to);
+
+        // Kiểm tra file đính kèm có dữ liệu không trước khi add
+        if (attachmentBytes != null && attachmentBytes.Length > 0)
+        {
+            var attachment = new Attachment(new MemoryStream(attachmentBytes), attachmentName);
+            mail.Attachments.Add(attachment);
+        }
+
+        await smtp.SendMailAsync(mail);
     }
 }

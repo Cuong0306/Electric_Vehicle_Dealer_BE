@@ -11,5 +11,6 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
     {
         Task<IEnumerable<Vehicle>> GetAllByStoreIdAsync(int storeId);
         Task<IEnumerable<Vehicle>> GetAllByBrandIdAsync(int brandId);
+        Task<Vehicle?> GetByIdWithIncludesAsync(int id);
     }
 }

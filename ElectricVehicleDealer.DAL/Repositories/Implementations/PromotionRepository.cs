@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ElectricVehicleDealer.DAL.Repositories.Implementations
 {
-    public class PromotionRepository : GenericRepository<Promotion>
+    public class PromotionRepository : GenericRepository<Promotion>, IPromotionRepository
     {
         private readonly AppDbContext _context;
         public PromotionRepository(AppDbContext context) : base(context)

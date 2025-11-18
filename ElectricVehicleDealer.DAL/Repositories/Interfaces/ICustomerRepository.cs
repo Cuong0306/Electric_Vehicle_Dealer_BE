@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
 {
-    public interface ICustomerRepository
+    public interface ICustomerRepository : IGenericRepository<Customer>
     {
         //Task<List<GetAllCustomerResponse>> GetAllAsync();
         //Task<Customer?> GetByIdAsync(int id);
@@ -16,6 +16,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
         //Task<List<Customer>> GetAllActiveCustomersAsync();
         //Task<List<Customer>> GetCustomersByStoreAsync(int storeId);
         //Task<bool> HardDeleteCustomerAsync(int id);
+        Task<Customer?> GetByEmailAsync(string email);
         public interface ICustomerRepository
         {
             Task<PagedResult<GetAllCustomerResponse>> GetPagedAsync(

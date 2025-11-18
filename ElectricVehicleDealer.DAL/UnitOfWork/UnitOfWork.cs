@@ -30,7 +30,9 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
 
         public IPaymentRepository Payments { get; }
         public ITestAppointmentRepository TestAppointments { get; }
-
+        public IQuoteRepository Quotes { get; set; }
+        public ICustomerRepository Customers { get; set; }
+        public IPromotionRepository Promotions { get; set; }
         public UnitOfWork(
             AppDbContext context,
             IAgreementsRepository agreementsRepository,
@@ -40,7 +42,10 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
             IStorageRepository storages,
             IOrderRepository orders,
             IPaymentRepository payments,
-            ITestAppointmentRepository testAppointments)
+            ITestAppointmentRepository testAppointments,
+            IQuoteRepository quotes,
+            ICustomerRepository customers,
+            IPromotionRepository promotions)
         {
             _context = context;
             Agreements = agreementsRepository;
@@ -52,6 +57,9 @@ namespace ElectricVehicleDealer.DAL.UnitOfWork
             _repositories = new Hashtable();
             Payments = payments;
             TestAppointments = testAppointments;
+            Quotes = quotes;
+            Customers = customers;
+            Promotions = promotions;
         }
         public void Dispose()
         {
