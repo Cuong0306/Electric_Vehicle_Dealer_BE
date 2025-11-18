@@ -34,3 +34,7 @@ artifacts/
 *.ldf
 *.mdf
 *.ide
+
+# User-specific configurations
+appsettings.json
+appsettings.Development.json
