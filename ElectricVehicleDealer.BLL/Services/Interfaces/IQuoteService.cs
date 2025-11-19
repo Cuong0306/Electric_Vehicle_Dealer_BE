@@ -7,6 +7,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
 {
     public interface IQuoteService
     {
+        Task<IEnumerable<QuoteResponse>> GetQuotesByCustomerIdAsync(int customerId);
         Task<IEnumerable<QuoteResponse>> GetAllAsync();
         Task<QuoteResponse> GetByIdAsync(int id);
         Task<QuoteResponse> CreateAsync(CreateQuoteRequest dto);

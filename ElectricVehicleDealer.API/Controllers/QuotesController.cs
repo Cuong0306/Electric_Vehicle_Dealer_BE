@@ -26,5 +26,9 @@ namespace ElectricVehicleDealer.API.Controllers
 
         [HttpDelete("{{id}}")]
         public async Task<IActionResult> Delete(int id) => Ok(await _service.DeleteAsync(id));
+        
+        [HttpGet("customer/{customerId}")]
+        public async Task<IActionResult> GetByCustomerId(int customerId)
+            => Ok(await _service.GetQuotesByCustomerIdAsync(customerId));
     }
 }

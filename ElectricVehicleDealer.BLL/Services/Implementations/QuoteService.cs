@@ -29,9 +29,19 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             QuestPDF.Settings.License = LicenseType.Community;
         }
 
-        // ============================
-        // CRUD 
-        // ============================
+        public async Task<IEnumerable<QuoteResponse>> GetQuotesByCustomerIdAsync(int customerId)
+        {
+            // Lấy tất cả quote rồi lọc (nếu Repository có hàm Find/GetByCondition thì nên dùng để tối ưu hơn)
+            var allQuotes = await _unitOfWork.Quotes.GetAllAsync();
+            var customerQuotes = allQuotes.Where(q => q.CustomerId == customerId);
+
+            var result = new List<QuoteResponse>();
+            foreach (var quote in customerQuotes)
+            {
+                result.Add(await MapToResponseAsync(quote));
+            }
+            return result;
+        }
         public async Task<IEnumerable<QuoteResponse>> GetAllAsync()
         {
             var quotes = await _unitOfWork.Quotes.GetAllAsync();
