@@ -52,13 +52,11 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
 
         public async Task<QuoteResponse> CreateAsync(CreateQuoteRequest dto)
         {
-            // ===== 1️⃣ Kiểm tra request =====
             if (dto.CustomerId == 0) throw new Exception("CustomerId is required");
             if (dto.VehicleId == 0) throw new Exception("VehicleId is required");
             if (dto.DealerId == 0) throw new Exception("DealerId is required");
             if (!dto.QuoteDate.HasValue) dto.QuoteDate = DateTime.Now;
 
-            // ===== 2️⃣ Load entities với Include =====
             var customer = await _unitOfWork.Customers.GetByIdAsync(dto.CustomerId)
                 ?? throw new Exception($"Customer {dto.CustomerId} not found");
 
@@ -78,7 +76,6 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                     ?? throw new Exception($"Promotion {dto.PromotionId.Value} not found");
             }
 
-            // ===== 3️⃣ Tạo Quote =====
             var quote = new Quote
             {
                 CustomerId = customer.CustomerId,
@@ -93,13 +90,11 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             await _unitOfWork.Quotes.AddAsync(quote);
             await _unitOfWork.SaveAsync();
 
-            // Gán navigation properties
             quote.Customer = customer;
             quote.Vehicle = vehicle;
             quote.Dealer = dealer;
             quote.Promotion = promotion;
 
-            // Gửi email nếu Accepted
             if (quote.Status == QuoteEnum.Accepted)
             {
                 await SendQuoteAcceptedEmailAsync(quote, customer, vehicle, dealer);
@@ -194,15 +189,16 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                                 : null;
 
             decimal basePrice = vehicle?.Price ?? 0;
-            decimal priceWithTax = basePrice + (basePrice * quote.TaxRate / 100);
 
             decimal discountAmount = 0;
             if (promotion != null && promotion.DiscountPercent.HasValue && promotion.DiscountPercent.Value > 0)
             {
                 discountAmount = basePrice * promotion.DiscountPercent.Value / 100;
             }
-            decimal finalPrice = priceWithTax - discountAmount;
 
+            decimal priceAfterDiscount = basePrice - discountAmount;
+            decimal taxAmount = priceAfterDiscount * quote.TaxRate / 100;
+            decimal finalPrice = priceAfterDiscount + taxAmount;
 
             return new QuoteResponse
             {
@@ -215,20 +211,16 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 QuoteDate = quote.QuoteDate,
                 Status = quote.Status,
                 VehiclePrice = basePrice,
-                PriceWithTax = priceWithTax,
+                PriceWithTax = finalPrice,
                 DiscountAmount = discountAmount,
                 FinalPrice = finalPrice
             };
         }
 
-
         private async Task SendQuoteAcceptedEmailAsync(Quote quote, Customer customer, Vehicle vehicle, Dealer dealer)
         {
-            // Bỏ Try-Catch để debug dễ hơn
             if (customer == null || vehicle == null || dealer == null || string.IsNullOrEmpty(customer.Email))
-            {
                 return;
-            }
 
             var pdfBytes = GenerateQuotePdf(quote, customer, vehicle, dealer);
 
@@ -258,24 +250,25 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             string dealerPhone = dealer.Phone ?? "Không có";
 
             DateTime quoteDate = quote.QuoteDate ?? DateTime.Now;
-
             decimal basePrice = vehicle.Price ?? 0;
             decimal taxRate = quote.TaxRate;
-            decimal taxAmount = basePrice * taxRate / 100;
-            decimal priceWithTax = basePrice + taxAmount;
 
+            // Tính toán
             decimal discountAmount = 0;
-            string promotionName = "Không có";
-
+            string promotionName = "";
             if (quote.PromotionId.HasValue && quote.Promotion != null && quote.Promotion.DiscountPercent.HasValue)
             {
                 discountAmount = basePrice * quote.Promotion.DiscountPercent.Value / 100;
-                promotionName = quote.Promotion.Title ?? $"Giảm giá {quote.Promotion.DiscountPercent.Value}%";
+                promotionName = quote.Promotion.Title ?? $"{quote.Promotion.DiscountPercent.Value}%";
             }
-            decimal finalPrice = priceWithTax - discountAmount;
+
+            decimal priceAfterDiscount = basePrice - discountAmount;
+            decimal taxAmount = priceAfterDiscount * taxRate / 100;
+            decimal finalPrice = priceAfterDiscount + taxAmount;
 
             var vietnamCulture = new CultureInfo("vi-VN");
 
+            // --- TẠO PDF ---
             var doc = Document.Create(container =>
             {
                 container.Page(page =>
@@ -285,125 +278,166 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                     page.PageColor(Colors.White);
                     page.DefaultTextStyle(x => x.FontSize(10).FontFamily("Arial"));
 
-                    // ==== HEADER KHÔNG DÙNG ẢNH ====
-                    page.Header().Column(headerCol =>
+                    // 1. HEADER
+                    page.Header().Column(col =>
                     {
-                        headerCol.Item().Column(col =>
-                        {
-                            col.Item().Text("CÔNG TY CỔ PHẦN EV DEALER").Bold().FontSize(20).FontColor(Colors.Blue.Medium).AlignCenter();
-                            col.Item().Text("Địa chỉ: 123 Đường XYZ, Quận 1, TP. Hồ Chí Minh").FontSize(10).AlignCenter();
-                            col.Item().Text("Điện thoại: (028) 1234 5678 | Email: info@evdealer.vn").FontSize(10).AlignCenter();
-                        });
-
-                        headerCol.Item().PaddingTop(10).LineHorizontal(1).LineColor(Colors.Grey.Lighten1);
-                    });
-                    // ===============================
-
-                    page.Content().PaddingVertical(1, Unit.Centimetre).Column(col =>
-                    {
-                        col.Spacing(15);
-
-                        col.Item().Text("PHIẾU BÁO GIÁ").Bold().FontSize(24).FontColor(Colors.Blue.Darken2).AlignCenter();
-                        col.Item().PaddingBottom(10).LineHorizontal(1).LineColor(Colors.Grey.Lighten1);
-
                         col.Item().Row(row =>
                         {
-                            row.RelativeColumn().Column(colInfo =>
+                            row.RelativeColumn().Column(c =>
                             {
-                                colInfo.Item().Text($"Mã báo giá: {quote.QuoteId}").SemiBold().FontSize(11);
-                                colInfo.Item().Text($"Ngày báo giá: {quoteDate.ToString("dd/MM/yyyy", vietnamCulture)}").SemiBold().FontSize(11);
-                                colInfo.Item().Text($"Người lập: {dealerName}").FontSize(11);
-                                colInfo.Item().Text($"Điện thoại: {dealerPhone}").FontSize(11);
+                                c.Item().Text("CÔNG TY CỔ PHẦN EV DEALER VIỆT NAM").FontSize(16).Bold().FontColor(Colors.Blue.Darken2);
+                                c.Item().Text("Địa chỉ: Tòa nhà ABC, 123 Đường XYZ, Quận 1, TP. Hồ Chí Minh").FontSize(9).FontColor(Colors.Grey.Darken2);
+                                c.Item().Text("Hotline: 1900 1234  |  Email: support@evdealer.vn  |  Website: www.evdealer.vn").FontSize(9).FontColor(Colors.Grey.Darken2);
+                            });
+                        });
+                        col.Item().PaddingVertical(10).LineHorizontal(2).LineColor(Colors.Blue.Medium);
+                    });
+
+                    // 2. CONTENT
+                    page.Content().PaddingVertical(10).Column(col =>
+                    {
+                        col.Item().Text("BẢNG BÁO GIÁ").FontSize(22).Bold().FontColor(Colors.Blue.Darken3).AlignCenter();
+                        col.Item().PaddingBottom(20).Text($"(Số: BG-{quote.QuoteId:000000})").FontSize(10).Italic().AlignCenter();
+
+                        // Thông tin 2 cột
+                        col.Item().Border(1).BorderColor(Colors.Grey.Lighten2).Padding(15).Row(row =>
+                        {
+                            // Cột trái: Khách hàng
+                            row.RelativeColumn().Column(c =>
+                            {
+                                c.Item().PaddingBottom(5).Text("THÔNG TIN KHÁCH HÀNG").Bold().FontSize(11).FontColor(Colors.Blue.Darken2);
+                                c.Item().Text(t => { t.Span("Họ và tên: ").SemiBold(); t.Span(customerName); });
+                                c.Item().Text(t => { t.Span("Email: ").SemiBold(); t.Span(customerEmail); });
+                                c.Item().Text(t => { t.Span("Ngày báo giá: ").SemiBold(); t.Span(quoteDate.ToString("dd/MM/yyyy", vietnamCulture)); });
                             });
 
-                            row.RelativeColumn().Column(colInfo =>
+                            // Cột phải: Người phụ trách
+                            row.RelativeColumn().PaddingLeft(20).Column(c =>
                             {
-                                colInfo.Item().PaddingBottom(5).Text("THÔNG TIN KHÁCH HÀNG").Bold().FontSize(12);
-                                colInfo.Item().Text($"Họ và tên: {customerName}").FontSize(11);
-                                colInfo.Item().Text($"Email: {customerEmail}").FontSize(11);
+                                c.Item().PaddingBottom(5).Text("NHÂN VIÊN PHỤ TRÁCH").Bold().FontSize(11).FontColor(Colors.Blue.Darken2);
+                                c.Item().Text(t => { t.Span("Nhân viên: ").SemiBold(); t.Span(dealerName); });
+                                c.Item().Text(t => { t.Span("Điện thoại: ").SemiBold(); t.Span(dealerPhone); });
+                                c.Item().Text(t => { t.Span("Hiệu lực: ").SemiBold(); t.Span("07 ngày kể từ ngày báo giá"); });
                             });
                         });
 
-                        col.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Grey.Lighten1);
+                        col.Item().PaddingBottom(20);
 
-                        col.Item().Text("CHI TIẾT SẢN PHẨM").Bold().FontSize(14).FontColor(Colors.Blue.Darken2);
+                        // Bảng chi tiết sản phẩm
                         col.Item().Table(table =>
                         {
                             table.ColumnsDefinition(columns =>
                             {
-                                columns.ConstantColumn(30);
+                                columns.ConstantColumn(40);
                                 columns.RelativeColumn(4);
                                 columns.RelativeColumn(1);
                                 columns.RelativeColumn(2);
-                                columns.RelativeColumn(1);
                                 columns.RelativeColumn(2);
                             });
 
+                            // Header Bảng
                             table.Header(header =>
                             {
-                                header.Cell().Element(CellStyleHeader).Text("STT").Bold();
-                                header.Cell().Element(CellStyleHeader).Text("Tên Xe (Hãng)").Bold();
-                                header.Cell().Element(CellStyleHeader).Text("Năm SX").Bold();
-                                header.Cell().Element(CellStyleHeader).AlignRight().Text("Đơn Giá").Bold();
-                                header.Cell().Element(CellStyleHeader).AlignRight().Text("Thuế (%)").Bold();
-                                header.Cell().Element(CellStyleHeader).AlignRight().Text("Thành Tiền").Bold();
+                                header.Cell().Element(CellStyleHeader).Text("STT");
+                                header.Cell().Element(CellStyleHeader).Text("Mô tả / Tên xe");
+                                header.Cell().Element(CellStyleHeader).AlignCenter().Text("Năm");
+                                header.Cell().Element(CellStyleHeader).AlignRight().Text("Đơn giá");
+                                header.Cell().Element(CellStyleHeader).AlignRight().Text("Thành tiền");
                             });
 
-                            table.Cell().Element(CellStyleData).Text("1");
-                            table.Cell().Element(CellStyleData).Text($"{brandName} {modelName} ({vehicle.Year})");
-                            table.Cell().Element(CellStyleData).Text($"{vehicle.Year}");
-
-                            table.Cell().Element(CellStyleData).AlignRight().Text(basePrice.ToString("N0", vietnamCulture) + " VNĐ");
-                            table.Cell().Element(CellStyleData).AlignRight().Text(taxRate.ToString("F0", vietnamCulture) + "%");
-                            table.Cell().Element(CellStyleData).AlignRight().Text(priceWithTax.ToString("N0", vietnamCulture) + " VNĐ");
+                            // Nội dung Bảng
+                            table.Cell().Element(CellStyleData).AlignCenter().Text("1");
+                            table.Cell().Element(CellStyleData).Column(c => {
+                                c.Item().Text($"{brandName} {modelName}").Bold();
+                            });
+                            table.Cell().Element(CellStyleData).AlignCenter().Text($"{vehicle.Year}");
+                            table.Cell().Element(CellStyleData).AlignRight().Text(basePrice.ToString("N0", vietnamCulture));
+                            table.Cell().Element(CellStyleData).AlignRight().Text(basePrice.ToString("N0", vietnamCulture));
                         });
 
-                        col.Item().PaddingTop(20).AlignRight().Column(colTotal =>
+                        // PHẦN TỔNG KẾT
+                        col.Item().PaddingTop(10).Row(row =>
                         {
-                            colTotal.Item().Text($"Giá gốc: {basePrice.ToString("N0", vietnamCulture)} VNĐ").FontSize(11);
-                            colTotal.Item().Text($"Thuế ({taxRate.ToString("F0", vietnamCulture)}%): {taxAmount.ToString("N0", vietnamCulture)} VNĐ").FontSize(11);
-
-                            if (discountAmount > 0)
+                            // Bên trái: Số tiền bằng chữ
+                            row.RelativeColumn(6).PaddingRight(20).Column(c =>
                             {
-                                colTotal.Item().Text($"Chiết khấu ({promotionName}): -{discountAmount.ToString("N0", vietnamCulture)} VNĐ").FontSize(11).FontColor(Colors.Red.Medium);
-                            }
+                                c.Item().Text("Số tiền bằng chữ:").Bold().FontSize(10);
+                                c.Item().Text("...............................................................................................................").Italic().FontColor(Colors.Grey.Darken1);
+                            });
 
-                            colTotal.Item().PaddingTop(5).Text($"TỔNG THANH TOÁN: {finalPrice.ToString("N0", vietnamCulture)} VNĐ").Bold().FontSize(14).FontColor(Colors.Red.Darken4);
+                            // Bên phải: Bảng tính tổng
+                            row.RelativeColumn(4).Border(1).BorderColor(Colors.Grey.Lighten2).Padding(10).Column(summary =>
+                            {
+                                summary.Item().Table(t =>
+                                {
+                                    t.ColumnsDefinition(cd =>
+                                    {
+                                        cd.RelativeColumn(2); // Label
+                                        cd.RelativeColumn(3); // Value
+                                    });
+
+                                    // Cộng tiền hàng
+                                    t.Cell().PaddingBottom(4).Text("Cộng tiền hàng:");
+                                    t.Cell().PaddingBottom(4).AlignRight().Text(basePrice.ToString("N0", vietnamCulture));
+
+                                    // Chiết khấu
+                                    if (discountAmount > 0)
+                                    {
+                                        t.Cell().PaddingBottom(4).Text($"Chiết khấu ({promotionName}):").FontColor(Colors.Red.Medium).FontSize(9);
+                                        t.Cell().PaddingBottom(4).AlignRight().Text("-" + discountAmount.ToString("N0", vietnamCulture)).FontColor(Colors.Red.Medium);
+                                    }
+
+                                    // Thuế (đã sửa text)
+                                    t.Cell().PaddingBottom(4).Text($"Thuế ({taxRate.ToString("F0", vietnamCulture)}%):");
+                                    t.Cell().PaddingBottom(4).AlignRight().Text(taxAmount.ToString("N0", vietnamCulture));
+
+                                    // Đường kẻ ngăn cách
+                                    t.Cell().ColumnSpan(2).PaddingVertical(5).LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
+
+                                    // Tổng cộng
+                                    t.Cell().Text("TỔNG CỘNG:").Bold();
+                                    t.Cell().AlignRight().Text(finalPrice.ToString("N0", vietnamCulture) + " VNĐ").Bold().FontColor(Colors.Blue.Darken2).FontSize(12);
+                                });
+                            });
                         });
 
-                        col.Item().PaddingTop(50).Row(row =>
+                        // CHỮ KÝ
+                        col.Item().PaddingTop(40).Row(row =>
                         {
-                            row.RelativeColumn().Column(colSign =>
+                            row.RelativeColumn().Column(c =>
                             {
-                                colSign.Item().Text("Khách hàng").Bold().FontSize(11).AlignCenter();
-                                colSign.Item().PaddingTop(50).Text("(Ký và ghi rõ họ tên)").FontSize(10).AlignCenter();
+                                c.Item().AlignCenter().Text("ĐẠI DIỆN KHÁCH HÀNG").Bold();
+                                c.Item().AlignCenter().Text("(Ký và ghi rõ họ tên)").FontSize(9).Italic();
                             });
-                            row.RelativeColumn().Column(colSign =>
+
+                            row.RelativeColumn().Column(c =>
                             {
-                                colSign.Item().Text("Đại diện EV Dealer").Bold().FontSize(11).AlignCenter();
-                                colSign.Item().PaddingTop(10).Text(dealerName).FontSize(10).AlignCenter();
-                                colSign.Item().PaddingTop(20).Text("(Ký và ghi rõ họ tên)").FontSize(10).AlignCenter();
+                                c.Item().AlignCenter().Text("ĐẠI DIỆN CÔNG TY").Bold();
+                                c.Item().AlignCenter().Text("(Ký, đóng dấu và ghi rõ họ tên)").FontSize(9).Italic();
+                                c.Item().PaddingTop(60).AlignCenter().Text(dealerName).Bold();
                             });
                         });
-
-                        col.Item().PaddingTop(30).Text("Ghi chú: Báo giá có hiệu lực trong 7 ngày làm việc.").FontSize(9).Italic();
-                        col.Item().Text("Trân trọng cảm ơn quý khách hàng đã tin tưởng và lựa chọn EV Dealer!").FontSize(9).Italic();
                     });
 
-                    page.Footer().AlignCenter().Text(x =>
+                    // 3. FOOTER
+                    page.Footer().Column(col =>
                     {
-                        x.Span("EV Dealer © ").FontSize(8).FontColor(Colors.Grey.Medium);
-                        x.Span(DateTime.Now.Year.ToString()).FontSize(8).FontColor(Colors.Grey.Medium);
-                        x.Span(" | Trang ").FontSize(8).FontColor(Colors.Grey.Medium);
-                        x.CurrentPageNumber().FontSize(8).FontColor(Colors.Grey.Medium);
-                        x.Span(" / ").FontSize(8).FontColor(Colors.Grey.Medium);
-                        x.TotalPages().FontSize(8).FontColor(Colors.Grey.Medium);
+                        col.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
+                        col.Item().PaddingTop(5).AlignCenter().Text("Cảm ơn Quý khách đã tin tưởng và lựa chọn dịch vụ của chúng tôi!").FontSize(9).Italic().FontColor(Colors.Grey.Darken2);
+                        col.Item().AlignCenter().Text(x =>
+                        {
+                            x.Span("Trang ");
+                            x.CurrentPageNumber();
+                            x.Span(" / ");
+                            x.TotalPages();
+                        });
                     });
                 });
             });
 
-            static IContainer CellStyleHeader(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Darken1).PaddingVertical(5).Background(Colors.Grey.Lighten3);
-            static IContainer CellStyleData(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
+            // Style Helper
+            static IContainer CellStyleHeader(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Darken1).PaddingVertical(5).Background(Colors.Grey.Lighten3).DefaultTextStyle(x => x.Bold().FontSize(10));
+            static IContainer CellStyleData(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Lighten3).PaddingVertical(8).DefaultTextStyle(x => x.FontSize(10));
 
             using var stream = new MemoryStream();
             doc.GeneratePdf(stream);
