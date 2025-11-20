@@ -28,7 +28,32 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             _emailService = emailService;
             QuestPDF.Settings.License = LicenseType.Community;
         }
+        public async Task<IEnumerable<CustomerResponse>> GetCustomersWithQuotesAsync()
+        {
+            var quotes = await _unitOfWork.Quotes.GetAllAsync();
 
+            var customerIds = quotes.Select(q => q.CustomerId).Distinct().ToList();
+
+            var customers = new List<CustomerResponse>();
+
+            foreach (var id in customerIds)
+            {
+                var c = await _unitOfWork.Customers.GetByIdAsync(id);
+                if (c != null)
+                {
+                    customers.Add(new CustomerResponse
+                    {
+                        CustomerId = c.CustomerId,
+                        FullName = c.FullName,
+                        Email = c.Email,
+                        Phone = c.Phone,
+                        Address = c.Address,
+                       
+                    });
+                }
+            }
+            return customers;
+        }
         public async Task<IEnumerable<QuoteResponse>> GetQuotesByCustomerIdAsync(int customerId)
         {
             var allQuotes = await _unitOfWork.Quotes.GetAllAsync();

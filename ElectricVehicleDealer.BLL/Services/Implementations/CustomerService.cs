@@ -36,9 +36,6 @@ namespace ElectricVehicleDealer.BLL.Services
             }
         }
 
-
-
-
         public async Task<bool> DeleteAsync(int id)
         {
             try
@@ -79,9 +76,9 @@ namespace ElectricVehicleDealer.BLL.Services
             }
         }
 
-   
 
-        public async Task<List<Customer>> GetCustomersByStoreAsync(int storeId)
+
+        public async Task<List<GetAllCustomerResponse>> GetCustomersByStoreAsync(int storeId)
         {
             try
             {
@@ -91,7 +88,6 @@ namespace ElectricVehicleDealer.BLL.Services
             {
                 throw new Exception("Error when getting customers by store", ex);
             }
-            ;
         }
 
         public async Task<int> UpdateAsync(Customer customer)
