@@ -18,7 +18,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             _context = context;
         }
 
-        // Tổng doanh thu theo storeId
+        // 1. Tổng doanh thu
         public async Task<decimal> GetTotalRevenueAsync(int storeId)
         {
             return await (from o in _context.Orders
@@ -28,7 +28,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                           .SumAsync() ?? 0;
         }
 
-        // Tổng số khách hàng theo storeId
+        // 2. Tổng khách hàng
         public async Task<int> GetTotalCustomersAsync(int storeId)
         {
             return await _context.StoreCustomers
@@ -38,47 +38,46 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                 .CountAsync();
         }
 
-        // Tổng số đơn hàng theo storeId
+        // 3. Tổng đơn hàng
         public async Task<int> GetTotalOrdersAsync(int storeId)
         {
             return await _context.Orders
-                .Join(_context.Dealers,
-                      o => o.DealerId,
-                      d => d.DealerId,
-                      (o, d) => new { o, d })
-                .Where(x => x.o.Status == OrderEnum.Completed && x.d.StoreId == storeId)
+                .Include(o => o.Dealer)
+                .Where(o => o.Status == OrderEnum.Completed && o.Dealer.StoreId == storeId)
                 .CountAsync();
         }
 
-        // Doanh thu theo tháng theo storeId
+        // 4. Doanh thu theo tháng
         public async Task<List<(string Month, decimal Revenue)>> GetRevenueByMonthAsync(int storeId)
         {
-            var data = await (from o in _context.Orders
-                              join d in _context.Dealers on o.DealerId equals d.DealerId
-                              where o.Status == OrderEnum.Completed
-                                    && o.OrderDate.HasValue
-                                    && d.StoreId == storeId
-                              group o by new { o.OrderDate.Value.Year, o.OrderDate.Value.Month } into g
-                              select new
-                              {
-                                  Year = g.Key.Year,
-                                  Month = g.Key.Month,
-                                  Revenue = g.Sum(x => (decimal?)x.TotalPrice) ?? 0
-                              })
-                              .OrderBy(x => x.Year)
-                              .ThenBy(x => x.Month)
-                              .ToListAsync();
+            var data = await _context.Orders
+                .Include(o => o.Dealer)
+                .Where(o => o.Status == OrderEnum.Completed
+                            && o.OrderDate.HasValue
+                            && o.Dealer.StoreId == storeId)
+                .GroupBy(o => new { o.OrderDate.Value.Year, o.OrderDate.Value.Month })
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    Revenue = g.Sum(x => (decimal?)x.TotalPrice) ?? 0
+                })
+                .OrderBy(x => x.Year)
+                .ThenBy(x => x.Month)
+                .ToListAsync();
 
             return data.Select(x => ($"{x.Month:D2}/{x.Year}", x.Revenue)).ToList();
         }
 
-        // Xe bán chạy nhất theo storeId
+        // 5. Xe bán chạy nhất
         public async Task<List<(string ModelName, int Quantity)>> GetTopVehiclesAsync(int storeId, int top = 5)
         {
-            var data = await _context.Quotes
+            var query = _context.Quotes
                 .Include(q => q.Vehicle)
                 .Include(q => q.Dealer)
-                .Where(q => q.Status == QuoteEnum.Accepted && q.Dealer.StoreId == storeId)
+                .Where(q => q.Status == QuoteEnum.Accepted && q.Dealer.StoreId == storeId);
+
+            var data = await query
                 .GroupBy(q => q.Vehicle.ModelName)
                 .Select(g => new
                 {
@@ -92,7 +91,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             return data.Select(x => (x.ModelName, x.Quantity)).ToList();
         }
 
-        // Tồn kho theo model và storeId
+        // 6. Tồn kho
         public async Task<List<(string ModelName, int Stock)>> GetInventoryAsync(int storeId)
         {
             var data = await _context.Storages
@@ -110,13 +109,13 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             return data.Select(x => (x.ModelName, x.Stock)).ToList();
         }
 
-        // Dealer thực hiện nhiều order nhất theo storeId
+        // 7. Dealer xuất sắc
         public async Task<(string DealerName, int OrdersCount)> GetTopDealerAsync(int storeId)
         {
             var data = await _context.Orders
-                .Join(_context.Dealers, o => o.DealerId, d => d.DealerId, (o, d) => new { o, d })
-                .Where(x => x.o.Status == OrderEnum.Completed && x.d.StoreId == storeId)
-                .GroupBy(x => x.d.FullName)
+                .Include(o => o.Dealer)
+                .Where(o => o.Status == OrderEnum.Completed && o.Dealer.StoreId == storeId)
+                .GroupBy(o => o.Dealer.FullName)
                 .Select(g => new
                 {
                     DealerName = g.Key,
@@ -125,56 +124,71 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                 .OrderByDescending(x => x.OrdersCount)
                 .FirstOrDefaultAsync();
 
-            return data != null ? (data.DealerName, data.OrdersCount) : ("N/A", 0);
+            return data != null ? (data.DealerName, data.OrdersCount) : ("Chưa có dữ liệu", 0);
         }
 
-        // Customer chi tiêu nhiều nhất theo storeId
+        // 8. Khách hàng chi tiêu nhiều nhất
         public async Task<(string CustomerName, decimal TotalSpent)> GetTopCustomerAsync(int storeId)
         {
             var data = await _context.Orders
-                .Join(_context.Dealers, o => o.DealerId, d => d.DealerId, (o, d) => new { o, d })
-                .Join(_context.Customers, od => od.o.CustomerId, c => c.CustomerId, (od, c) => new { od.o, od.d, c })
-                .Where(x => x.o.Status == OrderEnum.Completed && x.d.StoreId == storeId)
-                .GroupBy(x => x.c.FullName)
+                .Include(o => o.Customer)
+                .Include(o => o.Dealer)
+                .Where(o => o.Status == OrderEnum.Completed && o.Dealer.StoreId == storeId)
+                .GroupBy(o => o.Customer.FullName)
                 .Select(g => new
                 {
                     CustomerName = g.Key,
-                    TotalSpent = g.Sum(x => (decimal?)x.o.TotalPrice) ?? 0
+                    TotalSpent = g.Sum(x => (decimal?)x.TotalPrice) ?? 0
                 })
                 .OrderByDescending(x => x.TotalSpent)
                 .FirstOrDefaultAsync();
 
-            return data != null ? (data.CustomerName, data.TotalSpent) : ("N/A", 0);
+            return data != null ? (data.CustomerName, data.TotalSpent) : ("Chưa có dữ liệu", 0);
         }
 
-        // Tổng số lượng xe bán ra theo storeId
+        // 9. Tổng số lượng xe bán ra
         public async Task<int> GetTotalVehiclesSoldAsync(int storeId)
         {
             return await _context.Orders
-                .Join(_context.Dealers, o => o.DealerId, d => d.DealerId, (o, d) => new { o, d })
-                .Where(x => x.o.Status == OrderEnum.Completed && x.d.StoreId == storeId)
-                .SumAsync(x => (int?)x.o.Quantity) ?? 0;
+                .Include(o => o.Dealer)
+                .Where(o => o.Status == OrderEnum.Completed && o.Dealer.StoreId == storeId)
+                .SumAsync(o => (int?)o.Quantity) ?? 0;
         }
 
-        // Top 5 xe ít được mua theo storeId
+        // 10. Xe bán chậm (Left Join từ kho)
         public async Task<List<(string ModelName, int Quantity)>> GetBottomVehiclesAsync(int storeId, int top = 5)
         {
-            var data = await _context.Quotes
+            // B1: Lấy danh sách xe trong kho
+            var storeVehicles = await _context.Storages
+                .Include(s => s.Vehicle)
+                .Where(s => s.StoreId == storeId)
+                .Select(s => s.Vehicle.ModelName)
+                .Distinct()
+                .ToListAsync();
+
+            // B2: Lấy danh sách xe đã bán
+            var soldStats = await _context.Quotes
                 .Include(q => q.Vehicle)
                 .Include(q => q.Dealer)
                 .Where(q => q.Status == QuoteEnum.Accepted && q.Dealer.StoreId == storeId)
                 .GroupBy(q => q.Vehicle.ModelName)
-                .Select(g => new
-                {
-                    ModelName = g.Key,
-                    Quantity = g.Count()
-                })
-                .OrderBy(x => x.Quantity) // ít nhất lên trước
-                .Take(top)
+                .Select(g => new { ModelName = g.Key, Qty = g.Count() })
                 .ToListAsync();
 
-            return data.Select(x => (x.ModelName, x.Quantity)).ToList();
-        }
+            // B3: Left Join để tìm xe bán 0 chiếc
+            var result = storeVehicles.GroupJoin(soldStats,
+                v => v,
+                s => s.ModelName,
+                (v, s) => new
+                {
+                    ModelName = v,
+                    Quantity = s.Sum(x => x.Qty)
+                })
+                .OrderBy(x => x.Quantity)
+                .Take(top)
+                .ToList();
 
+            return result.Select(x => (x.ModelName, x.Quantity)).ToList();
+        }
     }
 }
