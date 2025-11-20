@@ -16,7 +16,7 @@ public partial class TestAppointment
 
     public DateTime AppointmentDate { get; set; }
 
-    public TestAppointmentEnum Status { get; set; } = TestAppointmentEnum.Draft;
+    public TestAppointmentEnum Status { get; set; } = TestAppointmentEnum.Pending;
 
     public virtual Customer Customer { get; set; } = null!;
 

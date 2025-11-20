@@ -1,5 +1,7 @@
 using ElectricVehicleDealer.DAL.Enum;
+using ElectricVehicleDealer.DTO.Config;
 using System;
+using System.Text.Json.Serialization;
 
 namespace ElectricVehicleDealer.DTO.Requests
 {
