@@ -30,5 +30,9 @@ namespace ElectricVehicleDealer.API.Controllers
         [HttpGet("customer/{customerId}")]
         public async Task<IActionResult> GetByCustomerId(int customerId)
             => Ok(await _service.GetQuotesByCustomerIdAsync(customerId));
+
+        [HttpGet("users-with-quotes")]
+        public async Task<IActionResult> GetCustomersWithQuotes()
+            => Ok(await _service.GetCustomersWithQuotesAsync());
     }
 }

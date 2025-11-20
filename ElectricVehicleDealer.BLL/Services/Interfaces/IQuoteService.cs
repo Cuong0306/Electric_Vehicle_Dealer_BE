@@ -13,5 +13,6 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<QuoteResponse> CreateAsync(CreateQuoteRequest dto);
         Task<QuoteResponse> UpdateAsync(int id, UpdateQuoteRequest dto);
         Task<bool> DeleteAsync(int id);
+        Task<IEnumerable<CustomerResponse>> GetCustomersWithQuotesAsync();
     }
 }

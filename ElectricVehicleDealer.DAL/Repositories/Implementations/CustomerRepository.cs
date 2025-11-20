@@ -54,14 +54,50 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
         }
 
 
-        public async Task<List<Customer>> GetCustomersByStoreAsync(int storeId)
+        public async Task<List<GetAllCustomerResponse>> GetCustomersByStoreAsync(int storeId)
         {
             if (storeId <= 0)
                 throw new ArgumentException("Invalid store ID");
-
             var customers = await _context.StoreCustomers
                 .Where(sc => sc.StoreId == storeId)
                 .Select(sc => sc.Customer)
+                .Select(c => new GetAllCustomerResponse
+                {
+                    CustomerId = c.CustomerId,
+                    FullName = c.FullName,
+                    Phone = c.Phone,
+                    Email = c.Email,
+                    Address = c.Address,
+                    Status = c.Status,
+                    Description = c.Description,
+                    CreateDate = c.CreateDate,
+
+                    
+                    Agreements = c.Agreements.Select(a => new AgreementResponse
+                    {
+                        AgreementId = a.AgreementId,
+                        CustomerId = a.CustomerId,
+                        AgreementDate = a.AgreementDate,
+                        TermsAndConditions = a.TermsAndConditions,
+                        StoreId = a.StoreId,
+                        Status = a.Status,
+                        CustomerName = c.FullName,
+                        FileUrl = a.FileUrl
+                    }).ToList(),
+
+                
+                    Orders = c.Orders.Select(o => new OrderLiteResponse
+                    {
+                        OrderId = o.OrderId,
+                        CustomerId = o.CustomerId,
+                        DealerId = o.DealerId,
+                        OrderDate = o.OrderDate,
+                        TotalPrice = o.TotalPrice,
+                        Status = o.Status.ToString(),
+                        Note = o.Note
+                    }).ToList()
+                })
+                .AsNoTracking()
                 .ToListAsync();
 
             return customers;
@@ -111,41 +147,6 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                 }).ToList()
             };
         }
-
-
-        //public async Task<int> CreateAsync(CreateCustomerDto dto)
-        //{
-        //    if (dto is null) throw new ArgumentNullException(nameof(dto), "CreateCustomerDto is null");
-        //    if (string.IsNullOrWhiteSpace(dto.FullName)) throw new ArgumentException("FullName is required");
-
-        //    var entity = new Customer
-        //    {
-        //        FullName = dto.FullName,
-        //        Phone = dto.Phone,
-        //        Email = dto.Email,
-        //        Address = dto.Address,
-        //        LicenseUp = dto.LicenseUp,
-        //        LicenseDown = dto.LicenseDown,
-        //        CreateDate = DateTime.Now
-        //    };
-
-        //    // Nếu truyền storeId => gán vào bảng trung gian store_customer
-
-
-        //        var store = await _context.Stores.FindAsync(dto.StoreId);
-        //        if (store == null)
-        //            throw new Exception($"Store with ID {dto.StoreId} not found.");
-
-        //        entity.StoreCustomers.Add(new StoreCustomer
-        //        {
-        //            StoreId = dto.StoreId,
-        //            Customer = entity
-        //        });
-
-
-        //    await _context.Customers.AddAsync(entity);
-        //    return await _context.SaveChangesAsync();
-        //}
 
         public async Task<int> CreateAsync(CreateCustomerDto dto)
         {
