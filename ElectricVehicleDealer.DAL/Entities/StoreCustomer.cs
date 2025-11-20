@@ -10,8 +10,6 @@ public class StoreCustomer
 
     [Column("customer_id")]
     public int CustomerId { get; set; }
-
-    // 🔗 Navigation properties
     public virtual Store Store { get; set; } = null!;
     public virtual Customer Customer { get; set; } = null!;
 }

@@ -21,7 +21,6 @@ namespace ElectricVehicleDealer.DAL.Entities
         [Column("phone")]
         public string? Phone { get; set; }
 
-        // ✅ non-nullable (bỏ ?)
         [Required]
         [MaxLength(200)]
         [Column("password")]
@@ -42,7 +41,6 @@ namespace ElectricVehicleDealer.DAL.Entities
         public RoleDealerEnum Role { get; set; } = RoleDealerEnum.Dealer_staff;
         public string? Status { get; set; } = "Active";
 
-        // 🔗 Navigations
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<Quote> Quotes { get; set; } = new List<Quote>();
         public virtual Store? Store { get; set; }

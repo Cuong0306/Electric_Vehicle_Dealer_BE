@@ -53,15 +53,13 @@ public class EmailService : IEmailService
     {
         var smtpConfig = _config.GetSection("EmailSettings");
 
-        // SỬA Ở ĐÂY: Dùng TryParse để an toàn, nếu thiếu config thì mặc định là true
         var enableSslStr = smtpConfig["EnableSsl"];
-        bool enableSsl = true; // Giá trị mặc định
+        bool enableSsl = true; 
         if (!string.IsNullOrEmpty(enableSslStr))
         {
             bool.TryParse(enableSslStr, out enableSsl);
         }
 
-        // Tương tự với Port
         int port = 587;
         if (int.TryParse(smtpConfig["Port"], out int parsedPort))
         {
@@ -89,7 +87,6 @@ public class EmailService : IEmailService
 
         mail.To.Add(to);
 
-        // Kiểm tra file đính kèm có dữ liệu không trước khi add
         if (attachmentBytes != null && attachmentBytes.Length > 0)
         {
             var attachment = new Attachment(new MemoryStream(attachmentBytes), attachmentName);

@@ -157,18 +157,15 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         {
             var query = _unitOfWork.Dealers.GetAllDealerQuery();
 
-            // Filter status
             if (!string.IsNullOrEmpty(status))
                 query = query.Where(d => d.Status == status);
 
-            // Filter search theo tên, email, phone
             if (!string.IsNullOrEmpty(search))
                 query = query.Where(d =>
                     d.FullName.Contains(search) ||
                     d.Email.Contains(search) ||
                     d.Phone.Contains(search));
 
-            // Sort
             query = sortBy?.ToLower() switch
             {
                 "fullname" => query.OrderBy(d => d.FullName),
@@ -176,7 +173,6 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 _ => query.OrderBy(d => d.DealerId)
             };
 
-            // Map sang response trước khi phân trang
             var projectedQuery = query.Select(x => new DealerResponse
             {
                 DealerId = x.DealerId,

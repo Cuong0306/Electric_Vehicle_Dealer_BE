@@ -31,7 +31,6 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
 
         public async Task<IEnumerable<QuoteResponse>> GetQuotesByCustomerIdAsync(int customerId)
         {
-            // Lấy tất cả quote rồi lọc (nếu Repository có hàm Find/GetByCondition thì nên dùng để tối ưu hơn)
             var allQuotes = await _unitOfWork.Quotes.GetAllAsync();
             var customerQuotes = allQuotes.Where(q => q.CustomerId == customerId);
 
@@ -155,7 +154,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             quote.Dealer = dealer;
             quote.Promotion = promotion;
 
-            // Luôn gửi mail nếu trạng thái là Accepted
+        
             if (quote.Status == QuoteEnum.Accepted)
             {
                 await SendQuoteAcceptedEmailAsync(quote, customer, vehicle, dealer);
@@ -278,7 +277,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
 
             var vietnamCulture = new CultureInfo("vi-VN");
 
-            // --- TẠO PDF ---
+
             var doc = Document.Create(container =>
             {
                 container.Page(page =>

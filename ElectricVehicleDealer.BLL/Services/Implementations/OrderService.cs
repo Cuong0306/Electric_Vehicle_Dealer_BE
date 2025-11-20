@@ -137,7 +137,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         {
             var query = _repository.GetOrderQuery();
 
-            // Filter search theo note, customer name hoặc dealer name
+     
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(o =>
@@ -146,7 +146,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                     o.Dealer.FullName.Contains(search));
             }
 
-            // Filter status
+       
             if (!string.IsNullOrEmpty(status))
             {
                 if (Enum.TryParse<OrderEnum>(status, true, out var parsedStatus))
@@ -155,10 +155,8 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                 }
             }
 
-            // Sort theo OrderDate giảm dần
             query = query.OrderByDescending(o => o.OrderDate);
 
-            // Map & phân trang
             var pagedOrders = await query
                 .Select(o => new OrderResponse
                 {

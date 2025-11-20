@@ -54,7 +54,7 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] ElectricVehicleDealer.DTO.Requests.LoginRequest dto)
+        public async Task<IActionResult> Login([FromBody] LoginRequest dto)
         
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);

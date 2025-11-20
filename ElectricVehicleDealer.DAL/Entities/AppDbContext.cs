@@ -52,7 +52,7 @@ public partial class AppDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            // optionsBuilder.UseNpgsql("chuỗi kết nối cứng");  // Bỏ đi
+            
         }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -453,7 +453,7 @@ public partial class AppDbContext : DbContext
         });
         modelBuilder.Entity<StoreCustomer>(entity =>
         {
-            entity.HasKey(sc => new { sc.StoreId, sc.CustomerId }); // 👈 KHÓA CHÍNH KÉP
+            entity.HasKey(sc => new { sc.StoreId, sc.CustomerId });
 
             entity.HasOne(sc => sc.Store)
                   .WithMany(s => s.StoreCustomers)
