@@ -61,7 +61,6 @@ builder.Services.AddScoped<IDealerRepository, DealerRepository>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IQuoteRepository, QuoteRepository>();
-//builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IAgreementsService, AgreementsService>();
@@ -72,16 +71,14 @@ builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
-//builder.Services.AddScoped<IPaymentService,PaymentService>();
+builder.Services.AddScoped<IGoogleDriveService, GoogleDriveService>();
 
-//builder.Services.AddHttpClient<PayOsService>();
 
 
 // Repositories (nếu dùng interface thì đăng ký qua interface)
 builder.Services.AddScoped<CustomerRepository>();
 builder.Services.AddScoped<BrandRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-//builder.Services.AddScoped<PaymentRepository>();
 builder.Services.AddScoped<PromotionRepository>();
 builder.Services.AddScoped<IAgreementsRepository, AgreementsRepository>();
 builder.Services.AddScoped<StoreRepository>();

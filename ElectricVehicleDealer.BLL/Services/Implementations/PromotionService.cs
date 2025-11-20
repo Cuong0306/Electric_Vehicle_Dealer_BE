@@ -50,7 +50,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         {
             var promotion = await _unitOfWork.Repository<Promotion>().GetByIdAsync(id);
             if (promotion == null)
-                return false; // Không ném exception nữa
+                return false;
 
             _unitOfWork.Repository<Promotion>().Remove(promotion);
             await _unitOfWork.SaveAsync();
@@ -61,9 +61,8 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         {
             var promotions = await _unitOfWork.Repository<Promotion>().GetAllAsync();
 
-            // Không ném Exception nếu không có dữ liệu
             if (promotions == null || !promotions.Any())
-                return new List<PromotionResponse>(); // trả về list rỗng => 200 OK, body: []
+                return new List<PromotionResponse>();
 
             return promotions.Select(p => new PromotionResponse
             {
@@ -81,7 +80,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         {
             var promotion = await _unitOfWork.Repository<Promotion>().GetByIdAsync(id);
             if (promotion == null)
-                return null; // Không throw Exception => controller trả 404
+                return null;
 
             return new PromotionResponse
             {

@@ -19,7 +19,7 @@ namespace ElectricVehicleDealer.BLL.Services
         public CustomerService(CustomerRepository repository) { _repository = repository; }
         public async Task<int> CreateAsync(CreateCustomerDto customer)
         {
-            // check email duplicate
+            
             if (await IsEmailDuplicateAsync(customer.Email))
             {
                 throw new Exception($"Email '{customer.Email}' đã tồn tại trong hệ thống.");
@@ -62,7 +62,6 @@ namespace ElectricVehicleDealer.BLL.Services
             }
             catch (Exception ex)
             {
-                // có thể log lỗi
                 throw new Exception("Error when getting all customers", ex);
             }
         }
@@ -90,7 +89,6 @@ namespace ElectricVehicleDealer.BLL.Services
             }
             catch (Exception ex)
             {
-                // có thể log lỗi
                 throw new Exception("Error when getting customers by store", ex);
             }
             ;
@@ -113,7 +111,6 @@ namespace ElectricVehicleDealer.BLL.Services
         {
             var query = _repository.GetAllCustomerQuery();
 
-            // 🔍 Filter search
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(c =>
@@ -122,13 +119,11 @@ namespace ElectricVehicleDealer.BLL.Services
                     c.Phone.Contains(search));
             }
 
-            // 🔍 Filter status
             if (!string.IsNullOrEmpty(status))
             {
                 query = query.Where(c => c.Status.ToString() == status);
             }
 
-            // 🔃 Sort
             query = sortBy?.ToLower() switch
             {
                 "fullname" => query.OrderBy(c => c.FullName),
@@ -136,8 +131,6 @@ namespace ElectricVehicleDealer.BLL.Services
                 "createdate" => query.OrderByDescending(c => c.CreateDate),
                 _ => query.OrderBy(c => c.CustomerId)
             };
-
-            // 🔹 Gọi extension BLL để phân trang
             return await query.ToPagedResultAsync(pageNumber, pageSize);
         }
 

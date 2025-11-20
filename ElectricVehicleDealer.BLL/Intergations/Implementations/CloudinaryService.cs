@@ -25,7 +25,6 @@ public class CloudinaryService : ICloudinaryService
         if (file == null || file.Length == 0)
             throw new ArgumentException("File is empty");
 
-        // Validate MIME / extension basic
         var allowed = new[] { "image/jpeg", "image/png", "image/webp", "image/gif" };
         if (!allowed.Contains(file.ContentType))
             throw new InvalidOperationException("Unsupported file type");
@@ -36,8 +35,8 @@ public class CloudinaryService : ICloudinaryService
         {
             File = new FileDescription(file.FileName, stream),
             Folder = folder ?? _config["Cloudinary:Folder"],
-            UseFilename = true,            // dùng tên file gốc
-            UniqueFilename = true,         // tránh trùng
+            UseFilename = true,            
+            UniqueFilename = true,         
             Overwrite = false,
          
         };

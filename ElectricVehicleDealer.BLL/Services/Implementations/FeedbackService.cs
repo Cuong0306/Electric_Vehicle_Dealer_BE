@@ -82,18 +82,13 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
         {
             var query = _unitOfWork.Repository<Feedback>().GetAllQuery();
 
-            // 🔍 Filter theo search (ví dụ comment)
             if (!string.IsNullOrEmpty(search))
                 query = query.Where(f => f.Comment.Contains(search));
 
-            // 🔍 Filter theo rating
             if (rating.HasValue)
                 query = query.Where(f => f.Rating == rating.Value);
 
-            // 🔃 Sort theo CreateDate descending
             query = query.OrderByDescending(f => f.CreateDate);
-
-            // Map sang DTO trước khi phân trang
             var projectedQuery = query.Select(f => new FeedbackResponse
             {
                 FeedbackId = f.FeedbackId,
@@ -113,19 +108,13 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             if (storeId <= 0)
                 throw new ArgumentException("StoreId không hợp lệ", nameof(storeId));
 
-            // Lấy query Feedback
             var query = _unitOfWork.Repository<Feedback>().GetAllQuery();
 
-            // Filter theo StoreId thông qua Order
             query = query.Where(f => f.Order.StoreId == storeId);
 
-            // Sắp xếp mới nhất lên trước (tuỳ chọn)
             query = query.OrderByDescending(f => f.CreateDate);
 
-            // Thực thi query
             var list = await query.ToListAsync();
-
-            // Map sang DTO
             return list.Select(MapToResponse);
         }
     }

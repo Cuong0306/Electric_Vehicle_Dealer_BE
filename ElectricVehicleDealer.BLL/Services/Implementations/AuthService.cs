@@ -46,11 +46,11 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 Status = "Active"
             };
 
-            // Thêm người dùng mới vào cơ sở dữ liệu
+            
             await _unitOfWork.Staff.CreateAsync(newStaff);
             await _unitOfWork.SaveAsync();
 
-            // Trả về thông tin người dùng mới
+            
             return new StaffResponse
             {
                 StaffId = newStaff.StaffId,
@@ -83,11 +83,11 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 Status = "Active"
             };
 
-            // Thêm người dùng mới vào cơ sở dữ liệu
+            
             await _unitOfWork.Dealers.CreateAsync(newDealer);
             await _unitOfWork.SaveAsync();
 
-            // Trả về thông tin người dùng mới
+          
             return new DealerResponse
             {
                 DealerId = newDealer.DealerId,
@@ -106,17 +106,17 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             var email = dto.Email?.Trim().ToLowerInvariant();
             if (string.IsNullOrEmpty(email)) throw new Exception("Email is required");
 
-            // Thử tìm ở cả hai bảng
+    
             var staff = await _unitOfWork.Staff.GetByEmailAsync(email);
             var dealer = await _unitOfWork.Dealers.GetByEmailAsync(email);
 
-            // Ưu tiên đối tượng khớp mật khẩu
+   
             var now = DateTime.UtcNow;
             var lifetime = TimeSpan.FromMinutes(_jwtSettings.ExpiryMinutes);
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_jwtSettings.Key);
 
-            // Nếu có staff và password đúng => đăng nhập staff
+           
             if (staff != null && BCrypt.Net.BCrypt.Verify(dto.Password, staff.Password))
             {
                 var claims = new[]
@@ -142,7 +142,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 return new LoginResponse { Token = tokenHandler.WriteToken(token), ExpiresIn = (int)lifetime.TotalSeconds };
             }
 
-            // Nếu có dealer và password đúng => đăng nhập dealer
+         
             if (dealer != null && BCrypt.Net.BCrypt.Verify(dto.Password, dealer.Password))
             {
                 var claims = new[]
@@ -168,7 +168,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 return new LoginResponse { Token = tokenHandler.WriteToken(token), ExpiresIn = (int)lifetime.TotalSeconds };
             }
 
-            // Không khớp tài khoản nào
+    
             throw new Exception("Invalid email or password");
         }
 

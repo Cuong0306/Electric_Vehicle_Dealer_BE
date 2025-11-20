@@ -12,7 +12,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
 {
     public interface IAgreementsRepository
     {
-        Task<List<AgreementResponse>> GetAll();
+        Task<List<Agreement>> GetAll();
         Task<Agreement> GetByIdAsync(int id);
         Task<bool> CreateAsync(Agreement agreement);
         Task<bool> UpdateAsync(Agreement agreement);

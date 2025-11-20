@@ -17,8 +17,6 @@ public partial class Store
 
     public virtual ICollection<Dealer> Dealers { get; set; } = new List<Dealer>();
 
-    //public virtual ICollection<Staff> Staff { get; set; } = new List<Staff>();
-
     public virtual ICollection<Storage> Storages { get; set; } = new List<Storage>();
 
     public virtual ICollection<Promotion> Promotions { get; set; } = new List<Promotion>();

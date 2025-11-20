@@ -5,7 +5,7 @@ using ElectricVehicleDealer.DAL.Enum;
 
 namespace ElectricVehicleDealer.DAL.Entities
 {
-    [Table("orders")] // 👈 Tên bảng trong DB
+    [Table("orders")]
     public partial class Order
     {
         [Column("order_id")]
@@ -32,7 +32,6 @@ namespace ElectricVehicleDealer.DAL.Entities
         [Column("note")]
         public string? Note { get; set; }
 
-        // 🔗 Navigation properties
         [ForeignKey(nameof(CustomerId))]
         public virtual Customer Customer { get; set; } = null!;
 
@@ -44,7 +43,7 @@ namespace ElectricVehicleDealer.DAL.Entities
         public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
         [Column("store_id")]
-        public int? StoreId { get; set; } // nullable nếu promotion không bắt buộc có store
+        public int? StoreId { get; set; }
 
         [ForeignKey("StoreId")]
         public virtual Store? Store { get; set; }

@@ -31,31 +31,25 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             if (vehicle == null)
                 throw new ArgumentException("Xe không tồn tại.");
 
-            // 1️⃣ Lấy kho tổng của xe này
             var mainStorage = (await _unitOfWork.Repository<Storage>().GetAllAsync())
                 .FirstOrDefault(s => s.VehicleId == dto.VehicleId && s.StoreId == null);
 
             if (mainStorage == null)
                 throw new InvalidOperationException("Không tìm thấy kho tổng cho xe này.");
 
-            // 2️⃣ Duyệt từng store được phân bổ
             foreach (var storeInfo in dto.Stores)
             {
-                // Kiểm tra số lượng hợp lệ
                 if (storeInfo.Quantity <= 0)
                     throw new ArgumentException($"Số lượng phải > 0 (StoreId: {storeInfo.StoreId})");
 
-                // Kiểm tra đủ hàng trong kho tổng
                 if (mainStorage.QuantityAvailable < storeInfo.Quantity)
                     throw new InvalidOperationException(
                         $"Kho tổng không đủ xe để phân bổ (còn {mainStorage.QuantityAvailable}, yêu cầu {storeInfo.Quantity}).");
 
-                // ➖ Trừ trong kho tổng
                 mainStorage.QuantityAvailable -= storeInfo.Quantity;
                 mainStorage.LastUpdated = DateTime.Now;
                 _unitOfWork.Repository<Storage>().Update(mainStorage);
 
-                // ➕ Cộng vào kho chi nhánh
                 var existingStorage = (await _unitOfWork.Repository<Storage>().GetAllAsync())
                     .FirstOrDefault(s => s.VehicleId == dto.VehicleId && s.StoreId == storeInfo.StoreId);
 
@@ -101,12 +95,10 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 
                 if (existingStorage != null)
                 {
-                    // Trừ số lượng
                     existingStorage.QuantityAvailable -= storeInfo.Quantity;
 
                     if (existingStorage.QuantityAvailable <= 0)
                     {
-                        // Nếu hết xe thì xóa luôn dòng storage
                         _unitOfWork.Repository<Storage>().Remove(existingStorage);
                     }
                     else
@@ -115,7 +107,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
                         _unitOfWork.Repository<Storage>().Update(existingStorage);
                     }
                 }
-                // Nếu không có record thì bỏ qua (vì không thể thu hồi từ store chưa có xe)
+               
             }
 
             await _unitOfWork.SaveAsync();
@@ -125,21 +117,16 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
 
         public async Task<IEnumerable<VehicleResponse>> GetVehiclesByStoreIdAsync(int storeId)
         {
-            // Lấy danh sách Storage có storeId tương ứng
             var storages = await _unitOfWork.Repository<Storage>().GetAllAsync();
             var vehiclesInStore = storages.Where(s => s.StoreId == storeId).ToList();
 
             if (!vehiclesInStore.Any())
                 return Enumerable.Empty<VehicleResponse>();
 
-            // Lấy danh sách vehicleId từ Storage
             var vehicleIds = vehiclesInStore.Select(s => s.VehicleId).Distinct().ToList();
 
-            // Lấy danh sách Vehicle tương ứng
             var vehicles = await _unitOfWork.Repository<Vehicle>().GetAllAsync();
             var filtered = vehicles.Where(v => vehicleIds.Contains(v.VehicleId));
-
-            // Map sang DTO response
             return filtered.Select(v => new VehicleResponse
             {
                 VehicleId = v.VehicleId,

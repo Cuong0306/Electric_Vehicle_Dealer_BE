@@ -24,13 +24,11 @@ namespace ElectricVehicleDealer.DAL.Entities
         [Column("email")]
         public string? Email { get; set; }
 
-        // ✅ non-nullable để phục vụ đăng nhập
         [Required]
         [MaxLength(200)]
         [Column("password")]
         public string Password { get; set; } = null!;
 
-        // Lưu enum dưới dạng int (mặc định EF). Nếu muốn string, cấu hình converter ở OnModelCreating.
         [Column("role")]
         public RoleStaffEnum Role { get; set; } = RoleStaffEnum.EVM_Staff;
 
@@ -41,12 +39,10 @@ namespace ElectricVehicleDealer.DAL.Entities
 
         public string? Status { get; set; }
 
-        // 🔗 Thêm khóa ngoại đến Brand
         [ForeignKey(nameof(Brand))]
         [Column("brand_id")]
         public int? BrandId { get; set; }
 
-        // 🔄 Navigation property
         public virtual Brand? Brand { get; set; } = null!;
     }
 }

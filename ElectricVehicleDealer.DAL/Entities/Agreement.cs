@@ -4,7 +4,7 @@ using ElectricVehicleDealer.DAL.Enum;
 
 namespace ElectricVehicleDealer.DAL.Entities
 {
-    [Table("agreements")] // 👈 tên bảng trong DB
+    [Table("agreements")]
     public partial class Agreement
     {
         [Column("agreement_id")]
@@ -23,14 +23,14 @@ namespace ElectricVehicleDealer.DAL.Entities
         public AgreementEnum Status { get; set; } = AgreementEnum.Pending;
 
         [Column("file_url")]
-        public string? FileUrl { get; set; }   // 👈 sửa lại chính tả từ “FieUrl” thành “FileUrl”
+        public string? FileUrl { get; set; }
 
-        // 🔗 navigation
+        
         [ForeignKey(nameof(CustomerId))]
         public virtual Customer Customer { get; set; } = null!;
 
         [Column("store_id")]
-        public int? StoreId { get; set; } // nullable nếu promotion không bắt buộc có store
+        public int? StoreId { get; set; }
 
         [ForeignKey("StoreId")]
         public virtual Store? Store { get; set; }

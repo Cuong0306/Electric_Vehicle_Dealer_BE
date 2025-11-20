@@ -140,7 +140,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
         {
             var query = _unitOfWork.Staff.GetStaffQuery();
 
-            // Filter theo search
+            
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(s =>
@@ -149,16 +149,13 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                     s.Phone.Contains(search));
             }
 
-            // Filter theo status
             if (!string.IsNullOrEmpty(status))
             {
                 query = query.Where(s => s.Status == status);
             }
 
-            // Sort theo FullName
             query = query.OrderBy(s => s.FullName);
 
-            // Map & phân trang
             var pagedResult = await query
                 .Select(s => new StaffResponse
                 {
