@@ -15,6 +15,8 @@ namespace ElectricVehicleDealer.DTO.Responses
         public string Address { get; set; }
         public string Status { get; set; }
         public string Description { get; set; }
+        public string? LicenseUp { get; set; }
+        public string? LicenseDown { get; set; }
         public DateTime? CreateDate { get; set; }
 
         public List<AgreementResponse> Agreements { get; set; } = new();
