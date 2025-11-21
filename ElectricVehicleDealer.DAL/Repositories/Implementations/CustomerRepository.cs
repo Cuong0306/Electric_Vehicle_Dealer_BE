@@ -31,6 +31,8 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                     Status = c.Status,
                     Description = c.Description,
                     CreateDate = c.CreateDate,
+                    LicenseUp = c.LicenseUp,
+                    LicenseDown = c.LicenseDown,
                     Agreements = c.Agreements.Select(a => new AgreementResponse
                     {
                         AgreementId = a.AgreementId,
@@ -72,8 +74,8 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                     Status = c.Status,
                     Description = c.Description,
                     CreateDate = c.CreateDate,
-
-                    
+                    LicenseUp = c.LicenseUp,
+                    LicenseDown = c.LicenseDown,
                     Agreements = c.Agreements.Select(a => new AgreementResponse
                     {
                         AgreementId = a.AgreementId,
@@ -123,7 +125,9 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                     Address = customer.Address,
                     Status = customer.Status,
                     Description = customer.Description,
-                CreateDate = customer.CreateDate,
+                    CreateDate = customer.CreateDate,
+                    LicenseUp = customer.LicenseUp,
+                    LicenseDown = customer.LicenseDown,
 
                 Agreements = customer.Agreements.Select(a => new AgreementResponse
                 {
@@ -232,6 +236,8 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                     Status = c.Status,
                     Description = c.Description,
                     CreateDate = c.CreateDate,
+                    LicenseUp = c.LicenseUp,
+                    LicenseDown = c.LicenseDown,
                     Agreements = c.Agreements.Select(a => new AgreementResponse
                     {
                         AgreementId = a.AgreementId,
