@@ -2,6 +2,7 @@
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -53,6 +54,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return BadRequest("Failed to create customer");
         }
 
+        [Authorize(Roles = "Dealer_staff, Dealer_manager")]
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, Customer customer)
         {
@@ -63,6 +65,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return NotFound("Customer not found");
         }
 
+        [Authorize(Roles = "Dealer_staff, Dealer_manager")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {

@@ -12,7 +12,7 @@ namespace ElectricVehicleDealer.API.Controllers
     {
         private readonly IFeedbackService _service;
         public FeedbacksController(IFeedbackService service) => _service = service;
-        // GET: api/Feedback/store/5
+        
         [HttpGet("store/{storeId:int}")]
         public async Task<IActionResult> GetByStoreId(int storeId)
         {

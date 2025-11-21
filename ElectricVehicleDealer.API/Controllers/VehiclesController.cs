@@ -1,5 +1,6 @@
 using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DTO.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -18,12 +19,15 @@ namespace ElectricVehicleDealer.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id) => Ok(await _service.GetByIdAsync(id));
 
+        [Authorize(Roles = "EVM_Staff")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateVehicleRequest dto) => Ok(await _service.CreateAsync(dto));
 
+        [Authorize(Roles = "EVM_Staff")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateVehicleRequest dto) => Ok(await _service.UpdateAsync(id, dto));
 
+        [Authorize(Roles = "EVM_Staff")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id) => Ok(await _service.DeleteAsync(id));
 
@@ -34,7 +38,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(vehicles);
         }
 
-        // Get all vehicles by Brand ID
+        
         [HttpGet("brand/{brandId}")]
         public async Task<IActionResult> GetAllByBrandId(int brandId)
         {
