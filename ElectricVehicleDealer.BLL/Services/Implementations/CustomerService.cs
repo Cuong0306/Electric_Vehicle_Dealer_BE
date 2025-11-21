@@ -40,15 +40,12 @@ namespace ElectricVehicleDealer.BLL.Services
         {
             try
             {
-                var item = await _repository.GetByIdAsync(id);
-                
-                if (item != null)
-                {
-                    return await _repository.DeleteAsync(id);
-                }
+                return await _repository.DeleteAsync(id);
             }
-            catch (Exception ex) { }
-            return false;
+            catch (Exception ex)
+            {
+                throw new Exception($"Không thể xóa khách hàng ID {id}. Lỗi: {ex.Message}", ex);
+            }
         }
 
         public async Task<List<GetAllCustomerResponse>> GetAllAsync()
@@ -142,8 +139,6 @@ namespace ElectricVehicleDealer.BLL.Services
 
             return await query.AnyAsync();
         }
-
     }
-
 }
 

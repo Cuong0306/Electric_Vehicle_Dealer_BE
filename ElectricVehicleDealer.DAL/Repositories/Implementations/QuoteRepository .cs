@@ -4,28 +4,31 @@ using ElectricVehicleDealer.DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-public class QuoteRepository : GenericRepository<Quote>, IQuoteRepository
+namespace ElectricVehicleDealer.DAL.Repositories.Implementations
 {
-    public QuoteRepository(AppDbContext context) : base(context) { }
-
-    public IQueryable<Quote> GetAllWithIncludes()
+    public class QuoteRepository : GenericRepository<Quote>, IQuoteRepository
     {
-        return _context.Set<Quote>()
-            .Include(q => q.Customer)
-            .Include(q => q.Dealer)
-            .Include(q => q.Promotion)
-            .Include(q => q.Vehicle)
-                .ThenInclude(v => v.Brand);
-    }
+        public QuoteRepository(AppDbContext context) : base(context) { }
 
-    public async Task<Quote?> GetByIdWithIncludesAsync(int id)
-    {
-        return await _context.Set<Quote>()
-            .Include(q => q.Customer)
-            .Include(q => q.Dealer)
-            .Include(q => q.Promotion)
-            .Include(q => q.Vehicle)
-                .ThenInclude(v => v.Brand)
-            .FirstOrDefaultAsync(q => q.QuoteId == id);
+        public IQueryable<Quote> GetAllWithIncludes()
+        {
+            return _context.Set<Quote>()
+                .Include(q => q.Customer)
+                .Include(q => q.Dealer)
+                .Include(q => q.Promotion)
+                .Include(q => q.Vehicle)
+                    .ThenInclude(v => v.Brand);
+        }
+
+        public async Task<Quote?> GetByIdWithIncludesAsync(int id)
+        {
+            return await _context.Set<Quote>()
+                .Include(q => q.Customer)
+                .Include(q => q.Dealer)
+                .Include(q => q.Promotion)
+                .Include(q => q.Vehicle)
+                    .ThenInclude(v => v.Brand)
+                .FirstOrDefaultAsync(q => q.QuoteId == id);
+        }
     }
 }

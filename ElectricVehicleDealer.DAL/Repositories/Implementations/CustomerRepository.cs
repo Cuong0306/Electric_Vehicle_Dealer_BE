@@ -18,6 +18,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
         public async Task<List<GetAllCustomerResponse>> GetAllAsync()
         {
             return await _context.Customers
+                .Where(c => c.IsDeleted == false)
                 .Include(c => c.Agreements)
                 .Include(c => c.Orders)
                 .Select(c => new GetAllCustomerResponse
@@ -59,7 +60,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             if (storeId <= 0)
                 throw new ArgumentException("Invalid store ID");
             var customers = await _context.StoreCustomers
-                .Where(sc => sc.StoreId == storeId)
+                .Where(sc => sc.StoreId == storeId && sc.Customer.IsDeleted == false)
                 .Select(sc => sc.Customer)
                 .Select(c => new GetAllCustomerResponse
                 {
@@ -109,7 +110,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
             var customer = await _context.Customers
                 .Include(c => c.Agreements)
                 .Include(c => c.Orders)
-                .FirstOrDefaultAsync(c => c.CustomerId == id);
+                .FirstOrDefaultAsync(c => c.CustomerId == id && c.IsDeleted == false);
 
             if (customer == null) return null;
 
@@ -169,7 +170,8 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
                 LicenseDown = dto.LicenseDown,
                 Status = dto.Status,
                 Description = dto.Description,
-                CreateDate = DateTime.Now
+                CreateDate = DateTime.Now,
+                IsDeleted = false,
             };
 
             await _context.Customers.AddAsync(entity);
@@ -205,9 +207,11 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerId == id);
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerId == id && c.IsDeleted == false);
             if (customer == null) return false;
-            _context.Customers.Remove(customer);
+
+            customer.IsDeleted = true;
+            
             await _context.SaveChangesAsync();
             return true;
         }
@@ -215,6 +219,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
         public IQueryable<GetAllCustomerResponse> GetAllCustomerQuery()
         {
             return _context.Customers
+                .Where(c => c.IsDeleted == false)
                 .Include(c => c.Agreements)
                 .Include(c => c.Orders)
                 .Select(c => new GetAllCustomerResponse
@@ -252,7 +257,7 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
         public async Task<Customer?> GetByEmailAsync(string email)
         {
             return await _context.Set<Customer>()
-                .FirstOrDefaultAsync(c => c.Email == email);
+                .FirstOrDefaultAsync(c => c.Email == email && c.IsDeleted == false);
         }
     }
 }
