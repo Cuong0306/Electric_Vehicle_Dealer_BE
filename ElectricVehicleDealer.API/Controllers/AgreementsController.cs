@@ -1,6 +1,7 @@
 ﻿using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DAL.Enum;
 using ElectricVehicleDealer.DTO.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ElectricVehicleDealer.API.Controllers
@@ -21,12 +22,14 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         [HttpGet]
+
         public async Task<IActionResult> GetAll()
         {
             var agreements = await _agreementsService.GetAllAgreementsAsync();
             return Ok(agreements);
         }
 
+  
         [HttpGet("paged")]
         public async Task<IActionResult> GetPaged(
             [FromQuery] int pageNumber = 1,
@@ -43,6 +46,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(pagedResult);
         }
 
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -51,6 +55,8 @@ namespace ElectricVehicleDealer.API.Controllers
 
             return Ok(agreement);
         }
+
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAgreementRequest dto)
         {
@@ -63,6 +69,8 @@ namespace ElectricVehicleDealer.API.Controllers
                 Data = agreement
             });
         }
+
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateAgreementRequest dto)
         {
@@ -71,6 +79,7 @@ namespace ElectricVehicleDealer.API.Controllers
             await _agreementsService.UpdateAgreementAsync(dto, id);
             return Ok(new { Message = "Agreement updated successfully" });
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

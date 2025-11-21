@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using ElectricVehicleDealer.BLL.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 public class ImageUploadRequest
 {
@@ -20,10 +21,10 @@ public class UploadsController : ControllerBase
 
     public UploadsController(ICloudinaryService cloud) => _cloud = cloud;
 
-    /// <summary>Upload 1 ảnh</summary>
+    
     [HttpPost("image")]
     [Consumes("multipart/form-data")]
-    [RequestSizeLimit(20_000_000)] // 20MB
+    [RequestSizeLimit(20_000_000)]
     public async Task<IActionResult> UploadImage([FromForm] ImageUploadRequest request, [FromQuery] string? folder, CancellationToken ct)
     {
         if (request.File is null || request.File.Length == 0)
@@ -42,7 +43,7 @@ public class UploadsController : ControllerBase
         });
     }
 
-    /// <summary>Upload nhiều ảnh</summary>
+    
     [HttpPost("images")]
     [Consumes("multipart/form-data")]
     [RequestSizeLimit(50_000_000)]

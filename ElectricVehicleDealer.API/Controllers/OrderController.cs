@@ -2,6 +2,7 @@
 using ElectricVehicleDealer.BLL.Services.Interfaces.Implementations;
 using ElectricVehicleDealer.DAL.Entities;
 using ElectricVehicleDealer.DTO.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,7 +34,7 @@ namespace ElectricVehicleDealer.API.Controllers
             if (order == null) return NotFound();
             return Ok(order);
         }
-
+  
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateOrderDto dto)
         {
@@ -100,7 +101,6 @@ namespace ElectricVehicleDealer.API.Controllers
                 });
             }
         }
-
 
         [HttpGet("paged")]
         public async Task<IActionResult> GetPaged(

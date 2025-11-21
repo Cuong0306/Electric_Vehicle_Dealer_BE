@@ -1,5 +1,6 @@
 using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DTO.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -12,18 +13,23 @@ namespace ElectricVehicleDealer.API.Controllers
         private readonly IDealerService _service;
         public DealersController(IDealerService service) => _service = service;
 
+       
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
 
+        
         [HttpGet("{{id}}")]
         public async Task<IActionResult> GetById(int id) => Ok(await _service.GetByIdAsync(id));
 
 
+   
         [HttpPut("{{id}}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateDealerRequest dto) => Ok(await _service.UpdateAsync(id, dto));
 
+    
         [HttpDelete("{{id}}")]
         public async Task<IActionResult> Delete(int id) => Ok(await _service.DeleteAsync(id));
+
 
         [HttpGet("paged")]
         public async Task<IActionResult> GetPaged(

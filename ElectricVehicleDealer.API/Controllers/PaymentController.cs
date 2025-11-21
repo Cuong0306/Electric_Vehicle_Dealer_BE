@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElectricVehicleDealer.API.Controllers
 {
@@ -23,6 +24,7 @@ namespace ElectricVehicleDealer.API.Controllers
             _payOsService = payOsService;
             _payOsSettings = payosOptions.Value;
         }
+
 
         [HttpPost("create")]
         public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequest request)
@@ -47,6 +49,8 @@ namespace ElectricVehicleDealer.API.Controllers
 
             return Ok(response);
         }
+
+      
         [HttpPost("callback")]
         public async Task<IActionResult> Callback([FromBody] PayOsCallbackRequest payload)
         {
@@ -68,6 +72,8 @@ namespace ElectricVehicleDealer.API.Controllers
                 });
             }
         }
+
+
         [HttpGet("page")]
         public async Task<IActionResult> GetPayments([FromQuery] PaymentQueryRequest request)
         {

@@ -1,6 +1,7 @@
 ﻿using ElectricVehicleDealer.DAL.Services.Interfaces;
 using ElectricVehicleDealer.DTO.Requests;
 using ElectricVehicleDealer.DTO.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -20,6 +21,7 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         [HttpPost("CreateEVMStaff")]
+
         public async Task<IActionResult> CreateStaff([FromBody] CreateStaffRequest dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -35,6 +37,7 @@ namespace ElectricVehicleDealer.API.Controllers
                 return BadRequest(new { message = msg });
             }
         }
+        
 
         [HttpPost("CreateDealer")]
         public async Task<IActionResult> CreateDealer([FromBody] CreateDealerRequest dto)

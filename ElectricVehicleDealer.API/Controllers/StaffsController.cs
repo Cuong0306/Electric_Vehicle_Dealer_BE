@@ -1,5 +1,6 @@
 using ElectricVehicleDealer.BLL.Services.Interfaces;
 using ElectricVehicleDealer.DTO.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -12,21 +13,23 @@ namespace ElectricVehicleDealer.API.Controllers
         private readonly IStaffService _service;
         public StaffsController(IStaffService service) => _service = service;
 
+        
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
 
+       
         [HttpGet("{{id}}")]
         public async Task<IActionResult> GetById(int id) => Ok(await _service.GetByIdAsync(id));
 
-        //[HttpPost]
-       // public async Task<IActionResult> Create([FromBody] CreateStaffRequest dto) => Ok(await _service.CreateAsync(dto));
-
+        
         [HttpPut("{{id}}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateStaffRequest dto) => Ok(await _service.UpdateAsync(id, dto));
 
+       
         [HttpDelete("{{id}}")]
         public async Task<IActionResult> Delete(int id) => Ok(await _service.DeleteAsync(id));
 
+        
         [HttpDelete("hard/{{id}}")]
         public async Task<IActionResult> HardDeleteUser(int staffId)
         {
@@ -42,7 +45,7 @@ namespace ElectricVehicleDealer.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("soft/{{id}}")]
         public async Task<IActionResult> SoftDeleteUser(int id)
         {
@@ -60,13 +63,14 @@ namespace ElectricVehicleDealer.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        [Authorize]
         [HttpGet("activeStaff")]
         public async Task<IActionResult> GetAllActiveStaffs()
         {
             var staffs = await _service.GetAllActiveStaffAsync();
             return Ok(staffs);
         }
-
+        [Authorize]
         [HttpGet("paged")]
         public async Task<IActionResult> GetStaffsPaged(
     int pageNumber = 1, int pageSize = 10, string? search = null, string? status = null)

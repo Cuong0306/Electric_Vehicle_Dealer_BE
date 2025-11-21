@@ -29,7 +29,7 @@ public partial class Customer
     public string? Description { get; set; }
 
     public string? Status { get; set; }
-    public bool? IsDeleted { get; set; }
+    public bool? IsDeleted { get; set; } = false;
 
     [Column("license_up")] public string? LicenseUp { get; set; }
     [Column("license_down")] public string? LicenseDown { get; set; }
