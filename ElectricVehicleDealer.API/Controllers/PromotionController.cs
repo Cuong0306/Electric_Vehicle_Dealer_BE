@@ -38,7 +38,7 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         
-        [Authorize(Roles = "Dealer_staff, Dealer_manager")]
+   
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreatePromotionRequest dto)
         {
@@ -52,7 +52,7 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         
-        [Authorize(Roles = "Dealer_staff, Dealer_manager")]
+ 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdatePromotionRequest dto)
         {
@@ -67,7 +67,7 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         
-        [Authorize(Roles = "Dealer_staff, Dealer_manager")]
+ 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {

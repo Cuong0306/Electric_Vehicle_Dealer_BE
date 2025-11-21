@@ -54,7 +54,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return BadRequest("Failed to create customer");
         }
 
-        [Authorize(Roles = "Dealer_staff, Dealer_manager")]
+        
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, Customer customer)
         {
@@ -65,7 +65,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return NotFound("Customer not found");
         }
 
-        [Authorize(Roles = "Dealer_staff, Dealer_manager")]
+        
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {

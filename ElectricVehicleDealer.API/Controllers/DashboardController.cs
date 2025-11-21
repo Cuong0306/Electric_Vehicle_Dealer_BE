@@ -20,7 +20,7 @@ namespace ElectricVehicleDealer.API.Controllers
         /// <summary>
         /// Tổng quan cơ bản (doanh thu, khách hàng, đơn hàng, tổng xe bán ra)
         /// </summary>
-        [Authorize]
+
         [HttpGet("summary")]
         public async Task<IActionResult> GetSummary([FromQuery] int storeId)
         {
@@ -41,7 +41,7 @@ namespace ElectricVehicleDealer.API.Controllers
         /// <summary>
         /// Top dealer (thực hiện nhiều order nhất)
         /// </summary>
-        [Authorize]
+    
         [HttpGet("top-dealer")]
         public async Task<IActionResult> GetTopDealer([FromQuery] int storeId)
         {
@@ -52,7 +52,7 @@ namespace ElectricVehicleDealer.API.Controllers
         /// <summary>
         /// Top customer (chi tiền nhiều nhất)
         /// </summary>
-        [Authorize]
+
         [HttpGet("top-customer")]
         public async Task<IActionResult> GetTopCustomer([FromQuery] int storeId)
         {
@@ -63,7 +63,7 @@ namespace ElectricVehicleDealer.API.Controllers
         /// <summary>
         /// Doanh thu theo tháng (line/bar chart)
         /// </summary>
-        [Authorize]
+
         [HttpGet("revenue-by-month")]
         public async Task<IActionResult> GetRevenueByMonth([FromQuery] int storeId)
         {
@@ -74,7 +74,7 @@ namespace ElectricVehicleDealer.API.Controllers
         /// <summary>
         /// Top 5 xe bán chạy nhất
         /// </summary>
-        [Authorize]
+
         [HttpGet("top-vehicles")]
         public async Task<IActionResult> GetTopVehicles([FromQuery] int storeId, [FromQuery] int top = 5)
         {
@@ -85,7 +85,7 @@ namespace ElectricVehicleDealer.API.Controllers
         /// <summary>
         /// Top 5 xe ít được mua
         /// </summary>
-        [Authorize]
+      
         [HttpGet("bottom-vehicles")]
         public async Task<IActionResult> GetBottomVehicles([FromQuery] int storeId, [FromQuery] int top = 5)
         {
@@ -96,7 +96,7 @@ namespace ElectricVehicleDealer.API.Controllers
         /// <summary>
         /// Tồn kho theo từng model xe
         /// </summary>
-        [Authorize]
+
         [HttpGet("inventory")]
         public async Task<IActionResult> GetInventory([FromQuery] int storeId)
         {

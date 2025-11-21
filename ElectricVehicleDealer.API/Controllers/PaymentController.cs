@@ -25,7 +25,7 @@ namespace ElectricVehicleDealer.API.Controllers
             _payOsSettings = payosOptions.Value;
         }
 
-        [Authorize(Roles = "Dealer_staff, Dealer_manager")]
+
         [HttpPost("create")]
         public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequest request)
         {
@@ -50,7 +50,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = "Dealer_staff, Dealer_manager")]
+      
         [HttpPost("callback")]
         public async Task<IActionResult> Callback([FromBody] PayOsCallbackRequest payload)
         {
@@ -73,7 +73,7 @@ namespace ElectricVehicleDealer.API.Controllers
             }
         }
 
-        [Authorize]
+
         [HttpGet("page")]
         public async Task<IActionResult> GetPayments([FromQuery] PaymentQueryRequest request)
         {

@@ -21,7 +21,7 @@ public class UploadsController : ControllerBase
 
     public UploadsController(ICloudinaryService cloud) => _cloud = cloud;
 
-    [Authorize]
+    
     [HttpPost("image")]
     [Consumes("multipart/form-data")]
     [RequestSizeLimit(20_000_000)]
@@ -43,7 +43,7 @@ public class UploadsController : ControllerBase
         });
     }
 
-    [Authorize]
+    
     [HttpPost("images")]
     [Consumes("multipart/form-data")]
     [RequestSizeLimit(50_000_000)]

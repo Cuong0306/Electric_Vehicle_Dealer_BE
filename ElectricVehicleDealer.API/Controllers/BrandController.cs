@@ -14,7 +14,7 @@ namespace ElectricVehicleDealer.API.Controllers
         {
             _service = service;
         }
-        [Authorize]
+        
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
@@ -22,7 +22,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(result);
         }
 
-        [Authorize]
+        
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
@@ -30,7 +30,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(brand);
         }
 
-        [Authorize(Roles ="Admin")]
+  
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateBrandRequest dto)
         {
@@ -38,7 +38,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(created);
         }
 
-        [Authorize(Roles = "Admin")]
+   
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, [FromBody] UpdateBrandRequest dto)
         {
@@ -46,7 +46,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(updated);
         }
 
-        [Authorize(Roles = "Admin")]
+    
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {

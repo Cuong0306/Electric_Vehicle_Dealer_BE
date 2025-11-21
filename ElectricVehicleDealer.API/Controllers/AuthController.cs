@@ -21,7 +21,7 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         [HttpPost("CreateEVMStaff")]
-        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> CreateStaff([FromBody] CreateStaffRequest dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -38,7 +38,7 @@ namespace ElectricVehicleDealer.API.Controllers
             }
         }
         
-        [Authorize(Roles = "Dealer_manager, Admin")]
+
         [HttpPost("CreateDealer")]
         public async Task<IActionResult> CreateDealer([FromBody] CreateDealerRequest dto)
         {

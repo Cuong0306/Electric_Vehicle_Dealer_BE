@@ -22,14 +22,14 @@ namespace ElectricVehicleDealer.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+
         public async Task<IActionResult> GetAll()
         {
             var agreements = await _agreementsService.GetAllAgreementsAsync();
             return Ok(agreements);
         }
 
-        [Authorize]
+  
         [HttpGet("paged")]
         public async Task<IActionResult> GetPaged(
             [FromQuery] int pageNumber = 1,
@@ -46,7 +46,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(pagedResult);
         }
 
-        [Authorize]
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -56,7 +56,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(agreement);
         }
 
-        [Authorize(Roles = "Dealer_staff")] 
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAgreementRequest dto)
         {
@@ -70,7 +70,7 @@ namespace ElectricVehicleDealer.API.Controllers
             });
         }
 
-        [Authorize]
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateAgreementRequest dto)
         {
@@ -80,7 +80,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(new { Message = "Agreement updated successfully" });
         }
 
-        [Authorize]
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

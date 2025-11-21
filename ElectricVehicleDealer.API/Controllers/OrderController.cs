@@ -20,13 +20,13 @@ namespace ElectricVehicleDealer.API.Controllers
         {
             _service = service;
         }
-        [Authorize]
+
         [HttpGet]
         public async Task<ActionResult<List<Order>>> GetAll()
         {
             return Ok(await _service.GetAllAsync());
         }
-        [Authorize]
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetById(int id)
         {
@@ -34,7 +34,7 @@ namespace ElectricVehicleDealer.API.Controllers
             if (order == null) return NotFound();
             return Ok(order);
         }
-        [Authorize(Roles = "Dealer_staff")]
+  
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateOrderDto dto)
         {
@@ -53,7 +53,7 @@ namespace ElectricVehicleDealer.API.Controllers
             }
         }
 
-        [Authorize(Roles = "Dealer_staff")]
+
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, [FromBody] UpdateOrderRequest request)
         {
@@ -64,7 +64,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "Dealer_staff, Dealer_staff")]
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -72,7 +72,7 @@ namespace ElectricVehicleDealer.API.Controllers
             if (result) return Ok("Deleted successfully");
             return NotFound("Customer not found");
         }
-        [Authorize]
+
         [HttpGet("brand/{brandId}")]
         public async Task<IActionResult> GetByBrandId(int brandId)
         {
@@ -82,7 +82,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(result);
         }
 
-        [Authorize]
+
         [HttpGet("store/{storeId}")]
         public async Task<IActionResult> GetOrdersByStoreId(int storeId)
         {
@@ -102,7 +102,6 @@ namespace ElectricVehicleDealer.API.Controllers
             }
         }
 
-        [Authorize]
         [HttpGet("paged")]
         public async Task<IActionResult> GetPaged(
     int pageNumber = 1, int pageSize = 10, string? search = null, string? status = null)

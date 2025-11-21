@@ -19,15 +19,15 @@ namespace ElectricVehicleDealer.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id) => Ok(await _service.GetByIdAsync(id));
 
-        [Authorize(Roles = "EVM_Staff")]
+        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateVehicleRequest dto) => Ok(await _service.CreateAsync(dto));
 
-        [Authorize(Roles = "EVM_Staff")]
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateVehicleRequest dto) => Ok(await _service.UpdateAsync(id, dto));
 
-        [Authorize(Roles = "EVM_Staff")]
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id) => Ok(await _service.DeleteAsync(id));
 

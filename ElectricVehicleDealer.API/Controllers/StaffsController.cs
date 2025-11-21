@@ -13,23 +13,23 @@ namespace ElectricVehicleDealer.API.Controllers
         private readonly IStaffService _service;
         public StaffsController(IStaffService service) => _service = service;
 
-        [Authorize]
+        
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
 
-        [Authorize]
+       
         [HttpGet("{{id}}")]
         public async Task<IActionResult> GetById(int id) => Ok(await _service.GetByIdAsync(id));
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpPut("{{id}}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateStaffRequest dto) => Ok(await _service.UpdateAsync(id, dto));
 
-        [Authorize(Roles = "Admin")]
+       
         [HttpDelete("{{id}}")]
         public async Task<IActionResult> Delete(int id) => Ok(await _service.DeleteAsync(id));
 
-        [Authorize(Roles = "Admin")]
+        
         [HttpDelete("hard/{{id}}")]
         public async Task<IActionResult> HardDeleteUser(int staffId)
         {

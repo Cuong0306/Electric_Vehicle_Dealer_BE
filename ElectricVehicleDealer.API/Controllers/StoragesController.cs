@@ -14,7 +14,7 @@ namespace ElectricVehicleDealer.API.Controllers
 
         public StoragesController(IStorageService service) => _service = service;
 
-        [Authorize(Roles = "EVM_Staff, Admin")]
+       
         [HttpPost("allocate")]
         public async Task<IActionResult> AllocateVehicles([FromBody] AllocateVehicleDto dto)
         {
@@ -25,7 +25,7 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(new { success = result, message = "Phân bổ xe thành công." });
         }
 
-        [Authorize(Roles = "EVM_Staff, Admin")]
+       
         [HttpPost("recall")]
         public async Task<IActionResult> RecallVehicles([FromBody] AllocateVehicleDto dto)
         {
@@ -66,17 +66,17 @@ namespace ElectricVehicleDealer.API.Controllers
             return Ok(result);
         }
 
-        [Authorize(Roles = "EVM_Staff")]
+        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStorageRequest dto)
             => Ok(await _service.CreateAsync(dto));
 
-        [Authorize(Roles = "EVM_Staff")]
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateStorageRequest dto)
             => Ok(await _service.UpdateAsync(id, dto));
         
-        [Authorize(Roles = "EVM_Staff")]
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
             => Ok(await _service.DeleteAsync(id));
