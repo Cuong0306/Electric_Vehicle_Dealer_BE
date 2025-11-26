@@ -22,7 +22,7 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<PagedResult<OrderResponse>> GetPagedAsync(
     int pageNumber, int pageSize, string? search = null, string? status = null);
 
-        Task<Order> CreateOrderFromQuoteAsync(Quote quote);
+        Task<Order> CreateOrderFromQuoteAsync(Quote quote, Dealer dealer);
 
     }
 }
