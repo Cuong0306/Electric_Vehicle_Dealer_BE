@@ -16,6 +16,17 @@ namespace ElectricVehicleDealer.DAL.Entities
 
         [Column("dealer_id")]
         public int DealerId { get; set; }
+        [Column("quote_id")]
+        public int QuoteId { get; set; }
+
+        [ForeignKey(nameof(QuoteId))]
+        public virtual Quote Quote { get; set; } = null!;
+
+        [Column("vehicle_id")]
+        public int VehicleId { get; set; }
+
+        [ForeignKey(nameof(VehicleId))]
+        public virtual Vehicle Vehicle { get; set; } = null!;
 
         [Column("order_date")]
         public DateTime? OrderDate { get; set; }

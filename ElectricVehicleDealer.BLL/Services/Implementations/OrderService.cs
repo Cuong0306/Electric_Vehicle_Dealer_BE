@@ -30,7 +30,32 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             return await _repository.CreateAsync(order); 
         }
 
+        public async Task<Order> CreateOrderFromQuoteAsync(Quote quote)
+        {
+         
+            if (quote.FinalPrice <= 0)
+                throw new Exception($"Cannot create order for quote {quote.QuoteId} with FinalPrice <= 0.");
+            var newOrder = new Order
+            {
+                QuoteId = quote.QuoteId,
+                VehicleId = quote.VehicleId,
+                CustomerId = quote.CustomerId,
+                DealerId = quote.DealerId,
+                Quantity = quote.Quantity,
+                TotalPrice = quote.FinalPrice,
+                OrderDate = DateTime.Now,
+                Status = OrderEnum.Pending,
+                Note = $"Đơn hàng được tạo tự động từ báo giá #{quote.QuoteId}."
+                
+            };
 
+          
+
+            _unitOfWork.Orders.AddAsync(newOrder);
+            await _unitOfWork.SaveAsync();
+
+            return newOrder;
+        }
         public async Task<bool> DeleteAsync(int id)
         {
             try

@@ -18,7 +18,6 @@ namespace ElectricVehicleDealer.DAL.Repositories.Interfaces
         Task<bool> UpdateAsync(Agreement agreement);
         Task<bool> DeleteAsync(int id);
         IQueryable<Agreement> GetAllQuery();
-        
-
+        Task<Order?> GetOrderDetailsForAgreementAsync(int orderId);
     }
 }
