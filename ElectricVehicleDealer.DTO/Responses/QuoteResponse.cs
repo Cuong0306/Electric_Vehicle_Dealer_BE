@@ -13,6 +13,7 @@ namespace ElectricVehicleDealer.DTO.Responses
         public decimal? TaxRate { get; set; }
         public DateTime? QuoteDate { get; set; }
         public QuoteEnum? Status { get; set; }
+        public int Quantity { get; set; }
         public VehicleResponse? Vehicle { get; set; }
 
         public decimal? VehiclePrice { get; set; }

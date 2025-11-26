@@ -19,6 +19,7 @@ public partial class Quote
 
     public QuoteEnum Status { get; set; } = QuoteEnum.Draft;
     public int? PromotionId { get; set; }
+    public int Quantity { get; set; } = 1;
     public virtual Promotion? Promotion { get; set; }
 
     public virtual Customer Customer { get; set; } = null!;

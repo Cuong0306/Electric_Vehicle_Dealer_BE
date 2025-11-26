@@ -89,8 +89,10 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             if (dto.CustomerId == 0) throw new Exception("CustomerId is required");
             if (dto.VehicleId == 0) throw new Exception("VehicleId is required");
             if (dto.DealerId == 0) throw new Exception("DealerId is required");
+            
+            if (dto.Quantity <= 0) throw new Exception("Quantity must be greater than zero");
             if (!dto.QuoteDate.HasValue) dto.QuoteDate = DateTime.Now;
-
+            
             var customer = await _unitOfWork.Customers.GetByIdAsync(dto.CustomerId)
                 ?? throw new Exception($"Customer {dto.CustomerId} not found");
 
@@ -118,7 +120,8 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 PromotionId = promotion?.PromotionId,
                 TaxRate = dto.TaxRate ?? 0,
                 QuoteDate = dto.QuoteDate.Value,
-                Status = dto.Status ?? QuoteEnum.Draft
+                Status = dto.Status ?? QuoteEnum.Draft,
+                Quantity = dto.Quantity
             };
 
             await _unitOfWork.Quotes.AddAsync(quote);
@@ -166,6 +169,16 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 promotion = await _unitOfWork.Promotions.GetByIdAsync(quote.PromotionId.Value)
                                 ?? throw new Exception($"Promotion {quote.PromotionId.Value} not found");
             }
+
+            if (dto.Quantity.HasValue && dto.Quantity.Value > 0)
+            {
+                quote.Quantity = dto.Quantity.Value;
+            }
+            else if (dto.Quantity.HasValue && dto.Quantity.Value <= 0)
+            {
+                throw new Exception("Quantity must be greater than zero for update");
+            }
+
 
             if (dto.TaxRate.HasValue) quote.TaxRate = dto.TaxRate.Value;
             if (dto.QuoteDate.HasValue) quote.QuoteDate = dto.QuoteDate.Value;
@@ -223,14 +236,16 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                                 : null;
 
             decimal basePrice = vehicle?.Price ?? 0;
+            int quantity = quote.Quantity;
+            decimal totalPriceBeforeDiscount = basePrice * quantity;
 
             decimal discountAmount = 0;
             if (promotion != null && promotion.DiscountPercent.HasValue && promotion.DiscountPercent.Value > 0)
             {
-                discountAmount = basePrice * promotion.DiscountPercent.Value / 100;
+                discountAmount = totalPriceBeforeDiscount * promotion.DiscountPercent.Value / 100;
             }
 
-            decimal priceAfterDiscount = basePrice - discountAmount;
+            decimal priceAfterDiscount = totalPriceBeforeDiscount - discountAmount;
             decimal taxAmount = priceAfterDiscount * quote.TaxRate / 100;
             decimal finalPrice = priceAfterDiscount + taxAmount;
 
@@ -244,6 +259,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 TaxRate = quote.TaxRate,
                 QuoteDate = quote.QuoteDate,
                 Status = quote.Status,
+                Quantity = quantity,
                 VehiclePrice = basePrice,
                 PriceWithTax = finalPrice,
                 DiscountAmount = discountAmount,
@@ -287,16 +303,19 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             decimal basePrice = vehicle.Price ?? 0;
             decimal taxRate = quote.TaxRate;
 
+            // THÊM: Lấy số lượng
+            int quantity = quote.Quantity;
+            decimal totalPriceBeforeDiscount = basePrice * quantity;
             // Tính toán
             decimal discountAmount = 0;
             string promotionName = "";
             if (quote.PromotionId.HasValue && quote.Promotion != null && quote.Promotion.DiscountPercent.HasValue)
             {
-                discountAmount = basePrice * quote.Promotion.DiscountPercent.Value / 100;
+                discountAmount = totalPriceBeforeDiscount * quote.Promotion.DiscountPercent.Value / 100;
                 promotionName = quote.Promotion.Title ?? $"{quote.Promotion.DiscountPercent.Value}%";
             }
 
-            decimal priceAfterDiscount = basePrice - discountAmount;
+            decimal priceAfterDiscount = totalPriceBeforeDiscount - discountAmount;
             decimal taxAmount = priceAfterDiscount * taxRate / 100;
             decimal finalPrice = priceAfterDiscount + taxAmount;
 
@@ -365,6 +384,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                                 columns.ConstantColumn(40);
                                 columns.RelativeColumn(4);
                                 columns.RelativeColumn(1);
+                                columns.RelativeColumn(1);
                                 columns.RelativeColumn(2);
                                 columns.RelativeColumn(2);
                             });
@@ -375,6 +395,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                                 header.Cell().Element(CellStyleHeader).Text("STT");
                                 header.Cell().Element(CellStyleHeader).Text("Mô tả / Tên xe");
                                 header.Cell().Element(CellStyleHeader).AlignCenter().Text("Năm");
+                                header.Cell().Element(CellStyleHeader).AlignCenter().Text("SL");
                                 header.Cell().Element(CellStyleHeader).AlignRight().Text("Đơn giá");
                                 header.Cell().Element(CellStyleHeader).AlignRight().Text("Thành tiền");
                             });
@@ -385,8 +406,9 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                                 c.Item().Text($"{brandName} {modelName}").Bold();
                             });
                             table.Cell().Element(CellStyleData).AlignCenter().Text($"{vehicle.Year}");
+                            table.Cell().Element(CellStyleData).AlignCenter().Text(quantity.ToString());
                             table.Cell().Element(CellStyleData).AlignRight().Text(basePrice.ToString("N0", vietnamCulture));
-                            table.Cell().Element(CellStyleData).AlignRight().Text(basePrice.ToString("N0", vietnamCulture));
+                            table.Cell().Element(CellStyleData).AlignRight().Text(totalPriceBeforeDiscount.ToString("N0", vietnamCulture));
                         });
 
                         // PHẦN TỔNG KẾT
@@ -412,7 +434,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
 
                                     // Cộng tiền hàng
                                     t.Cell().PaddingBottom(4).Text("Cộng tiền hàng:");
-                                    t.Cell().PaddingBottom(4).AlignRight().Text(basePrice.ToString("N0", vietnamCulture));
+                                    t.Cell().PaddingBottom(4).AlignRight().Text(totalPriceBeforeDiscount.ToString("N0", vietnamCulture));
 
                                     // Chiết khấu
                                     if (discountAmount > 0)
