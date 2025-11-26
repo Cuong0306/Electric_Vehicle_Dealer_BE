@@ -21,6 +21,8 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces
         Task<List<OrderResponse>> GetOrdersByStoreIdAsync(int storeId);
         Task<PagedResult<OrderResponse>> GetPagedAsync(
     int pageNumber, int pageSize, string? search = null, string? status = null);
-  
+
+        Task<Order> CreateOrderFromQuoteAsync(Quote quote);
+
     }
 }

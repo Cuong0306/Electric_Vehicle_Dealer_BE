@@ -11,9 +11,9 @@ using QuestPDF.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace ElectricVehicleDealer.BLL.Services.Implementations
 {
@@ -21,13 +21,16 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
+        private readonly IOrderService _orderService; // THÊM IOrderService
 
-        public QuoteService(IUnitOfWork unitOfWork, IEmailService emailService)
+        public QuoteService(IUnitOfWork unitOfWork, IEmailService emailService, IOrderService orderService) // CẬP NHẬT CONSTRUCTOR
         {
             _unitOfWork = unitOfWork;
             _emailService = emailService;
+            _orderService = orderService;
             QuestPDF.Settings.License = LicenseType.Community;
         }
+
         public async Task<IEnumerable<CustomerResponse>> GetCustomersWithQuotesAsync()
         {
             var quotes = await _unitOfWork.Quotes.GetAllAsync();
@@ -48,12 +51,13 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                         Email = c.Email,
                         Phone = c.Phone,
                         Address = c.Address,
-                       
+
                     });
                 }
             }
             return customers;
         }
+
         public async Task<IEnumerable<QuoteResponse>> GetQuotesByCustomerIdAsync(int customerId)
         {
             var allQuotes = await _unitOfWork.Quotes.GetAllAsync();
@@ -66,6 +70,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             }
             return result;
         }
+
         public async Task<IEnumerable<QuoteResponse>> GetAllAsync()
         {
             var quotes = await _unitOfWork.Quotes.GetAllAsync();
@@ -89,10 +94,10 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             if (dto.CustomerId == 0) throw new Exception("CustomerId is required");
             if (dto.VehicleId == 0) throw new Exception("VehicleId is required");
             if (dto.DealerId == 0) throw new Exception("DealerId is required");
-            
+
             if (dto.Quantity <= 0) throw new Exception("Quantity must be greater than zero");
             if (!dto.QuoteDate.HasValue) dto.QuoteDate = DateTime.Now;
-            
+
             var customer = await _unitOfWork.Customers.GetByIdAsync(dto.CustomerId)
                 ?? throw new Exception($"Customer {dto.CustomerId} not found");
 
@@ -124,17 +129,23 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 Quantity = dto.Quantity
             };
 
-            await _unitOfWork.Quotes.AddAsync(quote);
-            await _unitOfWork.SaveAsync();
-
+            // Gán Navigation Properties tạm thời để tính giá
             quote.Customer = customer;
             quote.Vehicle = vehicle;
             quote.Dealer = dealer;
             quote.Promotion = promotion;
 
+            // 1. TÍNH VÀ LƯU FINAL PRICE
+            quote.FinalPrice = await CalculateQuoteFinalPriceAsync(quote);
+
+            await _unitOfWork.Quotes.AddAsync(quote);
+            await _unitOfWork.SaveAsync(); // LƯU Quote với FinalPrice
+
             if (quote.Status == QuoteEnum.Accepted)
             {
                 await SendQuoteAcceptedEmailAsync(quote, customer, vehicle, dealer);
+                // 2. TẠO ORDER
+                await _orderService.CreateOrderFromQuoteAsync(quote);
             }
 
             return await MapToResponseAsync(quote);
@@ -145,6 +156,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             var quote = await _unitOfWork.Quotes.GetByIdAsync(id);
             if (quote == null) throw new Exception($"Quote with id {id} not found");
 
+            // Tải/Cập nhật các Navigation Properties
             Customer? customer = null;
             Vehicle? vehicle = null;
             Dealer? dealer = null;
@@ -152,50 +164,51 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
 
             if (dto.CustomerId != 0 && dto.CustomerId != quote.CustomerId) quote.CustomerId = dto.CustomerId;
             customer = await _unitOfWork.Customers.GetByIdAsync(quote.CustomerId)
-                             ?? throw new Exception($"Customer {quote.CustomerId} not found");
+                               ?? throw new Exception($"Customer {quote.CustomerId} not found");
 
             if (dto.VehicleId != 0 && dto.VehicleId != quote.VehicleId) quote.VehicleId = dto.VehicleId;
             vehicle = await _unitOfWork.Vehicles.GetByIdWithIncludesAsync(quote.VehicleId)
-                            ?? throw new Exception($"Vehicle {quote.VehicleId} not found");
+                                ?? throw new Exception($"Vehicle {quote.VehicleId} not found");
             if (vehicle.Brand == null) throw new Exception($"Vehicle {vehicle.VehicleId} does not have a Brand assigned");
 
             if (dto.DealerId != 0 && dto.DealerId != quote.DealerId) quote.DealerId = dto.DealerId;
             dealer = await _unitOfWork.Dealers.GetByIdAsync(quote.DealerId)
-                           ?? throw new Exception($"Dealer {quote.DealerId} not found");
+                               ?? throw new Exception($"Dealer {quote.DealerId} not found");
 
             if (dto.PromotionId.HasValue && dto.PromotionId.Value != 0 && dto.PromotionId.Value != quote.PromotionId) quote.PromotionId = dto.PromotionId;
             if (quote.PromotionId.HasValue)
             {
                 promotion = await _unitOfWork.Promotions.GetByIdAsync(quote.PromotionId.Value)
-                                ?? throw new Exception($"Promotion {quote.PromotionId.Value} not found");
+                                 ?? throw new Exception($"Promotion {quote.PromotionId.Value} not found");
             }
 
-            if (dto.Quantity.HasValue && dto.Quantity.Value > 0)
-            {
-                quote.Quantity = dto.Quantity.Value;
-            }
-            else if (dto.Quantity.HasValue && dto.Quantity.Value <= 0)
-            {
-                throw new Exception("Quantity must be greater than zero for update");
-            }
-
+            // Cập nhật các trường dữ liệu
+            if (dto.Quantity.HasValue && dto.Quantity.Value > 0) quote.Quantity = dto.Quantity.Value;
+            else if (dto.Quantity.HasValue && dto.Quantity.Value <= 0) throw new Exception("Quantity must be greater than zero for update");
 
             if (dto.TaxRate.HasValue) quote.TaxRate = dto.TaxRate.Value;
             if (dto.QuoteDate.HasValue) quote.QuoteDate = dto.QuoteDate.Value;
+
+            QuoteEnum oldStatus = quote.Status;
             if (!string.IsNullOrEmpty(dto.Status)) quote.Status = ParseQuoteStatus(dto.Status);
 
-            _unitOfWork.Quotes.Update(quote);
-            await _unitOfWork.SaveAsync();
-
+            // Gán Navigation Properties để tính giá
             quote.Customer = customer;
             quote.Vehicle = vehicle;
             quote.Dealer = dealer;
             quote.Promotion = promotion;
 
-        
-            if (quote.Status == QuoteEnum.Accepted)
+            // 1. TÍNH VÀ LƯU FINAL PRICE
+            quote.FinalPrice = await CalculateQuoteFinalPriceAsync(quote); // Gán giá trị mới tính
+
+            _unitOfWork.Quotes.Update(quote);
+            await _unitOfWork.SaveAsync(); // LƯU FINAL PRICE VÀ TRẠNG THÁI MỚI
+
+            if (quote.Status == QuoteEnum.Accepted && oldStatus != QuoteEnum.Accepted) // Chỉ tạo Order nếu status CHUYỂN sang Accepted
             {
                 await SendQuoteAcceptedEmailAsync(quote, customer, vehicle, dealer);
+                // 2. TẠO ORDER
+                await _orderService.CreateOrderFromQuoteAsync(quote);
             }
 
             return await MapToResponseAsync(quote);
@@ -226,19 +239,18 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             throw new ArgumentException($"Invalid quote status: {status}");
         }
 
-        private async Task<QuoteResponse> MapToResponseAsync(Quote quote)
+        // HÀM TÍNH TOÁN GIÁ CUỐI CÙNG CHUNG
+        private async Task<decimal> CalculateQuoteFinalPriceAsync(Quote quote)
         {
-            var customer = await _unitOfWork.Customers.GetByIdAsync(quote.CustomerId);
-            var vehicle = await _unitOfWork.Vehicles.GetByIdWithIncludesAsync(quote.VehicleId);
-            var dealer = await _unitOfWork.Dealers.GetByIdAsync(quote.DealerId);
-            var promotion = quote.PromotionId.HasValue
-                                ? await _unitOfWork.Promotions.GetByIdAsync(quote.PromotionId.Value)
-                                : null;
+            // Đảm bảo Navigation Properties được load
+            var vehicle = quote.Vehicle ?? (await _unitOfWork.Vehicles.GetByIdWithIncludesAsync(quote.VehicleId));
+            var promotion = quote.Promotion;
 
             decimal basePrice = vehicle?.Price ?? 0;
             int quantity = quote.Quantity;
             decimal totalPriceBeforeDiscount = basePrice * quantity;
 
+            // Tính Chiết khấu
             decimal discountAmount = 0;
             if (promotion != null && promotion.DiscountPercent.HasValue && promotion.DiscountPercent.Value > 0)
             {
@@ -246,8 +258,37 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             }
 
             decimal priceAfterDiscount = totalPriceBeforeDiscount - discountAmount;
+
+            // Tính Thuế
             decimal taxAmount = priceAfterDiscount * quote.TaxRate / 100;
-            decimal finalPrice = priceAfterDiscount + taxAmount;
+
+            // Giá cuối cùng
+            return priceAfterDiscount + taxAmount;
+        }
+
+        private async Task<QuoteResponse> MapToResponseAsync(Quote quote)
+        {
+            // Tải các Navigation Properties
+            var customer = quote.Customer ?? await _unitOfWork.Customers.GetByIdAsync(quote.CustomerId);
+            var vehicle = quote.Vehicle ?? await _unitOfWork.Vehicles.GetByIdWithIncludesAsync(quote.VehicleId);
+            var dealer = quote.Dealer ?? await _unitOfWork.Dealers.GetByIdAsync(quote.DealerId);
+            var promotion = quote.Promotion ?? (quote.PromotionId.HasValue ? await _unitOfWork.Promotions.GetByIdAsync(quote.PromotionId.Value) : null);
+
+            // Lấy giá trị đã lưu trong FinalPrice (Hoặc tính toán nếu chưa lưu)
+            decimal finalPrice = quote.FinalPrice > 0
+                ? quote.FinalPrice
+                : await CalculateQuoteFinalPriceAsync(quote); // Nếu chưa được lưu, tính toán
+
+            decimal basePrice = vehicle?.Price ?? 0;
+            int quantity = quote.Quantity;
+            decimal totalPriceBeforeDiscount = basePrice * quantity;
+
+            // Cần tính lại DiscountAmount để hiển thị chính xác trong Response
+            decimal discountAmount = 0;
+            if (promotion != null && promotion.DiscountPercent.HasValue && promotion.DiscountPercent.Value > 0)
+            {
+                discountAmount = totalPriceBeforeDiscount * promotion.DiscountPercent.Value / 100;
+            }
 
             return new QuoteResponse
             {
@@ -261,7 +302,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 Status = quote.Status,
                 Quantity = quantity,
                 VehiclePrice = basePrice,
-                PriceWithTax = finalPrice,
+                PriceWithTax = finalPrice, 
                 DiscountAmount = discountAmount,
                 FinalPrice = finalPrice
             };
@@ -303,10 +344,14 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             decimal basePrice = vehicle.Price ?? 0;
             decimal taxRate = quote.TaxRate;
 
+            // Lấy giá trị từ FinalPrice đã lưu
+            decimal finalPrice = quote.FinalPrice;
+
             // THÊM: Lấy số lượng
             int quantity = quote.Quantity;
             decimal totalPriceBeforeDiscount = basePrice * quantity;
-            // Tính toán
+
+            // Tính toán chiết khấu (để hiển thị chi tiết)
             decimal discountAmount = 0;
             string promotionName = "";
             if (quote.PromotionId.HasValue && quote.Promotion != null && quote.Promotion.DiscountPercent.HasValue)
@@ -315,9 +360,10 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                 promotionName = quote.Promotion.Title ?? $"{quote.Promotion.DiscountPercent.Value}%";
             }
 
+            // Tính toán Tax Amount từ giá trị cuối cùng
             decimal priceAfterDiscount = totalPriceBeforeDiscount - discountAmount;
             decimal taxAmount = priceAfterDiscount * taxRate / 100;
-            decimal finalPrice = priceAfterDiscount + taxAmount;
+
 
             var vietnamCulture = new CultureInfo("vi-VN");
 
@@ -340,7 +386,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
                             {
                                 c.Item().Text("CÔNG TY CỔ PHẦN EV DEALER VIỆT NAM").FontSize(16).Bold().FontColor(Colors.Blue.Darken2);
                                 c.Item().Text("Địa chỉ: Tòa nhà ABC, 123 Đường XYZ, Quận 1, TP. Hồ Chí Minh").FontSize(9).FontColor(Colors.Grey.Darken2);
-                                c.Item().Text("Hotline: 1900 1234  |  Email: support@evdealer.vn  |  Website: www.evdealer.vn").FontSize(9).FontColor(Colors.Grey.Darken2);
+                                c.Item().Text("Hotline: 1900 1234 | Email: support@evdealer.vn | Website: www.evdealer.vn").FontSize(9).FontColor(Colors.Grey.Darken2);
                             });
                         });
                         col.Item().PaddingVertical(10).LineHorizontal(2).LineColor(Colors.Blue.Medium);
