@@ -30,17 +30,21 @@ namespace ElectricVehicleDealer.BLL.Services.Interfaces.Implementations
             return await _repository.CreateAsync(order); 
         }
 
-        public async Task<Order> CreateOrderFromQuoteAsync(Quote quote)
+        public async Task<Order> CreateOrderFromQuoteAsync(Quote quote, Dealer dealer)
         {
          
             if (quote.FinalPrice <= 0)
                 throw new Exception($"Cannot create order for quote {quote.QuoteId} with FinalPrice <= 0.");
+
+            if (dealer == null)
+                throw new Exception("Dealer infomation is required to create an order.");
             var newOrder = new Order
             {
                 QuoteId = quote.QuoteId,
                 VehicleId = quote.VehicleId,
                 CustomerId = quote.CustomerId,
                 DealerId = quote.DealerId,
+                StoreId = dealer.StoreId,
                 Quantity = quote.Quantity,
                 TotalPrice = quote.FinalPrice,
                 OrderDate = DateTime.Now,

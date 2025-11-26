@@ -21,9 +21,9 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
-        private readonly IOrderService _orderService; // THÊM IOrderService
+        private readonly IOrderService _orderService;
 
-        public QuoteService(IUnitOfWork unitOfWork, IEmailService emailService, IOrderService orderService) // CẬP NHẬT CONSTRUCTOR
+        public QuoteService(IUnitOfWork unitOfWork, IEmailService emailService, IOrderService orderService)
         {
             _unitOfWork = unitOfWork;
             _emailService = emailService;
@@ -145,7 +145,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             {
                 await SendQuoteAcceptedEmailAsync(quote, customer, vehicle, dealer);
                 // 2. TẠO ORDER
-                await _orderService.CreateOrderFromQuoteAsync(quote);
+                await _orderService.CreateOrderFromQuoteAsync(quote, dealer);
             }
 
             return await MapToResponseAsync(quote);
@@ -208,7 +208,7 @@ namespace ElectricVehicleDealer.BLL.Services.Implementations
             {
                 await SendQuoteAcceptedEmailAsync(quote, customer, vehicle, dealer);
                 // 2. TẠO ORDER
-                await _orderService.CreateOrderFromQuoteAsync(quote);
+                await _orderService.CreateOrderFromQuoteAsync(quote, dealer);
             }
 
             return await MapToResponseAsync(quote);
