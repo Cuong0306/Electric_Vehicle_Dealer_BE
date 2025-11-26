@@ -16,7 +16,6 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
         {
             _context = context;
         }
-
         public async Task<bool> CreateAsync(Agreement agreement)
         {
             await _context.Agreements.AddAsync(agreement);
@@ -84,6 +83,23 @@ namespace ElectricVehicleDealer.DAL.Repositories.Implementations
         public IQueryable<Agreement> GetAllQuery()
         {
             return _context.Agreements.AsQueryable();
+        }
+
+        public async Task<Order?> GetOrderDetailsForAgreementAsync(int orderId)
+        {
+            var order = await _context.Set<Order>()
+                .Where(o => o.OrderId == orderId)
+                
+                .Include(o => o.Quote)
+                    .ThenInclude(q => q.Promotion)
+                                                 
+                .Include(o => o.Dealer)
+                                       
+                .Include(o => o.Vehicle)
+                    .ThenInclude(v => v.Brand)
+                .FirstOrDefaultAsync();
+
+            return order;
         }
     }
 }
